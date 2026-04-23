@@ -26,7 +26,7 @@ export default function OutputProposal({ data, onBack }: OutputProposalProps) {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "var(--covert-bg)" }}>
+    <div className="w-full min-h-screen" style={{ backgroundColor: "var(--covert-bg)" }}>
       <NavBar onBack={onBack} onDownloadPDF={handleDownloadPDF} />
 
       <div id="proposal-output">

@@ -43,12 +43,12 @@ export default function TickerCard({
     <div
       ref={ref}
       data-ticker
-      className="bg-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
+      className="bg-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg min-w-0"
       style={{
         border: "1px solid var(--covert-border)",
         borderRadius: "12px",
         borderTop: `3px ${borderStyle} ${borderColor}`,
-        padding: "24px",
+        padding: "32px",
         boxShadow: "0 1px 8px rgba(0,0,0,0.05)",
       }}
     >
@@ -63,22 +63,22 @@ export default function TickerCard({
         {displayValue}
       </p>
       <p
-        className="mt-2"
         style={{
           fontSize: "14px",
           color: "var(--covert-text-secondary)",
           lineHeight: 1.5,
+          marginTop: "12px",
         }}
       >
         {label}
       </p>
       {sublabel && (
-        <p className="mt-1" style={{ fontSize: "12px", color: "var(--covert-text-secondary)" }}>
+        <p style={{ fontSize: "12px", color: "var(--covert-text-secondary)", marginTop: "6px" }}>
           {sublabel}
         </p>
       )}
       {liveAccumulator && (
-        <p className="mt-2" style={{ fontSize: "12px", color: "#DC2626" }}>
+        <p style={{ fontSize: "12px", color: "#DC2626", marginTop: "10px" }}>
           {liveAccumulator}
         </p>
       )}

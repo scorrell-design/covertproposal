@@ -67,18 +67,26 @@ export default function InputScreen({ onGenerate }: InputScreenProps) {
     state.data.clientName.trim().length > 0;
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "var(--covert-bg)" }}>
+    <div className="w-full min-h-screen" style={{ backgroundColor: "var(--covert-bg)" }}>
       <nav
-        className="flex items-center h-16 px-6"
+        className="w-full"
         style={{
           borderBottom: "1px solid var(--covert-border)",
           backgroundColor: "var(--covert-bg)",
         }}
       >
-        <CovertLogo size={28} />
+        <div
+          className="mx-auto flex items-center px-6 md:px-10 lg:px-16"
+          style={{ height: "64px", maxWidth: "720px" }}
+        >
+          <CovertLogo size={28} />
+        </div>
       </nav>
 
-      <main className="mx-auto" style={{ maxWidth: "680px", padding: "48px 24px 120px" }}>
+      <main
+        className="mx-auto px-6 md:px-10 lg:px-16"
+        style={{ maxWidth: "720px", paddingTop: "48px", paddingBottom: "120px" }}
+      >
         <div className="mb-8">
           <h1 className="font-bold" style={{ fontSize: "38px", lineHeight: 1.15 }}>
             Opioid Risk Intelligence Report Generator

@@ -10,13 +10,14 @@ interface HeroSectionProps {
 export default function HeroSection({ clientName }: HeroSectionProps) {
   return (
     <section
+      className="w-full"
       style={{
         paddingTop: "96px",
         paddingBottom: "48px",
         backgroundColor: "var(--covert-bg)",
       }}
     >
-      <div className="mx-auto" style={{ maxWidth: "1100px", padding: "0 24px" }}>
+      <div className="mx-auto px-6 md:px-10 lg:px-16" style={{ maxWidth: "1100px" }}>
         <SectionLabel icon={Shield} text="Intelligence Report" />
 
         <h1
@@ -26,6 +27,7 @@ export default function HeroSection({ clientName }: HeroSectionProps) {
             lineHeight: 1.1,
             color: "var(--covert-black)",
             maxWidth: "900px",
+            textWrap: "balance",
           }}
         >
           The Opioid Risk{" "}

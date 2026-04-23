@@ -19,6 +19,7 @@ export default function NextStepsCTA({ data }: NextStepsCTAProps) {
 
   return (
     <section
+      className="w-full"
       style={{
         paddingTop: "80px",
         paddingBottom: "64px",
@@ -26,8 +27,8 @@ export default function NextStepsCTA({ data }: NextStepsCTAProps) {
       }}
     >
       <div
-        className="mx-auto text-center"
-        style={{ maxWidth: "760px", padding: "0 24px" }}
+        className="mx-auto text-center px-6 md:px-10 lg:px-16"
+        style={{ maxWidth: "760px" }}
       >
         <span
           className="font-bold uppercase"
@@ -41,11 +42,13 @@ export default function NextStepsCTA({ data }: NextStepsCTAProps) {
         </span>
 
         <h2
-          className="font-bold mt-5"
+          className="font-bold"
           style={{
             fontSize: "32px",
             color: "#FFFFFF",
             lineHeight: 1.25,
+            marginTop: "20px",
+            textWrap: "balance",
           }}
         >
           Your plan has{" "}
@@ -56,8 +59,8 @@ export default function NextStepsCTA({ data }: NextStepsCTAProps) {
         </h2>
 
         <p
-          className="mt-6"
           style={{
+            marginTop: "24px",
             fontSize: "16px",
             color: "rgba(255,255,255,0.85)",
             lineHeight: 1.7,
@@ -76,8 +79,9 @@ export default function NextStepsCTA({ data }: NextStepsCTAProps) {
 
         {/* CTA Buttons */}
         <div
-          className="flex flex-wrap justify-center gap-4 mt-8"
+          className="flex flex-wrap justify-center"
           data-cta-buttons
+          style={{ gap: "16px", marginTop: "36px" }}
         >
           <button
             className="flex items-center gap-2 transition-colors duration-200 font-semibold"
@@ -117,8 +121,13 @@ export default function NextStepsCTA({ data }: NextStepsCTAProps) {
 
         {/* Attribution */}
         <div
-          className="flex items-center justify-center gap-3 mt-10"
-          style={{ color: "rgba(255,255,255,0.4)", fontSize: "13px" }}
+          className="flex items-center justify-center"
+          style={{
+            color: "rgba(255,255,255,0.4)",
+            fontSize: "13px",
+            marginTop: "48px",
+            gap: "12px",
+          }}
         >
           <CovertLogo size={20} white showWordmark={false} />
           <span>

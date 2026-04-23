@@ -20,34 +20,36 @@ interface ColumnProps {
 function Column({ heading, headingColor, bgColor, dotColor, items }: ColumnProps) {
   return (
     <div
+      className="min-w-0"
       style={{
         backgroundColor: bgColor,
         borderRadius: "12px",
-        padding: "24px",
+        padding: "28px",
       }}
     >
       <h3
         className="font-bold"
-        style={{ fontSize: "14px", color: headingColor, marginBottom: "16px" }}
+        style={{ fontSize: "14px", color: headingColor, marginBottom: "20px" }}
       >
         {heading}
       </h3>
-      <ul className="flex flex-col gap-3">
+      <ul className="flex flex-col" style={{ gap: "14px" }}>
         {items.map((item) => (
           <li
             key={item}
-            className="flex items-start gap-2.5"
-            style={{ fontSize: "14px", lineHeight: 1.6 }}
+            className="flex items-start min-w-0"
+            style={{ fontSize: "14px", lineHeight: 1.6, gap: "10px" }}
           >
             <span
-              className="mt-2 flex-shrink-0 rounded-full"
+              className="flex-shrink-0 rounded-full"
               style={{
                 width: "6px",
                 height: "6px",
                 backgroundColor: dotColor,
+                marginTop: "8px",
               }}
             />
-            <span dangerouslySetInnerHTML={{ __html: item }} />
+            <span className="min-w-0" dangerouslySetInnerHTML={{ __html: item }} />
           </li>
         ))}
       </ul>
@@ -59,16 +61,23 @@ export default function ComparisonDecision({ data }: ComparisonDecisionProps) {
   const netRoi = calcNetROI(data.withdrawalSymptomMembers, data.identifiedMembers);
 
   return (
-    <section style={{ padding: "64px 0", backgroundColor: "var(--covert-bg)" }}>
-      <div className="mx-auto" style={{ maxWidth: "1100px", padding: "0 24px" }}>
+    <section className="w-full" style={{ padding: "80px 0", backgroundColor: "var(--covert-bg)" }}>
+      <div className="mx-auto px-6 md:px-10 lg:px-16" style={{ maxWidth: "1100px" }}>
         <SectionLabel icon={Scale} text="What These Numbers Mean" />
-        <h2 className="font-bold mt-2" style={{ fontSize: "28px", lineHeight: 1.25 }}>
+        <h2
+          className="font-bold"
+          style={{ fontSize: "28px", lineHeight: 1.25, marginTop: "8px" }}
+        >
           The Decision in Front of You
         </h2>
 
         <div
-          className="grid gap-5 mt-8"
-          style={{ gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))" }}
+          className="grid"
+          style={{
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))",
+            gap: "20px",
+            marginTop: "32px",
+          }}
         >
           <Column
             heading="Without Covert"

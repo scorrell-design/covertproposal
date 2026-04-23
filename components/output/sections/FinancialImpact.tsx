@@ -30,17 +30,20 @@ function StatColumn({ value, label, color, fontSize, prefix = "$" }: StatColumnP
   const { count, ref } = useCountUp(value);
 
   return (
-    <div ref={ref} className="flex-1 text-center py-4">
-      <p className="font-bold" style={{ fontSize, color, lineHeight: 1.1 }}>
+    <div ref={ref} className="flex-1 min-w-0 text-center" style={{ padding: "16px 8px" }}>
+      <p
+        className="font-bold"
+        style={{ fontSize, color, lineHeight: 1.1, wordBreak: "break-word" }}
+      >
         {prefix}{count.toLocaleString()}
       </p>
       <p
-        className="mt-2 mx-auto"
         style={{
           fontSize: "14px",
           color: "var(--covert-text-secondary)",
           lineHeight: 1.5,
-          maxWidth: "200px",
+          maxWidth: "240px",
+          margin: "12px auto 0",
         }}
       >
         {label}
@@ -58,17 +61,25 @@ export default function FinancialImpact({ data }: FinancialImpactProps) {
   const monthly = calcMonthlyPreventable(preventable);
 
   return (
-    <section style={{ padding: "64px 0", backgroundColor: "var(--covert-bg)" }}>
-      <div className="mx-auto" style={{ maxWidth: "1100px", padding: "0 24px" }}>
+    <section className="w-full" style={{ padding: "80px 0", backgroundColor: "var(--covert-bg)" }}>
+      <div className="mx-auto px-6 md:px-10 lg:px-16" style={{ maxWidth: "1100px" }}>
         <SectionLabel icon={DollarSign} text="Clinical and Financial Impact" />
-        <h2 className="font-bold mt-2" style={{ fontSize: "28px", lineHeight: 1.25 }}>
+        <h2
+          className="font-bold"
+          style={{
+            fontSize: "28px",
+            lineHeight: 1.25,
+            marginTop: "8px",
+            textWrap: "balance",
+          }}
+        >
           The Cost of Doing Nothing. The Return of Correcting It.
         </h2>
 
         {/* Four stats row with dividers */}
         <div
-          className="flex flex-wrap mt-10 mb-8"
-          style={{ gap: "0" }}
+          className="flex flex-wrap"
+          style={{ gap: "0", marginTop: "48px", marginBottom: "40px" }}
         >
           <StatColumn
             value={exposure}
@@ -115,7 +126,7 @@ export default function FinancialImpact({ data }: FinancialImpactProps) {
             backgroundColor: "var(--covert-teal)",
             color: "#FFFFFF",
             borderRadius: "10px",
-            padding: "16px 24px",
+            padding: "20px 32px",
             fontWeight: 600,
             fontSize: "15px",
             lineHeight: 1.6,
@@ -127,8 +138,12 @@ export default function FinancialImpact({ data }: FinancialImpactProps) {
         </div>
 
         <p
-          className="mt-6 italic text-center"
-          style={{ fontSize: "15px", color: "var(--covert-text-secondary)" }}
+          className="italic text-center"
+          style={{
+            fontSize: "15px",
+            color: "var(--covert-text-secondary)",
+            marginTop: "24px",
+          }}
         >
           Every month of delay adds ~<strong>{formatCurrency(monthly)}</strong>{" "}
           to your plan&apos;s preventable spend.

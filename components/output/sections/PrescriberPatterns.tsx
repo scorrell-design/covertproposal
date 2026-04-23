@@ -25,30 +25,41 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
       : 0;
 
   return (
-    <section style={{ padding: "64px 0", backgroundColor: "var(--covert-bg-secondary)" }}>
-      <div className="mx-auto" style={{ maxWidth: "1100px", padding: "0 24px" }}>
+    <section className="w-full" style={{ padding: "80px 0", backgroundColor: "var(--covert-bg-secondary)" }}>
+      <div className="mx-auto px-6 md:px-10 lg:px-16" style={{ maxWidth: "1100px" }}>
         <SectionLabel icon={Stethoscope} text="Prescriber Patterns" />
-        <h2 className="font-bold mt-2" style={{ fontSize: "28px", lineHeight: 1.25 }}>
+        <h2
+          className="font-bold"
+          style={{ fontSize: "28px", lineHeight: 1.25, marginTop: "8px" }}
+        >
           Not all prescribers are creating risk. These are.
         </h2>
 
         {/* Two large stats */}
         <div
-          className="grid gap-8 mt-10 mb-10 text-center"
-          style={{ gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))" }}
+          className="grid text-center"
+          style={{
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 240px), 1fr))",
+            gap: "32px",
+            marginTop: "48px",
+            marginBottom: "48px",
+          }}
         >
-          <div ref={totalRef}>
+          <div ref={totalRef} className="min-w-0">
             <p className="font-bold" style={{ fontSize: "64px", lineHeight: 1 }}>
               {totalCount}
             </p>
             <p
-              className="mt-2"
-              style={{ fontSize: "15px", color: "var(--covert-text-secondary)" }}
+              style={{
+                fontSize: "15px",
+                color: "var(--covert-text-secondary)",
+                marginTop: "12px",
+              }}
             >
               Total prescribers writing opioid Rx in your plan
             </p>
           </div>
-          <div ref={flaggedRef}>
+          <div ref={flaggedRef} className="min-w-0">
             <p
               className="font-bold"
               style={{ fontSize: "64px", lineHeight: 1, color: "var(--covert-red)" }}
@@ -56,8 +67,11 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
               {flaggedCount}
             </p>
             <p
-              className="mt-2"
-              style={{ fontSize: "15px", color: "var(--covert-text-secondary)" }}
+              style={{
+                fontSize: "15px",
+                color: "var(--covert-text-secondary)",
+                marginTop: "12px",
+              }}
             >
               Flagged for unsafe prescribing patterns — {flaggedPct}% of total
             </p>
@@ -66,14 +80,16 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
 
         {/* Two-column cards */}
         <div
-          className="grid gap-7"
-          style={{ gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))" }}
+          className="grid"
+          style={{
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))",
+            gap: "28px",
+          }}
         >
           {/* Chronic High-Risk */}
           <div
-            className="bg-white"
+            className="bg-white min-w-0"
             style={{
-              borderLeft: "4px solid var(--covert-red)",
               borderRadius: "12px",
               padding: "28px",
               border: "1px solid var(--covert-border)",
@@ -85,12 +101,19 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
             <h3 className="font-bold" style={{ fontSize: "18px", color: "var(--covert-red)" }}>
               Chronic High-Risk (1-Star)
             </h3>
-            <p className="font-bold mt-3" style={{ fontSize: "56px", lineHeight: 1 }}>
+            <p
+              className="font-bold"
+              style={{ fontSize: "56px", lineHeight: 1, marginTop: "16px" }}
+            >
               {data.chronicHighRisk}
             </p>
             <p
-              className="mt-3"
-              style={{ fontSize: "14px", color: "var(--covert-text-secondary)", lineHeight: 1.6 }}
+              style={{
+                fontSize: "14px",
+                color: "var(--covert-text-secondary)",
+                lineHeight: 1.6,
+                marginTop: "16px",
+              }}
             >
               Prescribers writing chronic refills to members with 3+ risk
               factors. These are the primary drivers of escalation in your
@@ -100,9 +123,8 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
 
           {/* Common but Concerning */}
           <div
-            className="bg-white"
+            className="bg-white min-w-0"
             style={{
-              borderLeft: "4px solid var(--covert-orange)",
               borderRadius: "12px",
               padding: "28px",
               border: "1px solid var(--covert-border)",
@@ -117,12 +139,19 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
             >
               Common but Concerning
             </h3>
-            <p className="font-bold mt-3" style={{ fontSize: "56px", lineHeight: 1 }}>
+            <p
+              className="font-bold"
+              style={{ fontSize: "56px", lineHeight: 1, marginTop: "16px" }}
+            >
               {data.commonButConcerning}
             </p>
             <p
-              className="mt-3"
-              style={{ fontSize: "14px", color: "var(--covert-text-secondary)", lineHeight: 1.6 }}
+              style={{
+                fontSize: "14px",
+                color: "var(--covert-text-secondary)",
+                lineHeight: 1.6,
+                marginTop: "16px",
+              }}
             >
               Prescribers exhibiting 1–2 risk indicators. Typically unaware of
               cumulative patient-level patterns. Highly responsive to targeted

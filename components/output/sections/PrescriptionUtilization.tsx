@@ -21,11 +21,12 @@ export default function PrescriptionUtilization({
   return (
     <section
       ref={ref}
-      style={{ padding: "64px 0", backgroundColor: "var(--covert-bg)" }}
+      className="w-full"
+      style={{ padding: "80px 0", backgroundColor: "var(--covert-bg)" }}
     >
       <div
-        className="mx-auto text-center"
-        style={{ maxWidth: "1100px", padding: "0 24px" }}
+        className="mx-auto text-center px-6 md:px-10 lg:px-16"
+        style={{ maxWidth: "1100px" }}
       >
         <div className="flex justify-center">
           <SectionLabel icon={Pill} text="Prescription Utilization" />

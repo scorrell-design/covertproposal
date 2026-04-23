@@ -20,10 +20,8 @@
   --covert-amber: #F59E0B;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+html, body {
+  width: 100%;
 }
 
 body {
@@ -32,6 +30,7 @@ body {
   color: var(--covert-black);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 @keyframes countUp {

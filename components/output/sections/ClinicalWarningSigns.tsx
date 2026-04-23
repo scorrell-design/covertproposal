@@ -108,16 +108,21 @@ export default function ClinicalWarningSigns({
   return (
     <section
       ref={ref}
-      style={{ padding: "64px 0", backgroundColor: "var(--covert-bg)" }}
+      className="w-full"
+      style={{ padding: "80px 0", backgroundColor: "var(--covert-bg)" }}
     >
-      <div className="mx-auto" style={{ maxWidth: "1100px", padding: "0 24px" }}>
+      <div className="mx-auto px-6 md:px-10 lg:px-16" style={{ maxWidth: "1100px" }}>
         <SectionLabel icon={AlertTriangle} text="Clinical Warning Signs" />
-        <h2 className="font-bold mt-2" style={{ fontSize: "28px", lineHeight: 1.25 }}>
+        <h2
+          className="font-bold"
+          style={{ fontSize: "28px", lineHeight: 1.25, marginTop: "8px" }}
+        >
           Clinical Red Flags in Your Population
         </h2>
 
         <div
-          className="flex justify-center flex-wrap gap-10 mt-12"
+          className="flex justify-center flex-wrap"
+          style={{ gap: "40px", marginTop: "48px" }}
         >
           {rings.map((ring) => (
             <RingIndicator
@@ -131,11 +136,12 @@ export default function ClinicalWarningSigns({
         </div>
 
         <p
-          className="mt-10 text-center mx-auto"
+          className="text-center"
           style={{
             fontSize: "15px",
             color: "var(--covert-text-secondary)",
             maxWidth: "720px",
+            margin: "40px auto 0",
             lineHeight: 1.7,
           }}
         >

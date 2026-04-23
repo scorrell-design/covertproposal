@@ -34,9 +34,9 @@ export default function LiveRiskTickers({ data }: LiveRiskTickersProps) {
   const cadence = calcAtRiskCadence(data.identifiedMembers);
 
   return (
-    <section style={{ padding: "64px 0", backgroundColor: "var(--covert-bg-secondary)" }}>
-      <div className="mx-auto" style={{ maxWidth: "1100px", padding: "0 24px" }}>
-        <div className="flex items-center gap-2 mb-6">
+    <section className="w-full" style={{ padding: "80px 0", backgroundColor: "var(--covert-bg-secondary)" }}>
+      <div className="mx-auto px-6 md:px-10 lg:px-16" style={{ maxWidth: "1100px" }}>
+        <div className="flex items-center gap-2" style={{ marginBottom: "24px" }}>
           <SectionLabel icon={Activity} text="Live Risk Tickers" />
           <div className="relative">
             <button
@@ -82,8 +82,8 @@ export default function LiveRiskTickers({ data }: LiveRiskTickersProps) {
 
         {/* Urgency banner */}
         <div
-          className="mb-6"
           style={{
+            marginBottom: "32px",
             backgroundColor: "var(--covert-bg)",
             border: "1px solid var(--covert-border)",
             borderLeft: "4px solid var(--covert-teal)",
@@ -101,9 +101,10 @@ export default function LiveRiskTickers({ data }: LiveRiskTickersProps) {
 
         {/* Ticker grid */}
         <div
-          className="grid gap-4"
+          className="grid"
           style={{
-            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))",
+            gap: "24px",
           }}
         >
           {/* 1: Daily cost lost — live incrementing */}

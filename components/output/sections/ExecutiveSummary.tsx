@@ -11,9 +11,9 @@ interface ExecutiveSummaryProps {
 
 export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
   return (
-    <section style={{ padding: "48px 0", backgroundColor: "var(--covert-bg)" }}>
-      <div className="mx-auto" style={{ maxWidth: "1100px", padding: "0 24px" }}>
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_1px_1fr] gap-10">
+    <section className="w-full" style={{ padding: "64px 0", backgroundColor: "var(--covert-bg)" }}>
+      <div className="mx-auto px-6 md:px-10 lg:px-16" style={{ maxWidth: "1100px" }}>
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_1px_1fr]" style={{ gap: "40px" }}>
           {/* Left column */}
           <div className="flex flex-col">
             <SectionLabel icon={FileSearch} text="What the Data Shows" />
