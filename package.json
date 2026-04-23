@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "audit:spacing": "tsx scripts/spacing-audit.ts",
-    "prebuild": "npm run audit:spacing"
+    "audit:jesse": "tsx scripts/jesse-audit.ts",
+    "audit": "npm run audit:spacing && npm run audit:jesse",
+    "prebuild": "npm run audit"
   },
   "dependencies": {
     "html2canvas": "^1.4.1",

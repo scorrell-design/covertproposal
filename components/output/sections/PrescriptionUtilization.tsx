@@ -42,44 +42,52 @@ export default function PrescriptionUtilization({
         {/* Nested circle SVG */}
         <div className="flex justify-center mt-12 mb-10">
           <svg
-            width="280"
-            height="280"
-            viewBox="0 0 280 280"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            role="img"
-            aria-label={`Nested circle showing ${data.pharmaciesDispensingOpioids} pharmacies dispensing opioids`}
+            viewBox="0 0 420 420"
+            width="420"
+            height="420"
             style={{
+              maxWidth: "100%",
+              height: "auto",
               opacity: inView ? 1 : 0,
               transform: inView ? "scale(1)" : "scale(0.9)",
               transition: "all 0.6s ease-out",
             }}
+            role="img"
+            aria-label={`${data.pharmaciesDispensingOpioids} pharmacies dispensing opioids`}
           >
-            {/* Outer circle */}
-            <circle cx="140" cy="140" r="138" fill="#12AA9E" />
-            {/* Inner circle */}
-            <circle cx="140" cy="140" r="80" fill="#F1FDFA" />
-            {/* Inner text */}
+            <circle cx="210" cy="210" r="180" fill="#12AA9E" />
+            <circle cx="210" cy="210" r="110" fill="#F1FDFA" />
             <text
-              x="140"
-              y="126"
+              x="210"
+              y="178"
               textAnchor="middle"
-              fill="#6D7482"
               fontFamily="Cabin, sans-serif"
-              fontSize="11"
+              fontSize="16"
               fontWeight="400"
+              fill="#64748B"
             >
-              <tspan x="140" dy="0">Pharmacies</tspan>
-              <tspan x="140" dy="14">dispensing opioids</tspan>
+              Pharmacies
             </text>
             <text
-              x="140"
-              y="168"
+              x="210"
+              y="198"
               textAnchor="middle"
-              fill="#000000"
               fontFamily="Cabin, sans-serif"
-              fontSize="36"
+              fontSize="16"
+              fontWeight="400"
+              fill="#64748B"
+            >
+              dispensing opioids
+            </text>
+            <text
+              x="210"
+              y="240"
+              textAnchor="middle"
+              dominantBaseline="middle"
+              fontFamily="Cabin, sans-serif"
+              fontSize="56"
               fontWeight="700"
+              fill="#0F172A"
             >
               {data.pharmaciesDispensingOpioids}
             </text>
