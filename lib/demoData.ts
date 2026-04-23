@@ -1,0 +1,28 @@
+import { PCRData } from "./types";
+
+export const DEMO_DATA: PCRData = {
+  clientName: "AssuredPartners (Example)",
+  preparedFor: "",
+  totalPlanMembers: 9000,
+  totalMembersWithAnyRx: 3000,
+  membersWithOpioidRx: 300,
+  identifiedMembers: 90,
+  withdrawalSymptomMembers: 90,
+  catastrophicRisk: 1,
+  severeRisk: 8,
+  highRisk: 31,
+  moderateRisk: 14,
+  earlyWithdrawal: 37,
+  matMembers: 7,
+  totalPrescribersWithOpioid: 108,
+  identifiedPrescribers: 60,
+  chronicHighRisk: 8,
+  commonButConcerning: 31,
+  prescribersExcessiveRefills: 14,
+  pharmaciesDispensingOpioids: 144,
+  pharmaciesEarlyRefills: 19,
+  pharmaciesHighDosage: 7,
+  crossLocationRefills: 24,
+  membersMultiplePrescribers: 41,
+  membersOver3Refills: 22,
+};
