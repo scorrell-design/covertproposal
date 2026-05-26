@@ -1,7 +1,6 @@
 "use client";
 
 import { ShieldAlert, AlertTriangle, HeartPulse } from "lucide-react";
-import SectionLabel from "@/components/shared/SectionLabel";
 import LabelWithDescription from "@/components/shared/LabelWithDescription";
 import { PCRData } from "@/lib/types";
 import { formatNumber, formatCurrency } from "@/lib/calculations";
@@ -12,12 +11,12 @@ interface RiskBreakdownProps {
 }
 
 const TIERS = [
-  { key: "catastrophicRisk", label: "Catastrophic", color: "var(--covert-red)", desc: "Imminent overdose risk indicators present" },
-  { key: "severeRisk", label: "Severe", color: "var(--covert-orange)", desc: "Multiple high-risk prescribing patterns converging" },
-  { key: "highRisk", label: "High", color: "#F59E0B", desc: "Escalating utilization with unsafe prescriber overlap" },
-  { key: "moderateRisk", label: "Moderate", color: "#FCD34D", desc: "Early-stage risk factors requiring monitoring" },
-  { key: "earlyWithdrawal", label: "Early Withdrawal", color: "#FEF3C7", desc: "Active withdrawal management indicators" },
-  { key: "matMembers", label: "MAT Enrolled", color: "var(--covert-green)", desc: "Currently enrolled in Medication-Assisted Treatment" },
+  { key: "catastrophicRisk", label: "Catastrophic", color: "#FF6B6B", textColor: "#FF6B6B", desc: "Imminent overdose risk indicators present" },
+  { key: "severeRisk", label: "Severe", color: "#FFB36B", textColor: "#FFB36B", desc: "Multiple high-risk prescribing patterns converging" },
+  { key: "highRisk", label: "High", color: "#F59E0B", textColor: "#FCD34D", desc: "Escalating utilization with unsafe prescriber overlap" },
+  { key: "moderateRisk", label: "Moderate", color: "#FCD34D", textColor: "#FDE68A", desc: "Early-stage risk factors requiring monitoring" },
+  { key: "earlyWithdrawal", label: "Medically Emergent Withdrawal", color: "#FEF3C7", textColor: "#FEF3C7", desc: "Active withdrawal management indicators" },
+  { key: "matMembers", label: "MAT Enrolled", color: "#FFB36B", textColor: "#FFB36B", desc: "Existing prescribing patterns have escalated to opioid addiction" },
 ] as const;
 
 export default function RiskBreakdown({ data }: RiskBreakdownProps) {
@@ -38,16 +37,42 @@ export default function RiskBreakdown({ data }: RiskBreakdownProps) {
     <section
       ref={ref}
       className="w-full"
-      style={{ padding: "80px 0", backgroundColor: "var(--covert-bg)" }}
+      style={{
+        paddingTop: "clamp(72px, 8vw, 112px)",
+        paddingBottom: "clamp(72px, 8vw, 112px)",
+        backgroundColor: "var(--covert-black)",
+        color: "#FFFFFF",
+      }}
     >
       <div className="mx-auto px-6 md:px-10 lg:px-16" style={{ maxWidth: "1100px" }}>
-        <SectionLabel icon={ShieldAlert} text="Member Risk Breakdown" />
+        <div className="flex items-center gap-2" style={{ marginBottom: "12px" }}>
+          <ShieldAlert size={14} style={{ color: "var(--covert-teal)" }} />
+          <span
+            className="font-bold uppercase"
+            style={{
+              fontSize: "11px",
+              color: "var(--covert-teal)",
+              letterSpacing: "0.16em",
+            }}
+          >
+            Member Risk Breakdown
+          </span>
+        </div>
+
         <h2
           className="font-bold"
-          style={{ fontSize: "28px", lineHeight: 1.25, marginTop: "8px" }}
+          style={{
+            fontSize: "clamp(28px, 3.2vw, 40px)",
+            lineHeight: 1.1,
+            letterSpacing: "-0.02em",
+            color: "#FFFFFF",
+            textWrap: "balance",
+          }}
         >
-          {formatNumber(data.identifiedMembers)} plan members need case
-          management
+          <span style={{ color: "var(--covert-teal)" }}>
+            {formatNumber(data.identifiedMembers)}
+          </span>{" "}
+          plan members need case management
         </h2>
 
         {/* Stacked bar */}
@@ -57,8 +82,9 @@ export default function RiskBreakdown({ data }: RiskBreakdownProps) {
             height: "52px",
             borderRadius: "12px",
             display: "flex",
-            backgroundColor: "var(--covert-bg-secondary)",
-            marginTop: "32px",
+            backgroundColor: "var(--on-dark-surface)",
+            border: "1px solid var(--on-dark-border)",
+            marginTop: "40px",
           }}
         >
           {barTiers.map((tier) => (
@@ -75,12 +101,13 @@ export default function RiskBreakdown({ data }: RiskBreakdownProps) {
               <div
                 className="absolute bottom-full left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10"
                 style={{
-                  backgroundColor: "var(--covert-black)",
-                  color: "#FFFFFF",
+                  backgroundColor: "#FFFFFF",
+                  color: "var(--covert-black)",
                   padding: "6px 12px",
                   borderRadius: "6px",
                   fontSize: "12px",
                   marginBottom: "8px",
+                  fontWeight: 600,
                 }}
               >
                 {tier.label}: {tier.count}
@@ -90,15 +117,16 @@ export default function RiskBreakdown({ data }: RiskBreakdownProps) {
         </div>
 
         {/* Tier breakdown list */}
-        <div className="flex flex-col" style={{ gap: "12px", marginTop: "32px" }}>
+        <div className="flex flex-col" style={{ gap: "10px", marginTop: "32px" }}>
           {tierData.map((tier) => (
             <div
               key={tier.key}
-              className="flex items-center bg-white min-w-0"
+              className="flex items-center min-w-0"
               style={{
-                borderRadius: "8px",
+                borderRadius: "12px",
                 padding: "16px 20px",
-                border: "1px solid var(--covert-border)",
+                backgroundColor: "var(--on-dark-surface)",
+                border: "1px solid var(--on-dark-border)",
                 borderLeftWidth: "4px",
                 borderLeftColor: tier.color,
                 gap: "16px",
@@ -108,12 +136,16 @@ export default function RiskBreakdown({ data }: RiskBreakdownProps) {
                 <LabelWithDescription
                   label={tier.label}
                   description={tier.desc}
-                  labelColor={tier.color}
+                  labelColor={tier.textColor}
                 />
               </div>
               <span
                 className="font-bold flex-shrink-0"
-                style={{ fontSize: "22px", color: tier.color }}
+                style={{
+                  fontSize: "22px",
+                  color: tier.textColor,
+                  letterSpacing: "-0.02em",
+                }}
               >
                 {tier.count}
               </span>
@@ -126,9 +158,10 @@ export default function RiskBreakdown({ data }: RiskBreakdownProps) {
           <div
             className="flex items-start"
             style={{
-              backgroundColor: "var(--covert-red-light)",
-              borderLeft: "4px solid var(--covert-red)",
-              borderRadius: "8px",
+              backgroundColor: "rgba(255,107,107,0.10)",
+              borderLeft: "4px solid #FF6B6B",
+              border: "1px solid rgba(255,107,107,0.25)",
+              borderRadius: "12px",
               padding: "20px 24px",
               marginTop: "24px",
               gap: "12px",
@@ -137,12 +170,15 @@ export default function RiskBreakdown({ data }: RiskBreakdownProps) {
             <AlertTriangle
               size={20}
               style={{
-                color: "var(--covert-red)",
+                color: "#FF6B6B",
                 flexShrink: 0,
                 marginTop: "2px",
               }}
             />
-            <p className="min-w-0" style={{ fontSize: "15px", lineHeight: 1.6 }}>
+            <p
+              className="min-w-0"
+              style={{ fontSize: "15px", lineHeight: 1.6, color: "#FFFFFF" }}
+            >
               <strong>
                 {data.catastrophicRisk} member
                 {data.catastrophicRisk !== 1 ? "s" : ""}
@@ -162,9 +198,10 @@ export default function RiskBreakdown({ data }: RiskBreakdownProps) {
           <div
             className="flex items-start"
             style={{
-              backgroundColor: "var(--covert-green-light)",
-              borderLeft: "4px solid var(--covert-green)",
-              borderRadius: "8px",
+              backgroundColor: "rgba(255,179,107,0.10)",
+              borderLeft: "4px solid #FFB36B",
+              border: "1px solid rgba(255,179,107,0.25)",
+              borderRadius: "12px",
               padding: "20px 24px",
               marginTop: "16px",
               gap: "12px",
@@ -173,15 +210,19 @@ export default function RiskBreakdown({ data }: RiskBreakdownProps) {
             <HeartPulse
               size={20}
               style={{
-                color: "var(--covert-green)",
+                color: "#FFB36B",
                 flexShrink: 0,
                 marginTop: "2px",
               }}
             />
-            <p className="min-w-0" style={{ fontSize: "15px", lineHeight: 1.6 }}>
+            <p
+              className="min-w-0"
+              style={{ fontSize: "15px", lineHeight: 1.6, color: "#FFFFFF" }}
+            >
               <strong>{data.matMembers} members</strong>{" "}
-              are currently enrolled in Medication-Assisted Treatment — a
-              positive indicator of active intervention.
+              are enrolled in Medication-Assisted Treatment. These patients
+              show existing prescribing patterns have escalated to opioid
+              addiction.
             </p>
           </div>
         )}

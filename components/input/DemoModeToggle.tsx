@@ -13,7 +13,7 @@ export default function DemoModeToggle({ onActivate }: DemoModeToggleProps) {
       className="flex items-center justify-center gap-2 w-full transition-colors duration-200"
       style={{
         border: "2px solid var(--covert-teal)",
-        borderRadius: "7px",
+        borderRadius: "999px",
         padding: "12px 24px",
         color: "var(--covert-teal)",
         fontWeight: 600,

@@ -5,6 +5,7 @@ import InputScreen from "@/components/input/InputScreen";
 import OutputProposal from "@/components/output/OutputProposal";
 import CovertLogo from "@/components/shared/CovertLogo";
 import { PCRData, AppScreen } from "@/lib/types";
+import { DEMO_DATA } from "@/lib/demoData";
 import { Check, Loader2 } from "lucide-react";
 
 const GENERATION_STEPS = [
@@ -18,6 +19,16 @@ export default function Home() {
   const [screen, setScreen] = useState<AppScreen>("input");
   const [data, setData] = useState<PCRData | null>(null);
   const [generationStep, setGenerationStep] = useState(0);
+
+  // Deep-link demo output for QA: visit ?preview=output
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("preview") === "output") {
+      setData(DEMO_DATA);
+      setScreen("output");
+    }
+  }, []);
 
   const handleGenerate = (pcrData: PCRData) => {
     setData(pcrData);

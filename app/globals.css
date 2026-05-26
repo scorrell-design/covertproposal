@@ -1,13 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,600;0,700;1,400&display=swap');
 @import "tailwindcss";
 
 :root {
-  --covert-teal: #12AA9E;
-  --covert-teal-dark: #0D8C82;
+  /* Teal palette — sourced directly from covertplan.com compiled CSS */
+  --covert-teal: #14B8A6;
+  --covert-teal-mid: #319795;
+  --covert-teal-dark: #2C7A7B;
   --covert-teal-light: #F1FDFA;
   --covert-bg: #FFFFFF;
-  --covert-bg-secondary: #F3F4F6;
-  --covert-black: #000000;
+  --covert-bg-secondary: #F8FAFC;
+  --covert-black: #171717;
   --covert-text-dark: #1A1A2E;
   --covert-text-secondary: #6D7482;
   --covert-border: #E5E7EB;
@@ -18,6 +19,13 @@
   --covert-green: #1A9E6E;
   --covert-green-light: #F0FDF8;
   --covert-amber: #F59E0B;
+  /* On-dark tokens — used by sections with --covert-black background */
+  --on-dark-text: rgba(255,255,255,0.95);
+  --on-dark-text-secondary: rgba(255,255,255,0.7);
+  --on-dark-text-muted: rgba(255,255,255,0.45);
+  --on-dark-border: rgba(255,255,255,0.10);
+  --on-dark-surface: rgba(255,255,255,0.04);
+  --on-dark-surface-elevated: rgba(255,255,255,0.07);
 }
 
 html, body {
@@ -25,12 +33,42 @@ html, body {
 }
 
 body {
-  font-family: 'Cabin', sans-serif;
+  font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
   background: var(--covert-bg);
   color: var(--covert-black);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  letter-spacing: -0.01em;
+}
+
+/* Display-scale headlines — fluid type aligned to covertplan.com */
+.covert-display {
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+}
+
+.covert-h2 {
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  font-size: clamp(28px, 3.2vw, 44px);
+}
+
+.covert-eyebrow {
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+.covert-section {
+  padding-top: clamp(72px, 8vw, 120px);
+  padding-bottom: clamp(72px, 8vw, 120px);
 }
 
 @keyframes countUp {

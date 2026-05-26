@@ -1,11 +1,13 @@
 // === RATES — updated per Jesse Lisson (VP, Covert), 2026 ===
 export const SAVINGS_PER_WITHDRAWAL_MEMBER = 23000;
 export const COST_PER_MEMBER_ON_OPIOID = 600;
-export const CASE_MANAGEMENT_COST_PER_CASE = 400;
+export const CASE_MANAGEMENT_COST_PER_CASE = 600;
 export const PREVENTABLE_REDUCTION_RATE = 0.75;
 export const DEATHS_PER_IDENTIFIED_MEMBERS = 1 / 825;
 export const ABUSE_ADDICTION_RATE = 0.25;
 export const LARGE_POPULATION_THRESHOLD = 9000;
+export const OUD_PREVENTION_RATE = 0.75;
+export const LIVES_SAVED_PER_AT_RISK = 0.015;
 
 export function calcMedicalSpendFromWithdrawal(
   withdrawalMembers: number,
@@ -51,13 +53,40 @@ export function calcProjectedLivesLost(
   totalPlanMembers: number,
 ): number | null {
   if (totalPlanMembers < LARGE_POPULATION_THRESHOLD) return null;
-  return Math.round(identifiedMembers * DEATHS_PER_IDENTIFIED_MEMBERS);
+  const value = Math.round(identifiedMembers * DEATHS_PER_IDENTIFIED_MEMBERS);
+  return value > 0 ? value : null;
 }
 
 export function calcProjectedAbuseAddiction(
   identifiedMembers: number,
 ): number {
   return Math.round(identifiedMembers * ABUSE_ADDICTION_RATE);
+}
+
+export function calcAnnualInvestment(identifiedMembers: number): number {
+  return identifiedMembers * CASE_MANAGEMENT_COST_PER_CASE;
+}
+
+export function calcProjectedOUDPrevented(identifiedMembers: number): number {
+  return Math.round(identifiedMembers * OUD_PREVENTION_RATE);
+}
+
+export function calcROIRatio(
+  withdrawalMembers: number,
+  identifiedMembers: number,
+): number {
+  const investment = calcAnnualInvestment(identifiedMembers);
+  const preventable = calcPreventableSpend(withdrawalMembers);
+  if (investment <= 0) return 0;
+  return Math.round(preventable / investment);
+}
+
+export function calcProjectedLivesSaved(
+  identifiedMembers: number,
+  totalPlanMembers: number,
+): number | null {
+  if (totalPlanMembers < LARGE_POPULATION_THRESHOLD) return null;
+  return Math.round(identifiedMembers * LIVES_SAVED_PER_AT_RISK);
 }
 
 export function calcAtRiskCadence(identifiedMembers: number): {

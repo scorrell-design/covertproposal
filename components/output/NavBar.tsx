@@ -30,14 +30,8 @@ export default function NavBar({ onBack, onDownloadPDF }: NavBarProps) {
         className="mx-auto flex items-center justify-between px-6 md:px-10 lg:px-16"
         style={{ height: "64px", maxWidth: "1100px" }}
       >
-        <div className="flex items-center gap-4">
-          <CovertLogo size={24} white showWordmark={false} />
-          <span
-            className="hidden sm:inline font-semibold"
-            style={{ color: "#FFFFFF", fontSize: "14px" }}
-          >
-            Opioid Risk Intelligence Report
-          </span>
+        <div className="flex items-center">
+          <CovertLogo size={28} white showWordmark />
         </div>
 
         <div className="flex items-center gap-3">
@@ -65,7 +59,7 @@ export default function NavBar({ onBack, onDownloadPDF }: NavBarProps) {
               backgroundColor: "var(--covert-teal)",
               color: "#FFFFFF",
               border: "none",
-              borderRadius: "7px",
+              borderRadius: "999px",
               padding: "8px 16px",
               fontWeight: 600,
               fontSize: "14px",

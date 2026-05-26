@@ -16,7 +16,7 @@ export default function SectionLabel({ icon: Icon, text }: SectionLabelProps) {
         style={{
           fontSize: "11px",
           color: "var(--covert-teal)",
-          letterSpacing: "0.8px",
+          letterSpacing: "0.16em",
         }}
       >
         {text}

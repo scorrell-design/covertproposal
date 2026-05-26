@@ -29,7 +29,7 @@ export default function GenerateButton({
             ? "var(--covert-border)"
             : "var(--covert-teal)",
           color: disabled ? "var(--covert-text-secondary)" : "#FFFFFF",
-          borderRadius: "7px",
+          borderRadius: "999px",
           padding: "14px 32px",
           fontWeight: 600,
           fontSize: "16px",

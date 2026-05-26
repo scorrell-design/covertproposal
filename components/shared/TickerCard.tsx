@@ -43,21 +43,24 @@ export default function TickerCard({
     <div
       ref={ref}
       data-ticker
-      className="bg-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg min-w-0"
+      className="transition-all duration-200 hover:-translate-y-0.5 min-w-0"
       style={{
-        border: "1px solid var(--covert-border)",
-        borderRadius: "12px",
+        backgroundColor: "var(--on-dark-surface)",
+        border: "1px solid var(--on-dark-border)",
+        borderRadius: "16px",
         borderTop: `3px ${borderStyle} ${borderColor}`,
-        padding: "32px",
-        boxShadow: "0 1px 8px rgba(0,0,0,0.05)",
+        padding: "28px 28px 24px",
+        backdropFilter: "blur(4px)",
       }}
     >
       <p
         className="font-bold"
         style={{
-          fontSize: "40px",
+          fontSize: "clamp(34px, 3.4vw, 44px)",
           color: valueColor || borderColor,
-          lineHeight: 1.1,
+          lineHeight: 1.05,
+          letterSpacing: "-0.03em",
+          wordBreak: "break-word",
         }}
       >
         {displayValue}
@@ -65,20 +68,26 @@ export default function TickerCard({
       <p
         style={{
           fontSize: "14px",
-          color: "var(--covert-text-secondary)",
+          color: "var(--on-dark-text-secondary)",
           lineHeight: 1.5,
-          marginTop: "12px",
+          marginTop: "14px",
         }}
       >
         {label}
       </p>
       {sublabel && (
-        <p style={{ fontSize: "12px", color: "var(--covert-text-secondary)", marginTop: "6px" }}>
+        <p
+          style={{
+            fontSize: "12px",
+            color: "var(--on-dark-text-muted)",
+            marginTop: "6px",
+          }}
+        >
           {sublabel}
         </p>
       )}
       {liveAccumulator && (
-        <p style={{ fontSize: "12px", color: "#DC2626", marginTop: "10px" }}>
+        <p style={{ fontSize: "12px", color: "#FF8A8A", marginTop: "10px" }}>
           {liveAccumulator}
         </p>
       )}

@@ -1,7 +1,6 @@
 "use client";
 
 import { AlertTriangle } from "lucide-react";
-import SectionLabel from "@/components/shared/SectionLabel";
 import { PCRData } from "@/lib/types";
 import { useInView } from "react-intersection-observer";
 
@@ -23,13 +22,13 @@ function RingIndicator({ value, label, color, animate }: RingIndicatorProps) {
 
   return (
     <div className="flex flex-col items-center gap-3">
-      <svg width="120" height="120" viewBox="0 0 120 120" role="img" aria-label={`${value} — ${label}`}>
+      <svg width="128" height="128" viewBox="0 0 120 120" role="img" aria-label={`${value} — ${label}`}>
         <circle
           cx="60"
           cy="60"
           r="50"
           fill="none"
-          stroke="var(--covert-border)"
+          stroke="rgba(255,255,255,0.10)"
           strokeWidth="10"
         />
         <circle
@@ -54,10 +53,11 @@ function RingIndicator({ value, label, color, animate }: RingIndicatorProps) {
           y="60"
           textAnchor="middle"
           dominantBaseline="central"
-          fill="var(--covert-black)"
-          fontFamily="Cabin, sans-serif"
+          fill="#FFFFFF"
+          fontFamily="Satoshi, sans-serif"
           fontSize="28"
           fontWeight="700"
+          letterSpacing="-1"
         >
           {value}
         </text>
@@ -66,8 +66,8 @@ function RingIndicator({ value, label, color, animate }: RingIndicatorProps) {
         className="text-center"
         style={{
           fontSize: "13px",
-          color: "var(--covert-text-secondary)",
-          maxWidth: "140px",
+          color: "var(--on-dark-text-secondary)",
+          maxWidth: "150px",
           lineHeight: 1.4,
         }}
       >
@@ -86,43 +86,69 @@ export default function ClinicalWarningSigns({
     {
       value: data.prescribersExcessiveRefills,
       label: "Prescribers writing >3 refills",
-      color: "var(--covert-red)",
+      color: "#FF8A8A",
     },
     {
       value: data.crossLocationRefills,
       label: "Cross-location pharmacy refills",
-      color: "var(--covert-red)",
+      color: "#FF8A8A",
     },
     {
       value: data.pharmaciesEarlyRefills,
       label: "Pharmacies providing early refills",
-      color: "#EF4444",
+      color: "#FFB36B",
     },
     {
       value: data.pharmaciesHighDosage,
       label: "Pharmacies dispensing >50 MME/day",
-      color: "var(--covert-black)",
+      color: "var(--covert-teal)",
     },
   ];
 
   return (
     <section
       ref={ref}
-      className="w-full"
-      style={{ padding: "80px 0", backgroundColor: "var(--covert-bg)" }}
+      className="w-full relative overflow-hidden"
+      style={{
+        paddingTop: "clamp(72px, 8vw, 112px)",
+        paddingBottom: "clamp(72px, 8vw, 112px)",
+        backgroundColor: "#0B0B0B",
+        color: "#FFFFFF",
+      }}
     >
-      <div className="mx-auto px-6 md:px-10 lg:px-16" style={{ maxWidth: "1100px" }}>
-        <SectionLabel icon={AlertTriangle} text="Clinical Warning Signs" />
+      <div className="mx-auto px-6 md:px-10 lg:px-16 relative" style={{ maxWidth: "1100px" }}>
+        <div className="flex items-center gap-2" style={{ marginBottom: "12px" }}>
+          <AlertTriangle size={14} style={{ color: "var(--covert-teal)" }} />
+          <span
+            className="font-bold uppercase"
+            style={{
+              fontSize: "11px",
+              color: "var(--covert-teal)",
+              letterSpacing: "0.16em",
+            }}
+          >
+            Clinical Warning Signs
+          </span>
+        </div>
+
         <h2
           className="font-bold"
-          style={{ fontSize: "28px", lineHeight: 1.25, marginTop: "8px" }}
+          style={{
+            fontSize: "clamp(28px, 3.2vw, 40px)",
+            lineHeight: 1.1,
+            letterSpacing: "-0.02em",
+            color: "#FFFFFF",
+            textWrap: "balance",
+            maxWidth: "640px",
+          }}
         >
-          Clinical Red Flags in Your Population
+          Clinical red flags in{" "}
+          <span style={{ color: "var(--covert-teal)" }}>your population.</span>
         </h2>
 
         <div
           className="flex justify-center flex-wrap"
-          style={{ gap: "40px", marginTop: "48px" }}
+          style={{ gap: "40px", marginTop: "56px" }}
         >
           {rings.map((ring) => (
             <RingIndicator
@@ -138,16 +164,15 @@ export default function ClinicalWarningSigns({
         <p
           className="text-center"
           style={{
-            fontSize: "15px",
-            color: "var(--covert-text-secondary)",
-            maxWidth: "720px",
-            margin: "40px auto 0",
+            fontSize: "16px",
+            color: "var(--on-dark-text-secondary)",
+            maxWidth: "780px",
+            margin: "48px auto 0",
             lineHeight: 1.7,
           }}
         >
-          These indicators, when present in combination, constitute clinical
-          evidence of systemic prescribing failures — actionable intervention
-          points, not member behavioral issues.
+          These indicators constitute clinical evidence of systemic
+          prescribing failures preventable by early intervention.
         </p>
       </div>
     </section>

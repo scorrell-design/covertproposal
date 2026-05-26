@@ -18,8 +18,8 @@ export interface PCRData {
 
   totalPrescribersWithOpioid: number;
   identifiedPrescribers: number;
-  chronicHighRisk: number;
-  commonButConcerning: number;
+  chronicOpioidPrescribers: number;
+  acuteOpioidPrescribers: number;
   prescribersExcessiveRefills: number;
 
   pharmaciesDispensingOpioids: number;
@@ -28,6 +28,14 @@ export interface PCRData {
   crossLocationRefills: number;
   membersMultiplePrescribers: number;
   membersOver3Refills: number;
+
+  // Withdrawal Symptom Indicators (PCR page 5)
+  wsiUniqueMembers: number;
+  wsiBreakdown: { name: string; count: number }[];
+
+  // Chronic Medical Indicators in opioid-Rx members (PCR page 6)
+  chronicCostFactors: number;
+  chronicConditions: { name: string; count: number }[];
 }
 
 export type AppScreen = "input" | "generating" | "output";

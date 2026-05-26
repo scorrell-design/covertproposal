@@ -34,7 +34,15 @@ export default function LiveRiskTickers({ data }: LiveRiskTickersProps) {
   const cadence = calcAtRiskCadence(data.identifiedMembers);
 
   return (
-    <section className="w-full" style={{ padding: "80px 0", backgroundColor: "var(--covert-bg-secondary)" }}>
+    <section
+      className="w-full"
+      style={{
+        paddingTop: "clamp(72px, 8vw, 112px)",
+        paddingBottom: "clamp(72px, 8vw, 112px)",
+        backgroundColor: "#0B0B0B",
+        color: "#FFFFFF",
+      }}
+    >
       <div className="mx-auto px-6 md:px-10 lg:px-16" style={{ maxWidth: "1100px" }}>
         <div className="flex items-center gap-2" style={{ marginBottom: "24px" }}>
           <SectionLabel icon={Activity} text="Live Risk Tickers" />
@@ -84,14 +92,20 @@ export default function LiveRiskTickers({ data }: LiveRiskTickersProps) {
         <div
           style={{
             marginBottom: "32px",
-            backgroundColor: "var(--covert-bg)",
-            border: "1px solid var(--covert-border)",
+            backgroundColor: "var(--on-dark-surface)",
+            border: "1px solid var(--on-dark-border)",
             borderLeft: "4px solid var(--covert-teal)",
-            borderRadius: "8px",
+            borderRadius: "12px",
             padding: "20px 24px",
           }}
         >
-          <p style={{ fontSize: "16px", lineHeight: 1.6 }}>
+          <p
+            style={{
+              fontSize: "16px",
+              lineHeight: 1.6,
+              color: "var(--on-dark-text)",
+            }}
+          >
             Every day of inaction translates to{" "}
             <TealHighlight>{formatCurrency(dailyCost)}</TealHighlight> in
             preventable medical costs — your plan is subsidizing the
@@ -143,8 +157,8 @@ export default function LiveRiskTickers({ data }: LiveRiskTickersProps) {
             <TickerCard
               value={livesLost}
               label="Lives projected to be lost in the next 12 months without intervention"
-              borderColor="#000000"
-              valueColor="#000000"
+              borderColor="#FFFFFF"
+              valueColor="#FFFFFF"
             />
           )}
 
@@ -152,17 +166,17 @@ export default function LiveRiskTickers({ data }: LiveRiskTickersProps) {
           <TickerCard
             value={abuseAddiction}
             label="Identified members projected to develop abuse or addiction"
-            borderColor="#991B1B"
-            valueColor="#991B1B"
+            borderColor="#FF8A8A"
+            valueColor="#FF8A8A"
           />
 
           {/* 6: Avg days between catastrophic events (static) */}
           <TickerCard
             value="18 days"
             label="Industry average between catastrophic opioid events"
-            borderColor="#6D7482"
+            borderColor="rgba(255,255,255,0.4)"
             borderStyle="dashed"
-            valueColor="#6D7482"
+            valueColor="rgba(255,255,255,0.6)"
             animate={false}
           />
         </div>

@@ -81,7 +81,7 @@ function FormField({
             padding: "10px 14px",
             paddingRight: autoFilled ? "110px" : "14px",
             fontSize: "15px",
-            fontFamily: "'Cabin', sans-serif",
+            fontFamily: "'Satoshi', sans-serif",
             backgroundColor: readOnly
               ? "var(--covert-bg-secondary)"
               : autoFilled
@@ -317,15 +317,15 @@ export default function DataFormSections({
             autoFilled={isAutoFilled}
           />
           <FormField
-            label="Chronic High-Risk (1-Star)"
-            value={data.chronicHighRisk}
-            onChange={(v) => update("chronicHighRisk", v)}
+            label="Chronic Opioid Prescribers"
+            value={data.chronicOpioidPrescribers}
+            onChange={(v) => update("chronicOpioidPrescribers", v)}
             autoFilled={isAutoFilled}
           />
           <FormField
-            label="Common but Concerning"
-            value={data.commonButConcerning}
-            onChange={(v) => update("commonButConcerning", v)}
+            label="Acute Opioid Prescribers"
+            value={data.acuteOpioidPrescribers}
+            onChange={(v) => update("acuteOpioidPrescribers", v)}
             autoFilled={isAutoFilled}
           />
           <FormField

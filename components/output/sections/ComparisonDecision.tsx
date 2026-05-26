@@ -1,7 +1,6 @@
 "use client";
 
 import { Scale } from "lucide-react";
-import SectionLabel from "@/components/shared/SectionLabel";
 import { formatCurrency, calcNetROI } from "@/lib/calculations";
 import { PCRData } from "@/lib/types";
 
@@ -12,24 +11,30 @@ interface ComparisonDecisionProps {
 interface ColumnProps {
   heading: string;
   headingColor: string;
-  bgColor: string;
-  dotColor: string;
+  accent: string;
   items: string[];
 }
 
-function Column({ heading, headingColor, bgColor, dotColor, items }: ColumnProps) {
+function Column({ heading, headingColor, accent, items }: ColumnProps) {
   return (
     <div
       className="min-w-0"
       style={{
-        backgroundColor: bgColor,
-        borderRadius: "12px",
+        backgroundColor: "var(--on-dark-surface)",
+        border: "1px solid var(--on-dark-border)",
+        borderTop: `3px solid ${accent}`,
+        borderRadius: "16px",
         padding: "28px",
       }}
     >
       <h3
-        className="font-bold"
-        style={{ fontSize: "14px", color: headingColor, marginBottom: "20px" }}
+        className="font-bold uppercase"
+        style={{
+          fontSize: "11px",
+          color: headingColor,
+          letterSpacing: "0.16em",
+          marginBottom: "20px",
+        }}
       >
         {heading}
       </h3>
@@ -38,14 +43,19 @@ function Column({ heading, headingColor, bgColor, dotColor, items }: ColumnProps
           <li
             key={item}
             className="flex items-start min-w-0"
-            style={{ fontSize: "14px", lineHeight: 1.6, gap: "10px" }}
+            style={{
+              fontSize: "14px",
+              lineHeight: 1.6,
+              gap: "10px",
+              color: "var(--on-dark-text-secondary)",
+            }}
           >
             <span
               className="flex-shrink-0 rounded-full"
               style={{
                 width: "6px",
                 height: "6px",
-                backgroundColor: dotColor,
+                backgroundColor: accent,
                 marginTop: "8px",
               }}
             />
@@ -61,14 +71,41 @@ export default function ComparisonDecision({ data }: ComparisonDecisionProps) {
   const netRoi = calcNetROI(data.withdrawalSymptomMembers, data.identifiedMembers);
 
   return (
-    <section className="w-full" style={{ padding: "80px 0", backgroundColor: "var(--covert-bg)" }}>
+    <section
+      className="w-full"
+      style={{
+        paddingTop: "clamp(72px, 8vw, 112px)",
+        paddingBottom: "clamp(72px, 8vw, 112px)",
+        backgroundColor: "#0B0B0B",
+        color: "#FFFFFF",
+      }}
+    >
       <div className="mx-auto px-6 md:px-10 lg:px-16" style={{ maxWidth: "1100px" }}>
-        <SectionLabel icon={Scale} text="What These Numbers Mean" />
+        <div className="flex items-center gap-2" style={{ marginBottom: "12px" }}>
+          <Scale size={14} style={{ color: "var(--covert-teal)" }} />
+          <span
+            className="font-bold uppercase"
+            style={{
+              fontSize: "11px",
+              color: "var(--covert-teal)",
+              letterSpacing: "0.16em",
+            }}
+          >
+            What These Numbers Mean
+          </span>
+        </div>
+
         <h2
           className="font-bold"
-          style={{ fontSize: "28px", lineHeight: 1.25, marginTop: "8px" }}
+          style={{
+            fontSize: "clamp(28px, 3.2vw, 40px)",
+            lineHeight: 1.1,
+            letterSpacing: "-0.02em",
+            color: "#FFFFFF",
+          }}
         >
-          The Decision in Front of You
+          The decision in front of{" "}
+          <span style={{ color: "var(--covert-teal)" }}>you.</span>
         </h2>
 
         <div
@@ -76,14 +113,13 @@ export default function ComparisonDecision({ data }: ComparisonDecisionProps) {
           style={{
             gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))",
             gap: "20px",
-            marginTop: "32px",
+            marginTop: "40px",
           }}
         >
           <Column
             heading="Without Covert"
-            headingColor="var(--covert-red)"
-            bgColor="var(--covert-red-light)"
-            dotColor="var(--covert-red)"
+            headingColor="#FF8A8A"
+            accent="#FF8A8A"
             items={[
               "Medical spend keeps growing",
               "Prescribers remain uncorrected",
@@ -95,8 +131,7 @@ export default function ComparisonDecision({ data }: ComparisonDecisionProps) {
           <Column
             heading="With Covert — 12 Months"
             headingColor="var(--covert-teal)"
-            bgColor="var(--covert-teal-light)"
-            dotColor="var(--covert-teal)"
+            accent="var(--covert-teal)"
             items={[
               "75% reduction in avoidable spend",
               "Prescriber behavior corrected at the source",
@@ -107,11 +142,10 @@ export default function ComparisonDecision({ data }: ComparisonDecisionProps) {
 
           <Column
             heading="The Difference"
-            headingColor="var(--covert-green)"
-            bgColor="var(--covert-green-light)"
-            dotColor="var(--covert-green)"
+            headingColor="#FFFFFF"
+            accent="#FFFFFF"
             items={[
-              `<strong>${formatCurrency(netRoi)}</strong> net ROI`,
+              `<strong style="color:#FFFFFF">${formatCurrency(netRoi)}</strong> net ROI`,
               "No utilization management",
               "No claims denial",
               "No member disruption",
