@@ -180,10 +180,13 @@ Brennan should pick what he's most comfortable with — none of this is load-bea
 
 - [x] **5th Clinical Warning Signs wheel** → confirmed: **713** = pharmacies that filled an opioid Rx for the same member from multiple prescribers (PCR p4 "Pharmacies > 1 Prescriber").
 - [x] **ROI** → "Guaranteed ROI" is retired. ROI ratio = **avoided medical spend ÷ cost**, where cost = members with an opioid Rx × $600 and savings = at-risk members × **$23,790**. Shown on both the Decision page (replacing "Guaranteed ROI") and the Next Steps page (~18:1 on the RxSense demo).
+- [x] **Live Risk Tickers framing** → preventable cost shown **monthly** (daily isn't big enough for smaller groups; monthly works for all clients). Banner + Box 1 are monthly; the real-time accrual line is unchanged.
 
 ### Still pending Jesse
 
-1. **"Break these down by month" (Live Risk Tickers).** Need confirmation of which figures to show as a per-month breakdown. (Left as a TODO in code.)
+_None — all 5/28 + 6/3 items implemented and live._
+
+> Open follow-up (for Steph/Jesse, not blocking): the ROI's new $23,790 / $600 basis implies a larger "avoided medical spend" than the dollar figures in the Clinical & Financial Impact section (still on the older per-member math). The ROI **ratio** is correct; reconcile the section's dollar amounts only if Jesse wants the whole financial model migrated (would need his per-stat numbers).
 
 ### Still pending Jesse (longer-horizon, for production build)
 
