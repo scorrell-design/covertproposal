@@ -9,6 +9,7 @@ import { PCRData } from "@/lib/types";
 import {
   calcPreventableSpend,
   calcDailyCostOfInaction,
+  calcMonthlyPreventable,
   calcProjectedOverdoseDeaths,
   calcProjectedAbuseAddiction,
   calcAtRiskCadence,
@@ -23,6 +24,10 @@ interface LiveRiskTickersProps {
 export default function LiveRiskTickers({ data }: LiveRiskTickersProps) {
   const [showTooltip, setShowTooltip] = useState(false);
   const preventable = calcPreventableSpend(data.withdrawalSymptomMembers);
+  // Per Jesse (6/3/26): show preventable cost as a MONTHLY figure — daily isn't
+  // large enough to land for smaller groups; monthly reads for all clients.
+  const monthly = calcMonthlyPreventable(preventable);
+  // Real-time accrual rate (per-second) still drives the "since report generated" line.
   const dailyCost = calcDailyCostOfInaction(preventable);
   const accumulated = useLiveTicker(dailyCost);
   // Box 5 — overdose deaths: members managing withdrawal ÷ 820, hidden < 300 members.
@@ -32,8 +37,6 @@ export default function LiveRiskTickers({ data }: LiveRiskTickersProps) {
   );
   const abuseAddiction = calcProjectedAbuseAddiction(data.identifiedMembers);
   const cadence = calcAtRiskCadence(data.identifiedMembers);
-  // TODO(jesse): "break these down by month" — pending confirmation of which
-  // figures to show as a per-month breakdown on this section.
 
   return (
     <section
@@ -108,8 +111,8 @@ export default function LiveRiskTickers({ data }: LiveRiskTickersProps) {
               color: "var(--on-dark-text)",
             }}
           >
-            Every day of inaction translates to{" "}
-            <TealHighlight>{formatCurrency(dailyCost)}</TealHighlight> in
+            Every month of inaction translates to{" "}
+            <TealHighlight>{formatCurrency(monthly)}</TealHighlight> in
             preventable medical costs — your plan is subsidizing the
             consequences of upstream prescribing failures.
           </p>
@@ -123,10 +126,10 @@ export default function LiveRiskTickers({ data }: LiveRiskTickersProps) {
             gap: "24px",
           }}
         >
-          {/* 1: Daily cost lost — live incrementing */}
+          {/* 1: Monthly cost lost — with live real-time accrual */}
           <TickerCard
-            value={`$${(dailyCost + accumulated).toLocaleString()}`}
-            label="Medical cost lost every day without action"
+            value={`$${(monthly + accumulated).toLocaleString()}`}
+            label="Medical cost lost every month without action"
             borderColor="#DC2626"
             valueColor="#DC2626"
             animate={false}
