@@ -81,6 +81,14 @@ check(
   /ABUSE_ADDICTION_RATE\s*=\s*0\.25/.test(joined),
 );
 
+// 11. ROI ratio = at-risk × $23,790 ÷ (opioid-Rx members × $600); "Guaranteed
+//     ROI" retired (Jesse 6/3/26).
+check(
+  "ROI uses SAVINGS_PER_AT_RISK_MEMBER = 23790 and 'Guaranteed ROI' is removed",
+  /SAVINGS_PER_AT_RISK_MEMBER\s*=\s*23[_,]?790/.test(joined) &&
+    !/Guaranteed ROI/.test(joined),
+);
+
 // Report
 const failed = results.filter((r) => !r.pass);
 console.log("\n=== JESSE FEEDBACK AUDIT ===\n");

@@ -1,7 +1,7 @@
 "use client";
 
 import { Scale } from "lucide-react";
-import { formatCurrency, calcNetROI } from "@/lib/calculations";
+import { formatCurrency, calcNetROI, calcROIRatio } from "@/lib/calculations";
 import { PCRData } from "@/lib/types";
 
 interface ComparisonDecisionProps {
@@ -69,6 +69,7 @@ function Column({ heading, headingColor, accent, items }: ColumnProps) {
 
 export default function ComparisonDecision({ data }: ComparisonDecisionProps) {
   const netRoi = calcNetROI(data.withdrawalSymptomMembers, data.identifiedMembers);
+  const roi = calcROIRatio(data.identifiedMembers, data.membersWithOpioidRx);
 
   return (
     <section
@@ -146,7 +147,7 @@ export default function ComparisonDecision({ data }: ComparisonDecisionProps) {
             accent="#FFFFFF"
             items={[
               `<strong style="color:#FFFFFF">${formatCurrency(netRoi)}</strong> reduction in avoidable medical spend`,
-              "Guaranteed ROI",
+              `<strong style="color:#FFFFFF">${roi}:1</strong> projected ROI`,
               "Improved member outcomes",
               "Safer opioid prescribing practices",
             ]}

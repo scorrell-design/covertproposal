@@ -1,6 +1,11 @@
 // === RATES — updated per Jesse Lisson (VP, Covert), 2026 ===
 export const SAVINGS_PER_WITHDRAWAL_MEMBER = 23000;
 export const COST_PER_MEMBER_ON_OPIOID = 600;
+// ROI ratio inputs — per Jesse (6/3/26). The fixed-ROI claim is retired; the
+// ROI is now avoided medical spend ÷ cost, where:
+//   cost    = members with an opioid Rx × $600  (COST_PER_MEMBER_ON_OPIOID)
+//   savings = at-risk (identified) members × $23,790
+export const SAVINGS_PER_AT_RISK_MEMBER = 23790;
 export const CASE_MANAGEMENT_COST_PER_CASE = 600;
 export const PREVENTABLE_REDUCTION_RATE = 0.75;
 // Overdose-death projection — per Jesse (5/28/26): members managing withdrawal
@@ -79,14 +84,28 @@ export function calcProjectedOUDPrevented(identifiedMembers: number): number {
   return Math.round(identifiedMembers * OUD_PREVENTION_RATE);
 }
 
+/** Avoided medical spend (Jesse 6/3/26): at-risk members × $23,790. */
+export function calcAvoidedMedicalSpend(identifiedMembers: number): number {
+  return identifiedMembers * SAVINGS_PER_AT_RISK_MEMBER;
+}
+
+/** Covert cost basis (Jesse 6/3/26): members with an opioid Rx × $600. */
+export function calcCovertCost(membersWithOpioidRx: number): number {
+  return membersWithOpioidRx * COST_PER_MEMBER_ON_OPIOID;
+}
+
+/**
+ * ROI ratio (Jesse 6/3/26) = avoided medical spend ÷ cost.
+ *   savings = identified (at-risk) members × $23,790
+ *   cost    = members with an opioid Rx × $600
+ */
 export function calcROIRatio(
-  withdrawalMembers: number,
   identifiedMembers: number,
+  membersWithOpioidRx: number,
 ): number {
-  const investment = calcAnnualInvestment(identifiedMembers);
-  const preventable = calcPreventableSpend(withdrawalMembers);
-  if (investment <= 0) return 0;
-  return Math.round(preventable / investment);
+  const cost = calcCovertCost(membersWithOpioidRx);
+  if (cost <= 0) return 0;
+  return Math.round(calcAvoidedMedicalSpend(identifiedMembers) / cost);
 }
 
 export function calcProjectedLivesSaved(

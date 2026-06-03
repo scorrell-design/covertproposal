@@ -103,8 +103,8 @@ export default function ClinicalWarningSigns({
       label: "Pharmacies dispensing >50 MME/day",
       color: "var(--covert-teal)",
     },
-    // TODO(jesse): confirm the source figure for "missing multi-prescriber
-    // activity"; currently wired to pharmaciesMultiPrescriber (PCR p4 ">1 prescriber").
+    // Pharmacies that filled an opioid Rx for the same member from multiple
+    // prescribers (confirmed by Jesse 6/3/26 — PCR p4 "Pharmacies > 1 Prescriber").
     {
       value: data.pharmaciesMultiPrescriber,
       label: "Pharmacies missing multi-prescriber activity",

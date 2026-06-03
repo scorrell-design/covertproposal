@@ -176,11 +176,14 @@ Brennan should pick what he's most comfortable with — none of this is load-bea
 - **Overdose-death projection** → members managing withdrawal ÷ 820, suppressed when plan < 300 members. ✅ implemented.
 - **Page order / layout / copy** → per Jesse's 5/28 markups (see Revision Log). ✅ implemented.
 
-### Still pending Jesse (sent 6/3/26 — these 3 items are stubbed/left in code, flagged with TODOs)
+### Resolved by Jesse 6/3/26 (implemented)
 
-1. **5th Clinical Warning Signs wheel — "Pharmacies missing multi-prescriber activity."** Currently wired to PCR p4 "713 Pharmacies > 1 Prescriber" as a best-guess. Confirm the correct source figure.
-2. **ROI on the Next Steps (final) page.** Still shows a computed ratio (`X:1`). Jesse's Decision-page edit dropped the number for "Guaranteed ROI." Confirm whether the final page should also drop the ratio, show a specific number, or keep it.
-3. **"Break these down by month" (Live Risk Tickers).** Need confirmation of which figures to show as a per-month breakdown.
+- [x] **5th Clinical Warning Signs wheel** → confirmed: **713** = pharmacies that filled an opioid Rx for the same member from multiple prescribers (PCR p4 "Pharmacies > 1 Prescriber").
+- [x] **ROI** → "Guaranteed ROI" is retired. ROI ratio = **avoided medical spend ÷ cost**, where cost = members with an opioid Rx × $600 and savings = at-risk members × **$23,790**. Shown on both the Decision page (replacing "Guaranteed ROI") and the Next Steps page (~18:1 on the RxSense demo).
+
+### Still pending Jesse
+
+1. **"Break these down by month" (Live Risk Tickers).** Need confirmation of which figures to show as a per-month breakdown. (Left as a TODO in code.)
 
 ### Still pending Jesse (longer-horizon, for production build)
 
@@ -207,11 +210,14 @@ Source: `Edits 5.28.26.docx` (annotated screenshots of the demo).
 4. **Live Risk Tickers (p4):** restructured to 5 cards; removed the static "18 days" card; **Box 5 = projected opioid-overdose deaths** (withdrawal ÷ 820, hidden < 300 members).
 5. **Member Risk Breakdown:** improved visibility of the tier descriptor text.
 6. **Prescribers Creating Risk:** removed the "total prescribers" (108) stat; the flagged count is now the single hero number with "flagged for…" beneath.
-7. **Clinical Warning Signs:** added a 5th wheel — "Pharmacies missing multi-prescriber activity" (value pending Jesse).
+7. **Clinical Warning Signs:** added a 5th wheel — "Pharmacies missing multi-prescriber activity" (**713** per Jesse 6/3: pharmacies that filled for the same member from multiple prescribers).
 8. **Withdrawal Indicators:** relabeled to "…severe withdrawal symptoms indicators"; updated paragraph copy.
 9. **Chronic Conditions:** updated the descriptor below the hero number to "Members experiencing worsening chronic conditions driven by opioid withdrawal."
 10. **Financial Impact:** reworded the savings box; added a second, annualized member-impact row (become addicted / manage severe withdrawal / worsening chronic / at risk of overdose death).
-11. **The Decision:** "The Difference" column → reduction in avoidable medical spend / Guaranteed ROI / Improved member outcomes / Safer opioid prescribing practices.
+11. **The Decision:** "The Difference" column → reduction in avoidable medical spend / **`X:1` projected ROI** / Improved member outcomes / Safer opioid prescribing practices.
+12. **ROI model (Jesse 6/3):** "Guaranteed ROI" retired; ROI ratio = avoided medical spend (at-risk members × $23,790) ÷ cost (members with opioid Rx × $600). Applied on the Decision + Next Steps pages.
+
+> **Note for the financial model:** the new ROI inputs imply a much larger "avoided medical spend" figure than the dollar amounts shown in the **Clinical & Financial Impact** section (which still uses the older per-member basis). The ROI **ratio** is correct per Jesse; the large dollar figures in that section were intentionally **not** rewritten to avoid an inconsistent half-migration. If Jesse wants the whole financial section reconciled to the $23,790 / $600 model, that's a follow-up — flag to Steph.
 
 Demo data now reflects the real RxSense PCR (97,301 members w/ Rx, 11,094 opioid Rx, 5,028 identified, etc.).
 

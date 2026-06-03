@@ -3,8 +3,7 @@
 import CovertLogo from "@/components/shared/CovertLogo";
 import { PCRData } from "@/lib/types";
 import {
-  calcAnnualInvestment,
-  calcPreventableSpend,
+  calcCovertCost,
   calcProjectedLivesSaved,
   calcProjectedOUDPrevented,
   calcROIRatio,
@@ -39,10 +38,10 @@ function StatTile({ value, label, sublabel, emphasis = "neutral" }: StatTileProp
       <p
         className="font-bold"
         style={{
-          fontSize: "40px",
+          fontSize: "clamp(30px, 3vw, 40px)",
           color: accent,
           lineHeight: 1.05,
-          wordBreak: "break-word",
+          whiteSpace: "nowrap",
         }}
       >
         {value}
@@ -74,9 +73,9 @@ function StatTile({ value, label, sublabel, emphasis = "neutral" }: StatTileProp
 }
 
 export default function NextStepsCTA({ data }: NextStepsCTAProps) {
-  const investment = calcAnnualInvestment(data.identifiedMembers);
-  const preventable = calcPreventableSpend(data.withdrawalSymptomMembers);
-  const roi = calcROIRatio(data.withdrawalSymptomMembers, data.identifiedMembers);
+  // Cost basis (Jesse 6/3/26): members with an opioid Rx × $600.
+  const cost = calcCovertCost(data.membersWithOpioidRx);
+  const roi = calcROIRatio(data.identifiedMembers, data.membersWithOpioidRx);
   const oudPrevented = calcProjectedOUDPrevented(data.identifiedMembers);
   const livesSaved = calcProjectedLivesSaved(
     data.identifiedMembers,
@@ -190,14 +189,14 @@ export default function NextStepsCTA({ data }: NextStepsCTAProps) {
           }}
         >
           <StatTile
-            value={formatCurrency(investment)}
-            label="Annual Covert investment"
-            sublabel={`${formatNumber(data.identifiedMembers)} at-risk members × $600`}
+            value={formatCurrency(cost)}
+            label="Annual Covert cost"
+            sublabel={`${formatNumber(data.membersWithOpioidRx)} members on opioid Rx × $600`}
           />
           <StatTile
             value={`${roi}:1`}
             label="Projected ROI"
-            sublabel={`${formatCurrency(preventable)} in projected savings`}
+            sublabel="Avoided medical spend ÷ Covert cost"
             emphasis="primary"
           />
           <StatTile
