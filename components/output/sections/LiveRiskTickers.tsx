@@ -9,11 +9,10 @@ import { PCRData } from "@/lib/types";
 import {
   calcPreventableSpend,
   calcDailyCostOfInaction,
-  calcProjectedLivesLost,
+  calcProjectedOverdoseDeaths,
   calcProjectedAbuseAddiction,
   calcAtRiskCadence,
   formatCurrency,
-  formatNumber,
 } from "@/lib/calculations";
 import { useState } from "react";
 
@@ -26,12 +25,15 @@ export default function LiveRiskTickers({ data }: LiveRiskTickersProps) {
   const preventable = calcPreventableSpend(data.withdrawalSymptomMembers);
   const dailyCost = calcDailyCostOfInaction(preventable);
   const accumulated = useLiveTicker(dailyCost);
-  const livesLost = calcProjectedLivesLost(
-    data.identifiedMembers,
+  // Box 5 — overdose deaths: members managing withdrawal ÷ 820, hidden < 300 members.
+  const overdoseDeaths = calcProjectedOverdoseDeaths(
+    data.withdrawalSymptomMembers,
     data.totalPlanMembers,
   );
   const abuseAddiction = calcProjectedAbuseAddiction(data.identifiedMembers);
   const cadence = calcAtRiskCadence(data.identifiedMembers);
+  // TODO(jesse): "break these down by month" — pending confirmation of which
+  // figures to show as a per-month breakdown on this section.
 
   return (
     <section
@@ -146,39 +148,29 @@ export default function LiveRiskTickers({ data }: LiveRiskTickersProps) {
           {/* 3: Members at elevated risk */}
           <TickerCard
             value={data.identifiedMembers}
-            label="Total members identified at elevated opioid risk"
+            label="Members identified at elevated opioid risk"
             sublabel={`~${cadence.value} new at-risk patient${cadence.value !== 1 ? "s" : ""} every ${cadence.cadence}`}
             borderColor="var(--covert-teal)"
             valueColor="var(--covert-teal)"
           />
 
-          {/* 4: Projected lives lost (conditional) */}
-          {livesLost !== null && (
-            <TickerCard
-              value={livesLost}
-              label="Lives projected to be lost in the next 12 months without intervention"
-              borderColor="#FFFFFF"
-              valueColor="#FFFFFF"
-            />
-          )}
-
-          {/* 5: Projected abuse/addiction */}
+          {/* 4: Projected abuse/addiction */}
           <TickerCard
             value={abuseAddiction}
-            label="Identified members projected to develop abuse or addiction"
+            label="Members on a path to abuse or addiction"
             borderColor="#FF8A8A"
             valueColor="#FF8A8A"
           />
 
-          {/* 6: Avg days between catastrophic events (static) */}
-          <TickerCard
-            value="18 days"
-            label="Industry average between catastrophic opioid events"
-            borderColor="rgba(255,255,255,0.4)"
-            borderStyle="dashed"
-            valueColor="rgba(255,255,255,0.6)"
-            animate={false}
-          />
+          {/* 5: Projected overdose deaths (conditional — hidden < 300 members) */}
+          {overdoseDeaths !== null && (
+            <TickerCard
+              value={overdoseDeaths}
+              label="Health plan members projected to die from opioid overdose in the next 12 months"
+              borderColor="#FFFFFF"
+              valueColor="#FFFFFF"
+            />
+          )}
         </div>
       </div>
     </section>

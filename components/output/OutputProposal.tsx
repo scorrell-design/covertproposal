@@ -32,10 +32,10 @@ export default function OutputProposal({ data, onBack }: OutputProposalProps) {
       <NavBar onBack={onBack} onDownloadPDF={handleDownloadPDF} />
 
       <div id="proposal-output">
-        <HeroSection clientName={data.clientName} />
+        <HeroSection data={data} />
+        <PrescriptionUtilization data={data} />
         <ExecutiveSummary data={data} />
         <LiveRiskTickers data={data} />
-        <PrescriptionUtilization data={data} />
         <RiskBreakdown data={data} />
         <PrescriberPatterns data={data} />
         <ClinicalWarningSigns data={data} />

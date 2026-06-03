@@ -21,7 +21,11 @@ The output exists in two places:
 1. An **interactive web report** the salesperson can share or screen-share with a prospect (dark theme, animated, matches covertplan.com)
 2. A **downloadable PDF** of the same report in a clean white-background format suitable for printing or emailing
 
-What exists today is a **prototype**: the front-end is built and styled, demo data is hard-coded, and the PDF download works. What's missing is the backend, real data ingestion, authentication, and CRM hooks. That's the scope of this build.
+What exists today is a **prototype**: the front-end is built and styled, demo data comes from a real RxSense PCR, and the PDF download works. What's missing is the backend, real data ingestion, authentication, and CRM hooks. That's the scope of this build.
+
+> **No math on our end.** The PCR already contains every computed figure the proposal shows — risk tiers, prescriber/pharmacy counts, projected cost savings ($57.25M @ 75% on the RxSense sample), cost-per-member, catastrophic exposure, etc. The tool's job is to **read those numbers out of the PCR PDF and place them in the right slots** — not to build calculators. The only on-our-side arithmetic is trivial display math (percentages, and the overdose-death projection: members managing withdrawal ÷ 820).
+>
+> **Input is a single PDF.** Jesse plugs in one PCR PDF (e.g. `PCR - Covert-RxSense-07-122025.pdf`); the upload accepts PDF only (no CSV/XLSX).
 
 ---
 
@@ -48,8 +52,8 @@ The prospect (the employer being sold to) **doesn't use this app**. They just re
 **What we need to build for production:**
 1. Salesperson logs in (auth)
 2. Lands on a dashboard showing their existing proposals
-3. Clicks "New proposal," enters client name + uploads PCR
-4. App actually reads the PCR (PDF/CSV/Excel) and extracts the data
+3. Clicks "New proposal," enters client name + uploads the PCR PDF
+4. App actually reads the PCR PDF and extracts the figures it needs (no calculation — the PCR already has them)
 5. App generates the proposal (same UI we already have)
 6. Salesperson can optionally tweak numbers/copy before finalizing
 7. Salesperson saves the proposal (stored against their account)
@@ -64,7 +68,7 @@ The prospect (the employer being sold to) **doesn't use this app**. They just re
 ### Must-have (V1 launch)
 
 1. **Authentication.** Email + password login. Just for internal Covert team to start. Use whatever's simplest — Clerk, Auth.js, Supabase Auth.
-2. **PCR file ingestion.** Accept PDF, CSV, XLSX uploads and extract these data points:
+2. **PCR ingestion (PDF only).** Accept a single PCR **PDF** upload and **extract** these data points (the PCR already contains them — no derivation):
    - Total plan members
    - Total members with any Rx
    - Members with opioid Rx
@@ -77,6 +81,8 @@ The prospect (the employer being sold to) **doesn't use this app**. They just re
    - Withdrawal symptom indicator breakdown (14 categories per PCR p5)
    - Chronic condition counts in opioid-Rx members (per PCR p6)
    - See `lib/types.ts` (PCRData interface) for the full schema
+   - Projected cost savings / total cost impact / cost-per-member (PCR "Projected Cost Savings" page — already computed, just read them)
+   - See `lib/types.ts` (`PCRData` interface) for the full schema; `lib/demoData.ts` shows the real RxSense mapping
 3. **Proposal generation.** Use the existing front-end. Feed in extracted PCR data → render proposal. No new UI work needed.
 4. **Manual edit step.** Before finalizing, let the salesperson tweak the client name and any numbers that look wrong (the extracted data won't be perfect every time). Inline edits, saved on submit.
 5. **Save + retrieve.** Each proposal is stored against the user account. Dashboard lists all their proposals with status (draft, sent, viewed, acted on).
@@ -96,7 +102,7 @@ The prospect (the employer being sold to) **doesn't use this app**. They just re
 
 ## 5. What it should look like
 
-The visual design is **already built and locked.** Brennan should not redesign it — use the existing components.
+The visual design is **built and current as of Jesse's 5/28/26 revisions** (see Revision Log below). Brennan should not redesign it — use the existing components. The structure, ordering, and copy in the live demo are the source of truth.
 
 Reference points:
 - **Live demo:** https://covertproposal.vercel.app (current state)
@@ -161,26 +167,53 @@ Brennan should pick what he's most comfortable with — none of this is load-bea
 
 ---
 
-## 9. Open questions (we need answers before building)
+## 9. Open questions
 
-These go to Jesse:
+### Resolved (Jesse 5/28/26 + Steph)
 
-1. **ROI display.** Math currently shows 29:1 in the demo. His note said "8:1 for example." Honest math, conservative cap, or different formula?
-2. **Lives Saved formula.** Need his sign-off on the base rate (5% mortality × 30% intervention effectiveness) so it's defensible. Better citation if available.
-3. **Cost amplification numbers.** Currently citing 2005-2006 Ingenix data. Better/newer source he prefers?
+- **Input format** → PDF only. ✅ implemented.
+- **No calculators** → the PCR already contains the computed figures; the tool extracts and places them. ✅ implemented.
+- **Overdose-death projection** → members managing withdrawal ÷ 820, suppressed when plan < 300 members. ✅ implemented.
+- **Page order / layout / copy** → per Jesse's 5/28 markups (see Revision Log). ✅ implemented.
+
+### Still pending Jesse (sent 6/3/26 — these 3 items are stubbed/left in code, flagged with TODOs)
+
+1. **5th Clinical Warning Signs wheel — "Pharmacies missing multi-prescriber activity."** Currently wired to PCR p4 "713 Pharmacies > 1 Prescriber" as a best-guess. Confirm the correct source figure.
+2. **ROI on the Next Steps (final) page.** Still shows a computed ratio (`X:1`). Jesse's Decision-page edit dropped the number for "Guaranteed ROI." Confirm whether the final page should also drop the ratio, show a specific number, or keep it.
+3. **"Break these down by month" (Live Risk Tickers).** Need confirmation of which figures to show as a per-month breakdown.
+
+### Still pending Jesse (longer-horizon, for production build)
+
 4. **CTA wiring.** When a prospect clicks "Request Client Service Agreement," what should happen? Email Jesse? Salesforce lead? Calendar booking?
-5. **PCR formats.** Sample PCRs from every vendor Covert receives data from (RxSense, Express Scripts, OptumRx, others?) so Brennan can build real parsers.
-6. **Edit step.** Should the salesperson be able to override extracted numbers before sending? (Recommend yes.)
-7. **Distribution.** Just PDF download, or also direct email + shareable link?
-8. **Access.** Internal Covert only, or partner brokers too at launch?
-9. **Branding.** Always Covert-branded, or white-label for brokers?
-10. **Other size-conditional content.** Lives Saved hides below 10K. Any other sections that depend on plan size or product mix (self-funded vs. fully insured)?
+5. **PCR formats.** Sample PCRs from every vendor Covert receives data from (RxSense ✅ have, Express Scripts, OptumRx, others?) so Brennan can build real parsers.
+6. **Cost amplification numbers.** Currently citing Ingenix data. Better/newer source he prefers?
+7. **Access / branding.** Internal Covert only, or partner brokers too at launch? Always Covert-branded, or white-label for brokers?
 
 These go to Stephanie:
 
 1. Launch timeline and what "done" looks like
 2. Who else is reviewing/blessing this before it ships
 3. Whether the existing Vercel deploy stays as the production environment or moves elsewhere
+
+---
+
+## Revision Log — Jesse 5/28/26 (applied)
+
+Source: `Edits 5.28.26.docx` (annotated screenshots of the demo).
+
+1. **Page reorder:** Hero → **Prescription Utilization** (now p2) → **"120/5,028 members…preventable harm"** (now p3) → **Live Risk Tickers** (now p4) → remaining sections unchanged.
+2. **Hero:** added a right-hand "At a Glance" stat box — pharmacies dispensing opioids, prescribers providing opioids to at-risk patients, members with opioid Rx, members managing severe withdrawal symptoms.
+3. **Executive Summary (p3):** identified-members count is now the hero number with everything stacked below it; removed the right-hand "60 prescribers" box (prescribers are covered later); updated body copy.
+4. **Live Risk Tickers (p4):** restructured to 5 cards; removed the static "18 days" card; **Box 5 = projected opioid-overdose deaths** (withdrawal ÷ 820, hidden < 300 members).
+5. **Member Risk Breakdown:** improved visibility of the tier descriptor text.
+6. **Prescribers Creating Risk:** removed the "total prescribers" (108) stat; the flagged count is now the single hero number with "flagged for…" beneath.
+7. **Clinical Warning Signs:** added a 5th wheel — "Pharmacies missing multi-prescriber activity" (value pending Jesse).
+8. **Withdrawal Indicators:** relabeled to "…severe withdrawal symptoms indicators"; updated paragraph copy.
+9. **Chronic Conditions:** updated the descriptor below the hero number to "Members experiencing worsening chronic conditions driven by opioid withdrawal."
+10. **Financial Impact:** reworded the savings box; added a second, annualized member-impact row (become addicted / manage severe withdrawal / worsening chronic / at risk of overdose death).
+11. **The Decision:** "The Difference" column → reduction in avoidable medical spend / Guaranteed ROI / Improved member outcomes / Safer opioid prescribing practices.
+
+Demo data now reflects the real RxSense PCR (97,301 members w/ Rx, 11,094 opioid Rx, 5,028 identified, etc.).
 
 ---
 

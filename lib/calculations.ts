@@ -3,7 +3,10 @@ export const SAVINGS_PER_WITHDRAWAL_MEMBER = 23000;
 export const COST_PER_MEMBER_ON_OPIOID = 600;
 export const CASE_MANAGEMENT_COST_PER_CASE = 600;
 export const PREVENTABLE_REDUCTION_RATE = 0.75;
-export const DEATHS_PER_IDENTIFIED_MEMBERS = 1 / 825;
+// Overdose-death projection — per Jesse (5/28/26): members managing withdrawal
+// symptoms ÷ 820, suppressed entirely when the plan has < 300 members.
+export const OVERDOSE_DEATH_DIVISOR = 820;
+export const OVERDOSE_MIN_POPULATION = 300;
 export const ABUSE_ADDICTION_RATE = 0.25;
 export const LARGE_POPULATION_THRESHOLD = 9000;
 export const OUD_PREVENTION_RATE = 0.75;
@@ -48,12 +51,17 @@ export function calcMonthlyPreventable(preventableSpend: number): number {
   return Math.round(preventableSpend / 12);
 }
 
-export function calcProjectedLivesLost(
-  identifiedMembers: number,
+/**
+ * Projected opioid-overdose deaths in the next 12 months.
+ * Formula (Jesse, 5/28/26): members managing withdrawal symptoms ÷ 820.
+ * Returns null when the plan is under 300 members (stat is suppressed).
+ */
+export function calcProjectedOverdoseDeaths(
+  withdrawalMembers: number,
   totalPlanMembers: number,
 ): number | null {
-  if (totalPlanMembers < LARGE_POPULATION_THRESHOLD) return null;
-  const value = Math.round(identifiedMembers * DEATHS_PER_IDENTIFIED_MEMBERS);
+  if (totalPlanMembers < OVERDOSE_MIN_POPULATION) return null;
+  const value = Math.round(withdrawalMembers / OVERDOSE_DEATH_DIVISOR);
   return value > 0 ? value : null;
 }
 

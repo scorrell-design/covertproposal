@@ -97,7 +97,8 @@ export default function WithdrawalIndicators({
                 lineHeight: 1.4,
               }}
             >
-              Uniquely identified members with withdrawal symptom indicators
+              Uniquely identified members with severe withdrawal symptoms
+              indicators
             </p>
             <p
               style={{
@@ -108,8 +109,8 @@ export default function WithdrawalIndicators({
               }}
             >
               These aren&apos;t standalone scripts — they&apos;re cross-class
-              prescribing patterns clinicians use to mask or manage opioid
-              withdrawal. Some members carry more than one indicator.
+              prescribing patterns members use to manage opioid withdrawal. Some
+              members carry more than one indicator.
             </p>
           </div>
 

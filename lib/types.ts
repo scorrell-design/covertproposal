@@ -25,6 +25,9 @@ export interface PCRData {
   pharmaciesDispensingOpioids: number;
   pharmaciesEarlyRefills: number;
   pharmaciesHighDosage: number;
+  // Pharmacies dispensing to members with multi-prescriber activity (PCR p4).
+  // TODO(jesse): confirm exact PCR source for "missing multi-prescriber activity".
+  pharmaciesMultiPrescriber: number;
   crossLocationRefills: number;
   membersMultiplePrescribers: number;
   membersOver3Refills: number;

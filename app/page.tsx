@@ -9,9 +9,9 @@ import { DEMO_DATA } from "@/lib/demoData";
 import { Check, Loader2 } from "lucide-react";
 
 const GENERATION_STEPS = [
-  "Parsing pharmacy claims",
+  "Reading the PCR",
   "Identifying risk patterns",
-  "Calculating financial impact",
+  "Extracting financial figures",
   "Generating proposal",
 ];
 

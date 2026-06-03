@@ -9,7 +9,10 @@ import {
   calcNetROI,
   calcPreventableSpend,
   calcMonthlyPreventable,
+  calcProjectedAbuseAddiction,
+  calcProjectedOverdoseDeaths,
   formatCurrency,
+  formatNumber,
 } from "@/lib/calculations";
 import { useCountUp } from "@/lib/hooks";
 
@@ -64,6 +67,39 @@ export default function FinancialImpact({ data }: FinancialImpactProps) {
   const netRoi = calcNetROI(data.withdrawalSymptomMembers, data.identifiedMembers);
   const preventable = calcPreventableSpend(data.withdrawalSymptomMembers);
   const monthly = calcMonthlyPreventable(preventable);
+
+  // Annualized member-impact figures (Jesse 5/28/26). The overdose figure is
+  // suppressed when the plan is under 300 members.
+  const overdoseDeaths = calcProjectedOverdoseDeaths(
+    data.withdrawalSymptomMembers,
+    data.totalPlanMembers,
+  );
+  const memberImpact = [
+    {
+      value: calcProjectedAbuseAddiction(data.identifiedMembers),
+      label: "members become addicted to opioids",
+      color: "#FF8A8A",
+    },
+    {
+      value: data.withdrawalSymptomMembers,
+      label: "members manage severe withdrawal symptoms",
+      color: "#FFB36B",
+    },
+    {
+      value: data.chronicCostFactors,
+      label: "members experience worsening chronic conditions",
+      color: "#FFFFFF",
+    },
+    ...(overdoseDeaths !== null
+      ? [
+          {
+            value: overdoseDeaths,
+            label: "members at risk of opioid overdose death",
+            color: "var(--covert-teal)",
+          },
+        ]
+      : []),
+  ];
 
   return (
     <section
@@ -162,6 +198,64 @@ export default function FinancialImpact({ data }: FinancialImpactProps) {
           />
         </div>
 
+        {/* Annualized member-impact row */}
+        <div style={{ marginBottom: "40px" }}>
+          <p
+            className="font-semibold uppercase text-center"
+            style={{
+              fontSize: "11px",
+              color: "var(--covert-teal)",
+              letterSpacing: "0.16em",
+              marginBottom: "24px",
+            }}
+          >
+            What this means for your members — annualized
+          </p>
+          <div
+            className="grid"
+            style={{
+              gridTemplateColumns:
+                "repeat(auto-fit, minmax(min(100%, 200px), 1fr))",
+              gap: "16px",
+            }}
+          >
+            {memberImpact.map((stat) => (
+              <div
+                key={stat.label}
+                className="text-center min-w-0"
+                style={{
+                  backgroundColor: "var(--on-dark-surface)",
+                  border: "1px solid var(--on-dark-border)",
+                  borderRadius: "16px",
+                  padding: "24px 20px",
+                }}
+              >
+                <p
+                  className="font-bold"
+                  style={{
+                    fontSize: "clamp(34px, 3.6vw, 46px)",
+                    lineHeight: 1,
+                    letterSpacing: "-0.03em",
+                    color: stat.color,
+                  }}
+                >
+                  {formatNumber(stat.value)}
+                </p>
+                <p
+                  style={{
+                    fontSize: "13px",
+                    color: "var(--on-dark-text-secondary)",
+                    lineHeight: 1.45,
+                    marginTop: "12px",
+                  }}
+                >
+                  {stat.label}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Savings banner — teal accent panel */}
         <div
           className="text-center"
@@ -178,9 +272,9 @@ export default function FinancialImpact({ data }: FinancialImpactProps) {
             margin: "0 auto",
           }}
         >
-          These savings are achieved without member disruption, utilization
-          management, or claims denial — by correcting prescribing behavior at
-          the source.
+          Savings are achieved by correcting prescribing behavior at the
+          source — not through member disruption, utilization management, or
+          claims denials.
         </div>
 
         <p

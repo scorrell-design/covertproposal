@@ -137,6 +137,8 @@ export default function RiskBreakdown({ data }: RiskBreakdownProps) {
                   label={tier.label}
                   description={tier.desc}
                   labelColor={tier.textColor}
+                  descriptionColor="var(--on-dark-text-secondary)"
+                  descriptionSize="14px"
                 />
               </div>
               <span

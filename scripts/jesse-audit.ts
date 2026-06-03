@@ -25,14 +25,14 @@ check(
   /COST_PER_MEMBER_ON_OPIOID\s*=\s*600/.test(joined),
 );
 
-// 3. Lives-lost ticker gated on 9,000 members (may use named constant)
-const hasThresholdConst = /LARGE_POPULATION_THRESHOLD\s*=\s*9[_,]?000/.test(joined);
-const hasLiteralGate = /totalPlanMembers\s*[<>=]+\s*9[_,]?000/.test(joined);
-const hasConstGate = /totalPlanMembers\s*<\s*LARGE_POPULATION_THRESHOLD/.test(joined);
+// 3. Overdose-death projection: withdrawal members ÷ 820, suppressed under
+//    300 members (Jesse 5/28/26 — supersedes the prior 825 / 9,000 lives-lost rule).
+const hasOverdoseDivisor = /OVERDOSE_DEATH_DIVISOR\s*=\s*820/.test(joined);
+const hasOverdoseThreshold = /OVERDOSE_MIN_POPULATION\s*=\s*300/.test(joined);
+const hasOverdoseGate = /totalPlanMembers\s*<\s*OVERDOSE_MIN_POPULATION/.test(joined);
 check(
-  "Lives-lost ticker gated on totalPlanMembers >= 9000",
-  (hasLiteralGate || (hasThresholdConst && hasConstGate)) &&
-    /825/.test(joined),
+  "Overdose-death projection uses ÷820 and is gated under 300 members",
+  hasOverdoseDivisor && hasOverdoseThreshold && hasOverdoseGate,
 );
 
 // 4. calcAtRiskCadence helper exists

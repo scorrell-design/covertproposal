@@ -156,7 +156,8 @@ export default function ChronicConditions({ data }: ChronicConditionsProps) {
                 lineHeight: 1.4,
               }}
             >
-              Chronic cost factors identified in members with opioid Rx
+              Members experiencing worsening chronic conditions driven by
+              opioid withdrawal
             </p>
             <p
               style={{

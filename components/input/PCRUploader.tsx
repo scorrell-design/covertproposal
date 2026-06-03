@@ -18,7 +18,7 @@ export default function PCRUploader({
 
   const handleFile = useCallback(
     (file: File) => {
-      const valid = /\.(pdf|csv|xlsx?)$/i.test(file.name);
+      const valid = /\.pdf$/i.test(file.name);
       if (!valid) return;
       setFileName(file.name);
       onFileSelect(file);
@@ -64,7 +64,7 @@ export default function PCRUploader({
       <input
         ref={inputRef}
         type="file"
-        accept=".pdf,.csv,.xlsx,.xls"
+        accept=".pdf,application/pdf"
         className="hidden"
         onChange={(e) => {
           const file = e.target.files?.[0];
@@ -104,7 +104,7 @@ export default function PCRUploader({
               or click to browse
             </p>
             <p style={{ fontSize: "13px", color: "var(--covert-text-secondary)" }}>
-              PDF, CSV, XLSX accepted
+              PDF only
             </p>
           </>
         )}

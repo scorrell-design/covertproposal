@@ -9,9 +9,6 @@ interface PrescriberPatternsProps {
 }
 
 export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
-  const { count: totalCount, ref: totalRef } = useCountUp(
-    data.totalPrescribersWithOpioid,
-  );
   const { count: flaggedCount, ref: flaggedRef } = useCountUp(
     data.identifiedPrescribers,
   );
@@ -73,62 +70,35 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
           <span style={{ color: "var(--covert-teal)" }}>These are.</span>
         </h2>
 
-        {/* Two large stats */}
+        {/* Hero number — prescribers flagged for unsafe prescribing */}
         <div
-          className="grid text-center"
-          style={{
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 240px), 1fr))",
-            gap: "32px",
-            marginTop: "56px",
-            marginBottom: "56px",
-          }}
+          ref={flaggedRef}
+          className="text-center min-w-0"
+          style={{ marginTop: "56px", marginBottom: "56px" }}
         >
-          <div ref={totalRef} className="min-w-0">
-            <p
-              className="font-bold"
-              style={{
-                fontSize: "clamp(56px, 6vw, 84px)",
-                lineHeight: 1,
-                letterSpacing: "-0.04em",
-                color: "#FFFFFF",
-              }}
-            >
-              {totalCount}
-            </p>
-            <p
-              style={{
-                fontSize: "14px",
-                color: "var(--on-dark-text-secondary)",
-                marginTop: "12px",
-                lineHeight: 1.5,
-              }}
-            >
-              Total prescribers writing opioid Rx in your plan
-            </p>
-          </div>
-          <div ref={flaggedRef} className="min-w-0">
-            <p
-              className="font-bold"
-              style={{
-                fontSize: "clamp(56px, 6vw, 84px)",
-                lineHeight: 1,
-                letterSpacing: "-0.04em",
-                color: "#FF8A8A",
-              }}
-            >
-              {flaggedCount}
-            </p>
-            <p
-              style={{
-                fontSize: "14px",
-                color: "var(--on-dark-text-secondary)",
-                marginTop: "12px",
-                lineHeight: 1.5,
-              }}
-            >
-              Flagged for unsafe prescribing — {flaggedPct}% of opioid prescribers
-            </p>
-          </div>
+          <p
+            className="font-bold"
+            style={{
+              fontSize: "clamp(72px, 9vw, 132px)",
+              lineHeight: 1,
+              letterSpacing: "-0.04em",
+              color: "#FF8A8A",
+            }}
+          >
+            {flaggedCount}
+          </p>
+          <p
+            style={{
+              fontSize: "16px",
+              color: "var(--on-dark-text-secondary)",
+              marginTop: "16px",
+              lineHeight: 1.5,
+              maxWidth: "520px",
+              margin: "16px auto 0",
+            }}
+          >
+            Flagged for unsafe prescribing — {flaggedPct}% of opioid prescribers
+          </p>
         </div>
 
         {/* Two-column cards */}

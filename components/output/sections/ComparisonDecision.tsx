@@ -145,10 +145,10 @@ export default function ComparisonDecision({ data }: ComparisonDecisionProps) {
             headingColor="#FFFFFF"
             accent="#FFFFFF"
             items={[
-              `<strong style="color:#FFFFFF">${formatCurrency(netRoi)}</strong> net ROI`,
-              "No utilization management",
-              "No claims denial",
-              "No member disruption",
+              `<strong style="color:#FFFFFF">${formatCurrency(netRoi)}</strong> reduction in avoidable medical spend`,
+              "Guaranteed ROI",
+              "Improved member outcomes",
+              "Safer opioid prescribing practices",
             ]}
           />
         </div>
