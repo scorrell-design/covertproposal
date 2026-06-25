@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState, useRef } from "react";
-import { Upload, FileCheck } from "lucide-react";
+import { Upload, FileCheck, Loader2 } from "lucide-react";
 
 interface PCRUploaderProps {
   onFileSelect: (file: File) => void;
@@ -38,26 +38,34 @@ export default function PCRUploader({
 
   return (
     <div
-      className="relative cursor-pointer transition-colors duration-200"
+      className="relative transition-colors duration-200"
       style={{
-        border: `2px dashed ${isDragging ? "var(--covert-teal)" : "var(--covert-border)"}`,
+        border: `2px dashed ${isDragging || isLoading ? "var(--covert-teal)" : "var(--covert-border)"}`,
         borderRadius: "12px",
         padding: "64px 24px",
-        backgroundColor: isDragging
-          ? "var(--covert-teal-light)"
-          : "transparent",
+        backgroundColor:
+          isDragging || isLoading ? "var(--covert-teal-light)" : "transparent",
+        cursor: isLoading ? "default" : "pointer",
       }}
       onDragOver={(e) => {
+        if (isLoading) return;
         e.preventDefault();
         setIsDragging(true);
       }}
       onDragLeave={() => setIsDragging(false)}
-      onDrop={handleDrop}
-      onClick={() => inputRef.current?.click()}
+      onDrop={(e) => {
+        if (isLoading) return;
+        handleDrop(e);
+      }}
+      onClick={() => {
+        if (!isLoading) inputRef.current?.click();
+      }}
       role="button"
       tabIndex={0}
       aria-label="Upload PCR file"
+      aria-busy={isLoading}
       onKeyDown={(e) => {
+        if (isLoading) return;
         if (e.key === "Enter" || e.key === " ") inputRef.current?.click();
       }}
     >
@@ -74,14 +82,25 @@ export default function PCRUploader({
       <div className="flex flex-col items-center gap-3 text-center">
         {isLoading ? (
           <>
-            <div
-              className="animate-pulse-gentle"
+            <Loader2
+              size={36}
+              className="animate-spin"
               style={{ color: "var(--covert-teal)" }}
-            >
-              <FileCheck size={36} />
-            </div>
+            />
             <p className="font-semibold" style={{ fontSize: "16px" }}>
-              Parsing {fileName}...
+              Analyzing your PCR…
+            </p>
+            <p
+              style={{
+                fontSize: "14px",
+                color: "var(--covert-text-secondary)",
+                maxWidth: "380px",
+                lineHeight: 1.5,
+              }}
+            >
+              Reading the figures and chart pages from{" "}
+              <strong>{fileName}</strong>. This usually takes 15–30 seconds —
+              the form fills in and Generate unlocks as soon as it&rsquo;s done.
             </p>
           </>
         ) : fileName ? (

@@ -44,7 +44,10 @@ export async function extractWithClaude(
     model: "claude-opus-4-8",
     max_tokens: 16000,
     thinking: { type: "adaptive" },
-    output_config: { format: zodOutputFormat(pcrExtractionSchema) },
+    // This is a label-anchored structured read, not open-ended reasoning, and the
+    // deterministic text pass independently cross-checks every scalar — so cap the
+    // thinking depth at "medium" to cut extraction latency without hurting accuracy.
+    output_config: { effort: "medium", format: zodOutputFormat(pcrExtractionSchema) },
     messages: [
       {
         role: "user",

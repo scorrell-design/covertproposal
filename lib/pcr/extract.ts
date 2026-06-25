@@ -69,18 +69,20 @@ export async function extractPCR(
   pdfBytes: Uint8Array,
   opts: { clientName?: string; preparedFor?: string } = {}
 ): Promise<ExtractionResult> {
+  // Run the free deterministic text pass and the Claude vision pass concurrently.
+  // They're independent, and the vision call (the slow leg) dominates wall time,
+  // so overlapping the text pass with it shaves the text-extraction time off the
+  // total for free.
+  //
   // unpdf/pdf.js detaches the ArrayBuffer backing the Uint8Array it's given, so
-  // hand it a copy — otherwise the vision pass below would base64-encode an
-  // emptied buffer and the Claude call would fail.
-  const text = await extractPdfText(pdfBytes.slice());
-  const textFields = extractTextFields(text);
-
-  let vision: PCRExtraction | null = null;
-  try {
-    vision = await extractWithClaude(pdfBytes);
-  } catch {
-    vision = null; // never let a vision failure block the text-derived proposal
-  }
+  // hand the text pass a copy — otherwise the vision pass would base64-encode an
+  // emptied buffer and the Claude call would fail. The vision pass gets the
+  // original (Buffer.from copies it, so it isn't detached).
+  const [textFields, vision] = await Promise.all([
+    extractPdfText(pdfBytes.slice()).then(extractTextFields),
+    // never let a vision failure block the text-derived proposal
+    extractWithClaude(pdfBytes).catch(() => null as PCRExtraction | null),
+  ]);
 
   const provenance: Provenance = {};
   const data = {
