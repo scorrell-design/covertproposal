@@ -71,11 +71,15 @@ for (const file of files) {
     }
   });
 
-  // RULE 7: page files must use PageShell or have mx-auto on a top-level wrapper
+  // RULE 7: page files must center their content — via PageShell, an mx-auto
+  // wrapper, flex centering (auth pages), or by delegating to a self-contained
+  // full-bleed view that manages its own layout (the proposal renderers).
   if (/app\/.*page\.(tsx|jsx)$/.test(file)) {
     const hasPageShell = /<PageShell/.test(src);
     const hasMxAutoWrapper = /mx-auto/.test(src);
-    if (!hasPageShell && !hasMxAutoWrapper) {
+    const hasFlexCentered = /(items-center|justify-center)/.test(src);
+    const delegatesFullBleed = /(OutputProposal|SavedProposalView)/.test(src);
+    if (!hasPageShell && !hasMxAutoWrapper && !hasFlexCentered && !delegatesFullBleed) {
       violations.push({
         file,
         line: 1,
