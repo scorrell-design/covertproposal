@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import InputScreen from "@/components/input/InputScreen";
+import { useRouter } from "next/navigation";
+import InputScreen, { GenerateOptions } from "@/components/input/InputScreen";
 import OutputProposal from "@/components/output/OutputProposal";
 import CovertLogo from "@/components/shared/CovertLogo";
 import { PCRData, AppScreen } from "@/lib/types";
@@ -16,9 +17,12 @@ const GENERATION_STEPS = [
 ];
 
 export default function Home() {
+  const router = useRouter();
   const [screen, setScreen] = useState<AppScreen>("input");
   const [data, setData] = useState<PCRData | null>(null);
   const [generationStep, setGenerationStep] = useState(0);
+  // Demo runs as a client-only preview; a real upload is saved to the DB.
+  const [isDemo, setIsDemo] = useState(false);
 
   // Deep-link demo output for QA: visit ?preview=output
   useEffect(() => {
@@ -26,18 +30,47 @@ export default function Home() {
     const params = new URLSearchParams(window.location.search);
     if (params.get("preview") === "output") {
       setData(DEMO_DATA);
+      setIsDemo(true);
       setScreen("output");
     }
   }, []);
 
-  const handleGenerate = (pcrData: PCRData) => {
+  const handleGenerate = async (pcrData: PCRData, opts: GenerateOptions) => {
     setData(pcrData);
+    setIsDemo(opts.isDemo);
     setScreen("generating");
     setGenerationStep(0);
+
+    if (opts.isDemo) return; // animation effect transitions to the preview
+
+    // Real proposal: persist it, then open the saved view.
+    try {
+      const res = await fetch("/api/proposals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          clientName: pcrData.clientName,
+          preparedFor: pcrData.preparedFor,
+          pcrData,
+          provenance: opts.provenance,
+        }),
+      });
+      if (!res.ok) {
+        const body = (await res.json().catch(() => ({}))) as { error?: string };
+        throw new Error(body.error ?? "Could not save the proposal.");
+      }
+      const { id } = (await res.json()) as { id: string };
+      router.push(`/proposals/${id}`);
+    } catch {
+      // Fall back to a local preview so work isn't lost if the save fails.
+      setScreen("output");
+    }
   };
 
   useEffect(() => {
-    if (screen !== "generating") return;
+    // Only the demo/preview path auto-advances to the in-page output; a real
+    // save navigates to /proposals/[id] when the request resolves.
+    if (screen !== "generating" || !isDemo) return;
 
     const interval = setInterval(() => {
       setGenerationStep((prev) => {
@@ -51,7 +84,7 @@ export default function Home() {
     }, 800);
 
     return () => clearInterval(interval);
-  }, [screen]);
+  }, [screen, isDemo]);
 
   const handleBack = () => {
     setScreen("input");

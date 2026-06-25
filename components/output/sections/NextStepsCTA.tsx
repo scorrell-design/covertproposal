@@ -154,7 +154,10 @@ export default function NextStepsCTA({ data }: NextStepsCTAProps) {
           data-cta-buttons
           style={{ marginTop: "36px" }}
         >
-          <button
+          <a
+            href="https://covertplan.com/start"
+            target="_blank"
+            rel="noopener noreferrer"
             className="flex items-center gap-2 transition-colors duration-200 font-semibold"
             style={{
               backgroundColor: "var(--covert-teal)",
@@ -164,6 +167,7 @@ export default function NextStepsCTA({ data }: NextStepsCTAProps) {
               padding: "16px 32px",
               fontSize: "15px",
               cursor: "pointer",
+              textDecoration: "none",
             }}
             onMouseEnter={(e) =>
               (e.currentTarget.style.backgroundColor = "var(--covert-teal-dark)")
@@ -173,7 +177,7 @@ export default function NextStepsCTA({ data }: NextStepsCTAProps) {
             }
           >
             Request Client Service Agreement →
-          </button>
+          </a>
         </div>
 
         {/* Stat tiles */}

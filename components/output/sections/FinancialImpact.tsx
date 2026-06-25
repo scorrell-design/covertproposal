@@ -24,23 +24,30 @@ interface StatColumnProps {
   value: number;
   label: string;
   color: string;
-  fontSize: string;
+  /** Base font size in px; shrinks automatically for long figures. */
+  fontSize: number;
   prefix?: string;
 }
 
 function StatColumn({ value, label, color, fontSize, prefix = "$" }: StatColumnProps) {
   const { count, ref } = useCountUp(value);
 
+  // Keep the figure on one line: scale the font down as the final string grows
+  // (e.g. "$74,138,860"), so big numbers never wrap inside the column.
+  const finalStr = `${prefix}${value.toLocaleString()}`;
+  const scale = finalStr.length > 9 ? Math.max(9 / finalStr.length, 0.58) : 1;
+  const fontPx = Math.round(fontSize * scale);
+
   return (
     <div ref={ref} className="flex-1 min-w-0 text-center" style={{ padding: "16px 8px" }}>
       <p
         className="font-bold"
         style={{
-          fontSize,
+          fontSize: `${fontPx}px`,
           color,
           lineHeight: 1.05,
           letterSpacing: "-0.03em",
-          wordBreak: "break-word",
+          whiteSpace: "nowrap",
         }}
       >
         {prefix}{count.toLocaleString()}
@@ -164,7 +171,7 @@ export default function FinancialImpact({ data }: FinancialImpactProps) {
             value={exposure}
             label="Medical spend attributable to opioid withdrawal"
             color="#FF8A8A"
-            fontSize="38px"
+            fontSize={38}
           />
           <div
             className="hidden md:block self-stretch my-4"
@@ -174,7 +181,7 @@ export default function FinancialImpact({ data }: FinancialImpactProps) {
             value={opioidCost}
             label="Plan cost per member currently prescribed an opioid"
             color="#FFB36B"
-            fontSize="32px"
+            fontSize={32}
           />
           <div
             className="hidden md:block self-stretch my-4"
@@ -184,7 +191,7 @@ export default function FinancialImpact({ data }: FinancialImpactProps) {
             value={caseMgmt}
             label="Plan cost per at-risk member"
             color="rgba(255,255,255,0.78)"
-            fontSize="28px"
+            fontSize={28}
           />
           <div
             className="hidden md:block self-stretch my-4"
@@ -194,7 +201,7 @@ export default function FinancialImpact({ data }: FinancialImpactProps) {
             value={netRoi}
             label="After Covert engagement — 75% reduction in preventable spend"
             color="var(--covert-teal)"
-            fontSize="44px"
+            fontSize={44}
           />
         </div>
 

@@ -30,6 +30,29 @@ export function useCountUp(
   return { count, ref };
 }
 
+/**
+ * Measure a container's pixel width (and re-measure on resize). Used to give
+ * Recharts explicit dimensions instead of its ResponsiveContainer, which can
+ * render an empty chart when its first async measurement is 0 — common inside
+ * CSS grid cells with `min-width: 0`, and during PDF capture.
+ */
+export function useContainerWidth() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const measure = () => setWidth(el.clientWidth);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return { ref, width };
+}
+
 export function useLiveTicker(dailyCost: number) {
   const [accumulated, setAccumulated] = useState(0);
   const startTime = useRef(Date.now());

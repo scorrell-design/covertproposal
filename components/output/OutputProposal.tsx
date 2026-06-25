@@ -19,17 +19,23 @@ import { generatePDF } from "@/lib/pdfExport";
 
 interface OutputProposalProps {
   data: PCRData;
-  onBack: () => void;
+  /** Owner views pass a back-to-dashboard handler; the public prospect view omits it. */
+  onBack?: () => void;
+  /** Owner view: copy the public share link + mark the proposal sent. */
+  onShare?: () => Promise<void> | void;
+  /** Fired after a successful PDF export (owner view logs a DOWNLOADED event). */
+  onDownloaded?: () => void;
 }
 
-export default function OutputProposal({ data, onBack }: OutputProposalProps) {
+export default function OutputProposal({ data, onBack, onShare, onDownloaded }: OutputProposalProps) {
   const handleDownloadPDF = async () => {
     await generatePDF(data.clientName);
+    onDownloaded?.();
   };
 
   return (
     <div className="w-full min-h-screen" style={{ backgroundColor: "var(--covert-bg)" }}>
-      <NavBar onBack={onBack} onDownloadPDF={handleDownloadPDF} />
+      <NavBar onBack={onBack} onShare={onShare} onDownloadPDF={handleDownloadPDF} />
 
       <div id="proposal-output">
         <HeroSection data={data} />

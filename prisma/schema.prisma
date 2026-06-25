@@ -1,0 +1,101 @@
+// Covert proposal tool — data model (PRD §6).
+// Prisma 7: query-compiler client + driver adapter (no Rust engine). Client is
+// generated into lib/generated/prisma and instantiated with @prisma/adapter-pg
+// against Neon Postgres — see lib/db.ts.
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../lib/generated/prisma"
+  runtime      = "nodejs"
+  moduleFormat = "esm"
+}
+
+// Prisma 7: connection URLs live in prisma.config.ts (not here). The app runtime
+// connects via the pg adapter in lib/db.ts using DATABASE_URL directly.
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  ADMIN
+  SALES
+  BROKER
+}
+
+enum ProposalStatus {
+  DRAFT
+  SENT
+  VIEWED
+  ENGAGED
+}
+
+enum ProposalEventType {
+  CREATED
+  SHARED
+  VIEWED
+  ENGAGED
+  DOWNLOADED
+}
+
+/// A Covert team member. Authn is handled by Clerk; this row mirrors the Clerk
+/// user (keyed by clerkId) so proposals have an owner and we can store `role`.
+model User {
+  id        String     @id @default(cuid())
+  clerkId   String     @unique
+  email     String     @unique
+  name      String?
+  role      UserRole   @default(SALES)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  proposals Proposal[]
+}
+
+/// One generated proposal. `pcrData` is the PCRData blob the proposal UI renders;
+/// `provenance` keeps the extractor's per-field confidence/flags so the
+/// review/edit screen can reload state. `shareToken` backs the public view URL.
+model Proposal {
+  id          String         @id @default(cuid())
+  owner       User           @relation(fields: [ownerUserId], references: [id], onDelete: Cascade)
+  ownerUserId String
+  clientName  String
+  preparedFor String         @default("")
+  status      ProposalStatus @default(DRAFT)
+  shareToken  String         @unique
+  pcrData     Json
+  provenance  Json?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  events             ProposalEvent[]
+  engagementRequests EngagementRequest[]
+
+  @@index([ownerUserId])
+}
+
+/// Lifecycle/activity trail for a proposal (created, shared, viewed, …).
+model ProposalEvent {
+  id         String            @id @default(cuid())
+  proposal   Proposal          @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  proposalId String
+  type       ProposalEventType
+  metadata   Json?
+  occurredAt DateTime          @default(now())
+
+  @@index([proposalId])
+}
+
+/// Captured when a prospect clicks "Request Client Service Agreement".
+/// Triggers the Resend notification to Jesse + the proposal owner (Phase 5).
+model EngagementRequest {
+  id              String   @id @default(cuid())
+  proposal        Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  proposalId      String
+  prospectName    String
+  prospectEmail   String
+  prospectCompany String?
+  prospectPhone   String?
+  notes           String?
+  occurredAt      DateTime @default(now())
+
+  @@index([proposalId])
+}

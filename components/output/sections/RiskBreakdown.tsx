@@ -1,10 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { ShieldAlert, AlertTriangle, HeartPulse } from "lucide-react";
 import LabelWithDescription from "@/components/shared/LabelWithDescription";
 import { PCRData } from "@/lib/types";
 import { formatNumber, formatCurrency } from "@/lib/calculations";
-import { useInView } from "react-intersection-observer";
 
 interface RiskBreakdownProps {
   data: PCRData;
@@ -20,7 +20,11 @@ const TIERS = [
 ] as const;
 
 export default function RiskBreakdown({ data }: RiskBreakdownProps) {
-  const { ref, inView } = useInView({ threshold: 0.2, triggerOnce: true });
+  // Fill the distribution bar on mount rather than on scroll-into-view: the
+  // IntersectionObserver doesn't reliably fire before a PDF capture or when the
+  // section is off-screen, which left the bar rendered empty.
+  const [animate, setAnimate] = useState(false);
+  useEffect(() => setAnimate(true), []);
   const total = data.identifiedMembers;
 
   const tierData = TIERS.filter(
@@ -35,7 +39,6 @@ export default function RiskBreakdown({ data }: RiskBreakdownProps) {
 
   return (
     <section
-      ref={ref}
       className="w-full"
       style={{
         paddingTop: "clamp(72px, 8vw, 112px)",
@@ -92,7 +95,7 @@ export default function RiskBreakdown({ data }: RiskBreakdownProps) {
               key={tier.key}
               className="relative group"
               style={{
-                width: inView ? `${tier.pct}%` : "0%",
+                width: animate ? `${tier.pct}%` : "0%",
                 backgroundColor: tier.color,
                 transition: "width 1s ease-out",
                 minWidth: tier.count > 0 ? "4px" : "0",

@@ -6,14 +6,13 @@ import {
   BarChart,
   CartesianGrid,
   Cell,
-  ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
 import { PCRData } from "@/lib/types";
 import { formatNumber } from "@/lib/calculations";
-import { useCountUp } from "@/lib/hooks";
+import { useCountUp, useContainerWidth } from "@/lib/hooks";
 
 interface WithdrawalIndicatorsProps {
   data: PCRData;
@@ -23,8 +22,10 @@ export default function WithdrawalIndicators({
   data,
 }: WithdrawalIndicatorsProps) {
   const { count, ref } = useCountUp(data.wsiUniqueMembers);
+  const { ref: chartRef, width: chartWidth } = useContainerWidth();
   const sorted = [...data.wsiBreakdown].sort((a, b) => b.count - a.count);
   const max = sorted[0]?.count ?? 0;
+  const chartHeight = 320;
 
   return (
     <section
@@ -115,9 +116,11 @@ export default function WithdrawalIndicators({
           </div>
 
           {/* Horizontal bar chart */}
-          <div className="min-w-0" style={{ width: "100%", height: 320 }}>
-            <ResponsiveContainer width="100%" height="100%">
+          <div ref={chartRef} className="min-w-0" style={{ width: "100%", height: chartHeight }}>
+            {chartWidth > 0 && (
               <BarChart
+                width={chartWidth}
+                height={chartHeight}
                 data={sorted}
                 layout="vertical"
                 margin={{ top: 4, right: 24, left: 8, bottom: 4 }}
@@ -167,7 +170,7 @@ export default function WithdrawalIndicators({
                   })}
                 </Bar>
               </BarChart>
-            </ResponsiveContainer>
+            )}
           </div>
         </div>
       </div>

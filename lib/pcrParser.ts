@@ -1,24 +1,35 @@
 import { PCRData } from "./types";
-import { DEMO_DATA } from "./demoData";
+import type { ExtractionResult } from "./pcr/types";
 
 /**
- * Simulates PCR file parsing with a loading delay.
+ * Upload a PCR PDF to the server, which runs the hybrid extractor
+ * (text pass + Claude) and returns the data + per-field provenance.
  *
- * In production this reads the uploaded PCR PDF and extracts the figures it
- * needs — the PCR already contains every computed number the proposal shows
- * (risk tiers, prescriber/pharmacy counts, projected savings, etc.), so there
- * are no calculators to build on our end. Input is a single PDF only.
- *
- * For now, returns demo data after a realistic delay to demonstrate the flow.
+ * The extraction itself lives server-side in `lib/pcr/*` so the Anthropic API
+ * key never reaches the browser. This client helper just posts the file.
  */
-export async function parsePCRFile(_file: File): Promise<PCRData> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const data: PCRData = {
-        ...DEMO_DATA,
-        clientName: _file.name.replace(/\.pdf$/i, ""),
-      };
-      resolve(data);
-    }, 2500);
-  });
+export async function parsePCRFileDetailed(
+  file: File,
+  clientName?: string
+): Promise<ExtractionResult> {
+  const form = new FormData();
+  form.append("file", file);
+  if (clientName) form.append("clientName", clientName);
+
+  const res = await fetch("/api/parse", { method: "POST", body: form });
+  if (!res.ok) {
+    const body = (await res.json().catch(() => ({}))) as { error?: string };
+    throw new Error(body.error ?? "Failed to read the PCR PDF.");
+  }
+  return (await res.json()) as ExtractionResult;
+}
+
+/**
+ * Back-compat helper for the current input screen: returns just the PCRData.
+ * Use {@link parsePCRFileDetailed} when wiring the review/edit screen so the
+ * provenance + needs-review flags are available.
+ */
+export async function parsePCRFile(file: File): Promise<PCRData> {
+  const { data } = await parsePCRFileDetailed(file);
+  return data;
 }
