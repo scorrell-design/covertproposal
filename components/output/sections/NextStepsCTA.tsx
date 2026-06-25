@@ -25,6 +25,11 @@ interface StatTileProps {
 function StatTile({ value, label, sublabel, emphasis = "neutral" }: StatTileProps) {
   const accent =
     emphasis === "primary" ? "var(--covert-teal)" : "#FFFFFF";
+  // Auto-shrink long values (e.g. "$6,656,400") so they stay on one line inside
+  // the tile instead of overflowing its edges.
+  const scale = value.length > 7 ? Math.max(7 / value.length, 0.55) : 1;
+  const maxPx = Math.round(40 * scale);
+  const minPx = Math.min(28, maxPx);
   return (
     <div
       style={{
@@ -38,7 +43,7 @@ function StatTile({ value, label, sublabel, emphasis = "neutral" }: StatTileProp
       <p
         className="font-bold"
         style={{
-          fontSize: "clamp(30px, 3vw, 40px)",
+          fontSize: `clamp(${minPx}px, 3vw, ${maxPx}px)`,
           color: accent,
           lineHeight: 1.05,
           whiteSpace: "nowrap",
