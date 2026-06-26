@@ -78,7 +78,7 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
             live, paired with a cited cost-multiplier benchmark. Replaces the old
             hardcoded "30% vs industry average of 30%" placeholder. */}
         <div
-          className="flex flex-wrap items-baseline"
+          className="flex flex-wrap items-center"
           style={{ gap: "clamp(16px, 2vw, 28px)", marginTop: "8px" }}
         >
           <p
