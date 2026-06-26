@@ -23,10 +23,13 @@ export function calcMedicalSpendFromWithdrawal(
   return withdrawalMembers * SAVINGS_PER_WITHDRAWAL_MEMBER;
 }
 
-export function calcPreventableSpend(withdrawalMembers: number): number {
+// Preventable spend = 75% of the annual exposure. Annual exposure is now the
+// at-risk basis (Jesse 6/26): identified members × $23,790. (Previously this
+// was withdrawal members × $23,000 — retired so the report shows one
+// consistent exposure figure.)
+export function calcPreventableSpend(identifiedMembers: number): number {
   return Math.round(
-    calcMedicalSpendFromWithdrawal(withdrawalMembers) *
-      PREVENTABLE_REDUCTION_RATE,
+    calcAvoidedMedicalSpend(identifiedMembers) * PREVENTABLE_REDUCTION_RATE,
   );
 }
 
@@ -38,13 +41,14 @@ export function calcOpioidExposureCost(membersWithOpioidRx: number): number {
   return membersWithOpioidRx * COST_PER_MEMBER_ON_OPIOID;
 }
 
+// Net ROI (Jesse 6/26) = preventable spend (at-risk basis) − Covert cost
+// (members currently on an opioid Rx × $600).
 export function calcNetROI(
-  withdrawalMembers: number,
-  membersAtRisk: number,
+  identifiedMembers: number,
+  membersWithOpioidRx: number,
 ): number {
   return (
-    calcPreventableSpend(withdrawalMembers) -
-    calcCaseManagementCost(membersAtRisk)
+    calcPreventableSpend(identifiedMembers) - calcCovertCost(membersWithOpioidRx)
   );
 }
 

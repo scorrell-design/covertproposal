@@ -41,10 +41,15 @@ check(
   /function\s+calcAtRiskCadence|const\s+calcAtRiskCadence\s*=/.test(joined),
 );
 
-// 5. Prescription utilization inner label
+// 5. Prescription Utilization merged into "What the Data Shows" (Jesse 6/26).
+//    The standalone donut section was removed; the combined data section and
+//    its headline stat remain.
+const utilizationRemoved = !allSource.some((f) =>
+  /sections\/PrescriptionUtilization\.tsx$/.test(f.file),
+);
 check(
-  'Inner circle label = "Pharmacies dispensing opioids"',
-  /Pharmacies/.test(joined) && /dispensing opioids/.test(joined),
+  'Prescription Utilization merged into "What the Data Shows" (donut removed)',
+  utilizationRemoved && /What the Data Shows/.test(joined),
 );
 
 // 6. CDC asterisk footnote

@@ -14,9 +14,9 @@ import {
 } from "lucide-react";
 import { PCRData } from "@/lib/types";
 import {
-  calcMedicalSpendFromWithdrawal,
+  calcAvoidedMedicalSpend,
   calcPreventableSpend,
-  calcCaseManagementCost,
+  calcCovertCost,
   calcNetROI,
   formatCurrency,
 } from "@/lib/calculations";
@@ -192,10 +192,12 @@ export default function DataFormSections({
     onChange({ ...data, [field]: parsed });
   };
 
-  const exposure = calcMedicalSpendFromWithdrawal(data.withdrawalSymptomMembers);
-  const preventable = calcPreventableSpend(data.withdrawalSymptomMembers);
-  const caseMgmt = calcCaseManagementCost(data.identifiedMembers);
-  const netRoi = calcNetROI(data.withdrawalSymptomMembers, data.identifiedMembers);
+  // Per Jesse (6/26): annual exposure = identified members × $23,790; case
+  // management investment = members on an opioid Rx × $600. Both feed Net ROI.
+  const exposure = calcAvoidedMedicalSpend(data.identifiedMembers);
+  const preventable = calcPreventableSpend(data.identifiedMembers);
+  const caseMgmt = calcCovertCost(data.membersWithOpioidRx);
+  const netRoi = calcNetROI(data.identifiedMembers, data.membersWithOpioidRx);
 
   return (
     <div className="flex flex-col gap-4">
@@ -222,12 +224,10 @@ export default function DataFormSections({
         icon={<Users size={18} />}
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <FormField
-            label="Total Plan Members"
-            value={data.totalPlanMembers}
-            onChange={(v) => update("totalPlanMembers", v)}
-            autoFilled={isAutoFilled}
-          />
+          {/* Total Plan Members field removed per Jesse — the PCR rarely carries
+              an accurate covered-lives count, so it's no longer hand-editable.
+              The value is still auto-derived (Members with Any Rx) for the
+              report's population gates. */}
           <FormField
             label="Members with Any Rx"
             value={data.totalMembersWithAnyRx}
@@ -391,7 +391,7 @@ export default function DataFormSections({
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FormField
-            label="Annual Exposure from Withdrawal"
+            label="Annual Exposure from Withdrawal Symptoms"
             value={formatCurrency(exposure)}
             onChange={() => {}}
             type="text"

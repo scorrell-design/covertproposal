@@ -23,7 +23,9 @@ interface LiveRiskTickersProps {
 
 export default function LiveRiskTickers({ data }: LiveRiskTickersProps) {
   const [showTooltip, setShowTooltip] = useState(false);
-  const preventable = calcPreventableSpend(data.withdrawalSymptomMembers);
+  // Preventable spend now uses the at-risk basis (Jesse 6/26) so the ticker
+  // matches the Clinical & Financial Impact section.
+  const preventable = calcPreventableSpend(data.identifiedMembers);
   // Per Jesse (6/3/26): show preventable cost as a MONTHLY figure — daily isn't
   // large enough to land for smaller groups; monthly reads for all clients.
   const monthly = calcMonthlyPreventable(preventable);

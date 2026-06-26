@@ -3,9 +3,8 @@
 import { DollarSign } from "lucide-react";
 import { PCRData } from "@/lib/types";
 import {
-  calcMedicalSpendFromWithdrawal,
-  calcOpioidExposureCost,
-  calcCaseManagementCost,
+  calcAvoidedMedicalSpend,
+  calcCovertCost,
   calcNetROI,
   calcPreventableSpend,
   calcMonthlyPreventable,
@@ -68,11 +67,13 @@ function StatColumn({ value, label, color, fontSize, prefix = "$" }: StatColumnP
 }
 
 export default function FinancialImpact({ data }: FinancialImpactProps) {
-  const exposure = calcMedicalSpendFromWithdrawal(data.withdrawalSymptomMembers);
-  const opioidCost = calcOpioidExposureCost(data.membersWithOpioidRx);
-  const caseMgmt = calcCaseManagementCost(data.identifiedMembers);
-  const netRoi = calcNetROI(data.withdrawalSymptomMembers, data.identifiedMembers);
-  const preventable = calcPreventableSpend(data.withdrawalSymptomMembers);
+  // Per Jesse (6/26): exposure = identified members × $23,790; plan cost =
+  // members currently on an opioid Rx × $600. The standalone "cost per member
+  // prescribed an opioid" tile was removed.
+  const exposure = calcAvoidedMedicalSpend(data.identifiedMembers);
+  const planCost = calcCovertCost(data.membersWithOpioidRx);
+  const netRoi = calcNetROI(data.identifiedMembers, data.membersWithOpioidRx);
+  const preventable = calcPreventableSpend(data.identifiedMembers);
   const monthly = calcMonthlyPreventable(preventable);
 
   // Annualized member-impact figures (Jesse 5/28/26). The overdose figure is
@@ -162,25 +163,15 @@ export default function FinancialImpact({ data }: FinancialImpactProps) {
           </span>
         </h2>
 
-        {/* Four stats row with dividers */}
+        {/* Three stats row with dividers — order & contents per Jesse (6/26) */}
         <div
           className="flex flex-wrap"
           style={{ gap: "0", marginTop: "56px", marginBottom: "40px" }}
         >
           <StatColumn
-            value={exposure}
-            label="Medical spend attributable to opioid withdrawal"
-            color="#FF8A8A"
-            fontSize={38}
-          />
-          <div
-            className="hidden md:block self-stretch my-4"
-            style={{ width: "1px", backgroundColor: "rgba(255,255,255,0.12)" }}
-          />
-          <StatColumn
-            value={opioidCost}
-            label="Plan cost per member currently prescribed an opioid"
-            color="#FFB36B"
+            value={planCost}
+            label="Plan investment to manage opioid risk"
+            color="rgba(255,255,255,0.78)"
             fontSize={32}
           />
           <div
@@ -188,10 +179,10 @@ export default function FinancialImpact({ data }: FinancialImpactProps) {
             style={{ width: "1px", backgroundColor: "rgba(255,255,255,0.12)" }}
           />
           <StatColumn
-            value={caseMgmt}
-            label="Plan cost per at-risk member"
-            color="rgba(255,255,255,0.78)"
-            fontSize={28}
+            value={exposure}
+            label="Medical spend attributable to opioid withdrawal symptoms"
+            color="#FF8A8A"
+            fontSize={38}
           />
           <div
             className="hidden md:block self-stretch my-4"
