@@ -144,11 +144,28 @@ export default function NextStepsCTA({ data }: NextStepsCTAProps) {
                   <span style={{ width: "120px", flexShrink: 0, fontSize: "13px", color: "#FFFFFF", fontWeight: 600 }}>
                     ${roi} prevented
                   </span>
-                  <div style={{ flex: 1, height: "16px", borderRadius: "8px", backgroundColor: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
-                    <div style={{ height: "100%", width: "100%", borderRadius: "8px", background: "linear-gradient(90deg, var(--covert-teal-mid), var(--covert-teal))" }} />
+                  <div style={{ flex: 1, position: "relative" }}>
+                    <div style={{ height: "16px", borderRadius: "8px", backgroundColor: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
+                      <div style={{ height: "100%", width: "100%", borderRadius: "8px", background: "linear-gradient(90deg, var(--covert-teal-mid), var(--covert-teal))" }} />
+                    </div>
+                    {/* Break-even (1:1) reference — where return equals the $1 cost. */}
+                    <div
+                      aria-hidden
+                      style={{
+                        position: "absolute",
+                        top: "-5px",
+                        bottom: "-5px",
+                        left: `${100 / roi}%`,
+                        width: "0",
+                        borderLeft: "2px dashed rgba(255,255,255,0.6)",
+                      }}
+                    />
                   </div>
                 </div>
-                <div style={{ marginTop: "28px", paddingTop: "24px", borderTop: "1px solid var(--on-dark-border)" }}>
+                <p style={{ fontSize: "12px", color: "var(--on-dark-text-muted)", marginTop: "10px", paddingLeft: "134px" }}>
+                  ╎ Break-even (1:1) — projected return clears it ~{roi}×.
+                </p>
+                <div style={{ marginTop: "24px", paddingTop: "24px", borderTop: "1px solid var(--on-dark-border)" }}>
                   <p
                     className="font-bold"
                     style={{ fontSize: "clamp(28px, 3.4vw, 44px)", lineHeight: 1, letterSpacing: "-0.03em", color: "#FFFFFF" }}

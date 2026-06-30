@@ -29,6 +29,10 @@ export default function RiskBreakdown({ data }: RiskBreakdownProps) {
   const [animate, setAnimate] = useState(false);
   useEffect(() => setAnimate(true), []);
   const total = data.identifiedMembers;
+  // So-what: how concentrated is the risk in the most urgent tiers?
+  const topTiers =
+    data.catastrophicRisk + data.severeRisk + data.highRisk;
+  const topPct = total > 0 ? Math.round((topTiers / total) * 100) : 0;
 
   const tierData = TIERS.filter(
     (t) => t.key !== "matMembers" || data.matMembers > 0,
@@ -90,12 +94,13 @@ export default function RiskBreakdown({ data }: RiskBreakdownProps) {
             maxWidth: "640px",
           }}
         >
-          All{" "}
           <strong style={{ color: "#FFFFFF" }}>
-            {formatNumber(data.identifiedMembers)}
+            {formatNumber(topTiers)} members ({topPct}%)
           </strong>{" "}
-          identified members need active case management — but the deeper the
-          tier, the more urgent the intervention.
+          are already at High risk or above — risk is concentrated at the top.
+          All {formatNumber(data.identifiedMembers)} identified members need
+          active case management, but the deeper the tier, the more urgent the
+          intervention.
         </p>
 
         {/* Stacked bar */}
