@@ -4,7 +4,11 @@ import { useEffect, useState } from "react";
 import { ShieldAlert, AlertTriangle, HeartPulse } from "lucide-react";
 import LabelWithDescription from "@/components/shared/LabelWithDescription";
 import { PCRData } from "@/lib/types";
-import { formatNumber, formatCurrency } from "@/lib/calculations";
+import {
+  formatNumber,
+  formatCurrency,
+  calcCatastrophicExposure,
+} from "@/lib/calculations";
 
 interface RiskBreakdownProps {
   data: PCRData;
@@ -192,7 +196,7 @@ export default function RiskBreakdown({ data }: RiskBreakdownProps) {
               catastrophic opioid event. These members show patterns consistent
               with imminent overdose risk. Projected exposure:{" "}
               <strong>
-                ~{formatCurrency(data.catastrophicRisk * 100000)}.
+                ~{formatCurrency(calcCatastrophicExposure(data.catastrophicRisk))}.
               </strong>
             </p>
           </div>

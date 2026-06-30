@@ -13,16 +13,26 @@ const allSource = globSync("{app,components,lib,src}/**/*.{ts,tsx,js,jsx}", {
 
 const joined = allSource.map((f) => f.src).join("\n");
 
-// 1. $23,000 savings rate
+// 1. Retired $23,000 withdrawal-savings path is fully removed (superseded by
+//    the $23,790 at-risk basis). The old constant + helper must be gone.
 check(
-  "SAVINGS_PER_WITHDRAWAL_MEMBER = 23000 exists",
-  /SAVINGS_PER_WITHDRAWAL_MEMBER\s*=\s*23[_,]?000/.test(joined),
+  "Retired $23,000 withdrawal-savings path removed",
+  !/SAVINGS_PER_WITHDRAWAL_MEMBER/.test(joined) &&
+    !/calcMedicalSpendFromWithdrawal/.test(joined),
 );
 
 // 2. $600 per member on opioid
 check(
   "COST_PER_MEMBER_ON_OPIOID = 600 exists",
   /COST_PER_MEMBER_ON_OPIOID\s*=\s*600/.test(joined),
+);
+
+// 2b. Catastrophic-risk exposure = $100,000/member (Jesse 6/30), via a named
+//     constant (no inline magic number in RiskBreakdown).
+check(
+  "Catastrophic exposure uses CATASTROPHIC_EXPOSURE_PER_MEMBER = 100000",
+  /CATASTROPHIC_EXPOSURE_PER_MEMBER\s*=\s*100[_,]?000/.test(joined) &&
+    !/catastrophicRisk\s*\*\s*100000/.test(joined),
 );
 
 // 3. Overdose-death projection: withdrawal members ÷ 820, suppressed under
