@@ -22,9 +22,11 @@ export interface FieldResult<T = number> {
 }
 
 /** Every scalar field in PCRData that we attempt to extract. */
-export type PCRScalarField = {
-  [K in keyof PCRData]: PCRData[K] extends number ? K : never;
-}[keyof PCRData];
+export type PCRScalarField = NonNullable<
+  {
+    [K in keyof PCRData]: PCRData[K] extends number ? K : never;
+  }[keyof PCRData]
+>;
 
 /** Provenance map keyed by PCRData field name (scalars + the two breakdowns). */
 export type Provenance = Partial<
