@@ -70,9 +70,9 @@ export default function ChronicConditions({ data }: ChronicConditionsProps) {
             maxWidth: "780px",
           }}
         >
-          Opioid use is{" "}
+          Chronic disease and{" "}
           <span style={{ color: "var(--covert-teal)" }}>
-            compounding chronic disease cost.
+            opioid withdrawal symptoms.
           </span>
         </h2>
 
@@ -170,61 +170,13 @@ export default function ChronicConditions({ data }: ChronicConditionsProps) {
                 lineHeight: 1.6,
               }}
             >
-              Substance-dependence co-morbidity drives chronic-condition cost
-              up to <strong style={{ color: "#FF8A8A" }}>+367%</strong>{" "}
-              versus baseline.
+              Comorbid substance-use disorders multiply chronic-condition costs{" "}
+              <strong style={{ color: "#FF8A8A" }}>2–3×</strong>, and members
+              with opioid use disorder cost roughly{" "}
+              <strong style={{ color: "#FF8A8A" }}>$14,800</strong> more per
+              year than matched peers.
             </p>
           </div>
-        </div>
-
-        {/* Cost amplification callout */}
-        <div
-          className="grid"
-          style={{
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 140px), 1fr))",
-            gap: "12px",
-            marginTop: "40px",
-          }}
-        >
-          {[
-            { condition: "Depression", amp: "+304%" },
-            { condition: "Diabetes", amp: "+352%" },
-            { condition: "Asthma", amp: "+82%" },
-            { condition: "COPD", amp: "+359%" },
-            { condition: "CAD", amp: "+147%" },
-            { condition: "CHF", amp: "+367%" },
-          ].map((item) => (
-            <div
-              key={item.condition}
-              style={{
-                borderRadius: "12px",
-                padding: "16px 18px",
-                backgroundColor: "var(--on-dark-surface)",
-                border: "1px solid var(--on-dark-border)",
-                textAlign: "center",
-              }}
-            >
-              <p
-                className="font-bold"
-                style={{
-                  fontSize: "24px",
-                  color: "#FF8A8A",
-                  letterSpacing: "-0.02em",
-                }}
-              >
-                {item.amp}
-              </p>
-              <p
-                style={{
-                  fontSize: "12px",
-                  color: "var(--on-dark-text-secondary)",
-                  marginTop: "4px",
-                }}
-              >
-                {item.condition}
-              </p>
-            </div>
-          ))}
         </div>
 
         <p
@@ -232,11 +184,11 @@ export default function ChronicConditions({ data }: ChronicConditionsProps) {
           style={{
             fontSize: "13px",
             color: "var(--on-dark-text-secondary)",
-            marginTop: "16px",
+            marginTop: "32px",
           }}
         >
-          Cost amplification source: Ingenix Consulting, 20M commercial plan
-          lives — substance dependence co-morbidity vs. baseline.
+          Sources: Milliman, integrated medical–behavioral cost analysis (2018);
+          Scarpati et al., American Journal of Managed Care (2017).
         </p>
       </div>
     </section>
