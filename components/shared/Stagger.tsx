@@ -2,6 +2,7 @@
 
 import { Children, CSSProperties, ReactNode } from "react";
 import { useInView } from "react-intersection-observer";
+import { usePrefersReducedMotion } from "@/lib/hooks";
 
 interface StaggerProps {
   children: ReactNode;
@@ -24,7 +25,7 @@ interface StaggerProps {
  */
 export default function Stagger({
   children,
-  step = 85,
+  step = 70,
   baseDelay = 0,
   distance = 18,
   className,
@@ -35,28 +36,31 @@ export default function Stagger({
     triggerOnce: true,
     rootMargin: "0px 0px -48px 0px",
   });
+  const reduced = usePrefersReducedMotion();
+  const shown = reduced || inView;
   const items = Children.toArray(children);
 
   return (
     <div ref={ref} className={className} style={style}>
-      {items.map((child, i) => (
-        <div
-          key={i}
-          data-reveal
-          style={{
-            opacity: inView ? 1 : 0,
-            transform: inView ? "translateY(0)" : `translateY(${distance}px)`,
-            transition: `opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${
-              baseDelay + i * step
-            }ms, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${
-              baseDelay + i * step
-            }ms`,
-            willChange: "opacity, transform",
-          }}
-        >
-          {child}
-        </div>
-      ))}
+      {items.map((child, i) => {
+        const offset = baseDelay + i * step;
+        return (
+          <div
+            key={i}
+            data-reveal
+            style={{
+              opacity: shown ? 1 : 0,
+              transform: shown ? "translateY(0)" : `translateY(${distance}px)`,
+              transition: reduced
+                ? "none"
+                : `opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1) ${offset}ms, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) ${offset}ms`,
+              willChange: reduced ? "auto" : "opacity, transform",
+            }}
+          >
+            {child}
+          </div>
+        );
+      })}
     </div>
   );
 }

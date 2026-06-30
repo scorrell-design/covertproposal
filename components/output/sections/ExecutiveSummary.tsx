@@ -60,54 +60,94 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
           </span>
         </div>
 
-        {/* Headline graphic (Jesse 6/26): the plan's own at-risk share, computed
-            live, paired with a cited cost-multiplier benchmark. Replaces the old
-            hardcoded "30% vs industry average of 30%" placeholder. */}
+        {/* Row 1 — at-risk share (left) balanced by the cost-multiplier
+            comparison (right). Two distinct facts; no repeated figures. The
+            5,028 at-risk count lives in the Member Risk Breakdown section. */}
         <div
-          className="flex flex-wrap items-center"
-          style={{ gap: "clamp(16px, 2vw, 28px)", marginTop: "8px" }}
-        >
-          <p
-            className="font-bold"
-            style={{
-              // Sized to match the at-risk hero number below it, and set in the
-              // warning coral rather than brand teal so the risk reads instantly
-              // (Jesse 6/29).
-              fontSize: "clamp(80px, 12vw, 160px)",
-              lineHeight: 0.92,
-              letterSpacing: "-0.05em",
-              color: "#FF8A8A",
-            }}
-          >
-            {atRiskShare}%
-          </p>
-          <p
-            style={{
-              fontSize: "clamp(18px, 2vw, 26px)",
-              color: "#FFFFFF",
-              lineHeight: 1.3,
-              maxWidth: "440px",
-              fontWeight: 500,
-            }}
-          >
-            of your opioid recipients show clinical risk indicators driving
-            avoidable medical spend
-          </p>
-        </div>
-        <p
+          className="grid items-center"
           style={{
-            fontSize: "16px",
-            color: "var(--on-dark-text-secondary)",
-            marginTop: "20px",
-            lineHeight: 1.55,
-            maxWidth: "560px",
+            gridTemplateColumns: "minmax(0, 1.1fr) minmax(0, 0.9fr)",
+            gap: "clamp(28px, 4vw, 56px)",
+            marginTop: "8px",
           }}
         >
-          Chronic opioid users incur roughly{" "}
-          <strong style={{ color: "#FFFFFF" }}>6x more medical cost</strong> than
-          non-users.
-          <sup style={{ fontSize: "9px" }}>†</sup>
-        </p>
+          <div>
+            <p
+              className="font-bold"
+              style={{
+                // Coral rather than brand teal so the risk reads instantly (Jesse 6/29).
+                fontSize: "clamp(72px, 9vw, 132px)",
+                lineHeight: 0.9,
+                letterSpacing: "-0.05em",
+                color: "#FF8A8A",
+              }}
+            >
+              {atRiskShare}%
+            </p>
+            <p
+              style={{
+                fontSize: "clamp(17px, 1.7vw, 22px)",
+                color: "#FFFFFF",
+                lineHeight: 1.35,
+                maxWidth: "var(--measure)",
+                fontWeight: 500,
+                marginTop: "16px",
+              }}
+            >
+              of your opioid recipients show clinical risk indicators driving
+              avoidable medical spend
+            </p>
+          </div>
+
+          {/* Cost-multiplier comparison — bar length carries the 6× (Knaflic). */}
+          <div
+            style={{
+              backgroundColor: "var(--on-dark-surface)",
+              border: "1px solid var(--on-dark-border)",
+              borderRadius: "16px",
+              padding: "clamp(22px, 2.5vw, 30px)",
+            }}
+          >
+            <span
+              className="font-bold uppercase"
+              style={{ fontSize: "11px", letterSpacing: "0.14em", color: "var(--on-dark-text-muted)" }}
+            >
+              Medical cost vs. non-users
+            </span>
+            <div style={{ marginTop: "20px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
+                <span style={{ fontSize: "13px", color: "var(--on-dark-text-secondary)", width: "150px", flexShrink: 0 }}>
+                  Non-users
+                </span>
+                <div style={{ flex: 1, display: "flex", alignItems: "center", gap: "10px" }}>
+                  <div style={{ height: "12px", width: "16%", borderRadius: "6px", backgroundColor: "rgba(255,255,255,0.22)" }} />
+                  <span style={{ fontSize: "13px", color: "var(--on-dark-text-muted)" }}>1×</span>
+                </div>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <span style={{ fontSize: "13px", color: "#FFFFFF", width: "150px", flexShrink: 0 }}>
+                  Chronic opioid users
+                </span>
+                <div style={{ flex: 1, display: "flex", alignItems: "center", gap: "10px" }}>
+                  <div style={{ height: "12px", width: "92%", borderRadius: "6px", background: "linear-gradient(90deg, #FF8A8A, #FF6B6B)" }} />
+                  <span style={{ fontSize: "15px", color: "#FF8A8A", fontWeight: 700 }}>6×</span>
+                </div>
+              </div>
+            </div>
+            <p
+              style={{
+                fontSize: "13px",
+                color: "var(--on-dark-text-secondary)",
+                marginTop: "16px",
+                lineHeight: 1.5,
+              }}
+            >
+              Chronic opioid users incur roughly{" "}
+              <strong style={{ color: "#FFFFFF" }}>6× more medical cost</strong>{" "}
+              than non-users.<sup style={{ fontSize: "9px" }}>†</sup>
+            </p>
+          </div>
+        </div>
 
         <div
           aria-hidden
@@ -118,12 +158,15 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
           }}
         />
 
-        {/* Hero number — the at-risk population */}
+        {/* Key finding — the at-risk population. Stands out as the section's
+            focal number; the body refers back to it rather than restating it,
+            and the tiered breakdown of this same 5,028 follows in the next
+            section. */}
         <p
           className="font-bold"
           style={{
-            fontSize: "clamp(80px, 12vw, 160px)",
-            lineHeight: 0.92,
+            fontSize: "clamp(72px, 11vw, 150px)",
+            lineHeight: 0.9,
             letterSpacing: "-0.05em",
             color: "var(--covert-teal)",
           }}
@@ -135,11 +178,11 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
           className="font-bold"
           style={{
             fontSize: "clamp(28px, 3.2vw, 40px)",
-            lineHeight: 1.1,
+            lineHeight: 1.12,
             letterSpacing: "-0.02em",
             color: "#FFFFFF",
             maxWidth: "820px",
-            marginTop: "20px",
+            marginTop: "16px",
             textWrap: "balance",
           }}
         >
@@ -147,22 +190,25 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
           <span style={{ color: "var(--covert-teal)" }}>preventable harm.</span>
         </h2>
 
+        {/* Supporting narrative — two columns so the lower half fills the width
+            instead of a single narrow left rail. */}
         <div
-          className="mt-6 flex flex-col gap-5"
+          className="grid"
           style={{
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 320px), 1fr))",
+            gap: "clamp(24px, 3vw, 48px)",
+            marginTop: "28px",
             fontSize: "16px",
             color: "var(--on-dark-text-secondary)",
             lineHeight: 1.7,
-            maxWidth: "820px",
           }}
         >
           <p>
             {formatNumber(data.membersWithOpioidRx)} of your members are
-            currently filling opioid prescriptions. Within that group,{" "}
-            {formatNumber(data.identifiedMembers)} show clinical indicators of
-            escalation — severe withdrawal symptoms, cross-location refills,
-            multiple prescribers, early refills, and dosages exceeding CDC
-            guidance.
+            currently filling opioid prescriptions. The flagged group above
+            shows clinical indicators of escalation — severe withdrawal
+            symptoms, cross-location refills, multiple prescribers, early
+            refills, and dosages exceeding CDC guidance.
           </p>
           <p>
             This is not random. This is the downstream effect of prescriber

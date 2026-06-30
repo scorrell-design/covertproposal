@@ -35,7 +35,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
 
       <div
         className="mx-auto px-6 md:px-10 lg:px-16 relative"
-        style={{ maxWidth: "880px" }}
+        style={{ maxWidth: "1100px" }}
       >
         <div
           className="flex items-center gap-2"

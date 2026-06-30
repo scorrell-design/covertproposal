@@ -2,6 +2,7 @@
 
 import { CSSProperties, ReactNode } from "react";
 import { useInView } from "react-intersection-observer";
+import { usePrefersReducedMotion } from "@/lib/hooks";
 
 interface RevealProps {
   children: ReactNode;
@@ -36,6 +37,9 @@ export default function Reveal({
     triggerOnce: true,
     rootMargin: "0px 0px -64px 0px",
   });
+  const reduced = usePrefersReducedMotion();
+  // Reduced-motion users get the final state immediately — no fade, no travel.
+  const shown = reduced || inView;
 
   return (
     <div
@@ -43,10 +47,12 @@ export default function Reveal({
       data-reveal
       className={className}
       style={{
-        opacity: inView ? 1 : 0,
-        transform: inView ? "translateY(0)" : `translateY(${distance}px)`,
-        transition: `opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms, transform 0.75s cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms`,
-        willChange: "opacity, transform",
+        opacity: shown ? 1 : 0,
+        transform: shown ? "translateY(0)" : `translateY(${distance}px)`,
+        transition: reduced
+          ? "none"
+          : `opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms`,
+        willChange: reduced ? "auto" : "opacity, transform",
         ...style,
       }}
     >

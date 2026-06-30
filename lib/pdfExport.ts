@@ -4,7 +4,9 @@ const LIGHT_OVERRIDES_CSS = `
   [data-pdf-export], [data-pdf-export] * {
     color-scheme: light !important;
   }
-  [data-pdf-export] [data-reveal] {
+  [data-pdf-export] [data-reveal],
+  [data-pdf-export] [data-count],
+  [data-pdf-export] [data-count] * {
     opacity: 1 !important;
     transform: none !important;
   }

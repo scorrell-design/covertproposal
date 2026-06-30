@@ -31,6 +31,11 @@
   --on-dark-border: rgba(255,255,255,0.10);
   --on-dark-surface: rgba(255,255,255,0.04);
   --on-dark-surface-elevated: rgba(255,255,255,0.07);
+
+  /* Layout system — one shared report width + reading measure so every
+     section aligns to the same left edge and prose never runs too wide. */
+  --report-max: 1100px;
+  --measure: 66ch;
 }
 
 html, body {

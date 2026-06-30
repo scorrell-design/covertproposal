@@ -1,118 +1,72 @@
 "use client";
 
-import { CSSProperties, useEffect, useRef, useState } from "react";
+import { CSSProperties } from "react";
 import { useInView } from "react-intersection-observer";
+import { usePrefersReducedMotion } from "@/lib/hooks";
 
 interface SplitFlapNumberProps {
   value: number;
   prefix?: string;
   suffix?: string;
-  /** Total animation length in ms. */
+  /** Total reveal length in ms (the last character lands by ~this time). */
   duration?: number;
   className?: string;
   style?: CSSProperties;
 }
 
-const DIGITS = "0123456789";
-
 /**
- * Split-flap / departure-board number. On scroll-into-view, each digit shuffles
- * and "folds" into place, locking left-to-right — the deliberate, mechanical
- * read of a train-station board rather than a fast count-up.
+ * Number reveal — the figure's characters fade up one-by-one, left to right,
+ * on scroll-into-view, settling into place. A calm, deliberate reveal rather
+ * than a slot-machine shuffle.
  *
- * PDF / reduced-motion safe: it initializes to the FINAL value, so an
- * un-animated capture (or a reduced-motion user) always shows the correct
- * figure; the shuffle only plays as an enhancement when in view.
+ * PDF / reduced-motion safe: the final characters are always rendered (only
+ * their opacity animates), so a reduced-motion user or a PDF capture shows the
+ * correct, complete figure. The wrapper carries `data-count`, which pdfExport
+ * forces to its final visible state.
  */
 export default function SplitFlapNumber({
   value,
   prefix = "",
   suffix = "",
-  duration = 1500,
+  duration = 1100,
   className,
   style,
 }: SplitFlapNumberProps) {
-  const target = `${prefix}${value.toLocaleString("en-US")}${suffix}`;
-  const [display, setDisplay] = useState(target);
+  const text = `${prefix}${value.toLocaleString("en-US")}${suffix}`;
   const { ref, inView } = useInView({ threshold: 0.3, triggerOnce: true });
-  const started = useRef(false);
+  const reduced = usePrefersReducedMotion();
+  const shown = reduced || inView;
 
-  useEffect(() => {
-    if (!inView || started.current) return;
-    started.current = true;
-
-    // `display` already initializes to the final `target`, so a reduced-motion
-    // user simply keeps that — no setState (and no shuffle) needed.
-    const prefersReduced =
-      typeof window !== "undefined" &&
-      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) return;
-
-    const chars = target.split("");
-    const digitIdx = chars.reduce<number[]>((acc, c, i) => {
-      if (/\d/.test(c)) acc.push(i);
-      return acc;
-    }, []);
-    const n = digitIdx.length || 1;
-
-    const start = performance.now();
-    let raf = 0;
-    let lastShuffle = 0;
-
-    const frame = (now: number) => {
-      const progress = Math.min((now - start) / duration, 1);
-      if (now - lastShuffle >= 55) {
-        lastShuffle = now;
-        const next = chars.slice();
-        digitIdx.forEach((pos, di) => {
-          // Each digit locks once the run passes its left-to-right threshold;
-          // until then it keeps flipping through random glyphs.
-          const lockAt = (di + 1) / n;
-          next[pos] =
-            progress >= lockAt
-              ? chars[pos]
-              : DIGITS[Math.floor(Math.random() * 10)];
-        });
-        setDisplay(next.join(""));
-      }
-      if (progress < 1) raf = requestAnimationFrame(frame);
-      else setDisplay(target);
-    };
-    raf = requestAnimationFrame(frame);
-    return () => cancelAnimationFrame(raf);
-  }, [inView, target, duration]);
+  const chars = text.split("");
+  // Spread the per-character delay across the requested duration so longer
+  // numbers don't reveal faster than short ones.
+  const step = chars.length > 1 ? (duration * 0.7) / (chars.length - 1) : 0;
 
   return (
     <span
       ref={ref}
       data-count
-      aria-label={target}
+      aria-label={text}
       className={className}
-      style={{ ...style, display: "inline-block", perspective: "600px" }}
+      style={{ ...style, display: "inline-block", whiteSpace: "pre" }}
     >
-      {display.split("").map((ch, i) => {
-        const isDigit = /\d/.test(ch);
-        return (
-          <span
-            key={i}
-            aria-hidden
-            style={{ display: "inline-block", transformStyle: "preserve-3d" }}
-          >
-            {/* key on the glyph so a change remounts and replays the fold */}
-            <span
-              key={ch}
-              style={{
-                display: "inline-block",
-                animation: isDigit
-                  ? "flap 0.2s cubic-bezier(0.2, 0.75, 0.2, 1)"
-                  : undefined,
-              }}
-            >
-              {ch}
-            </span>
-          </span>
-        );
-      })}
+      {chars.map((ch, i) => (
+        <span
+          key={i}
+          aria-hidden
+          style={{
+            display: "inline-block",
+            whiteSpace: "pre",
+            opacity: shown ? 1 : 0,
+            transform: shown ? "translateY(0)" : "translateY(0.18em)",
+            transition: reduced
+              ? "none"
+              : `opacity 0.45s ease-out ${i * step}ms, transform 0.45s ease-out ${i * step}ms`,
+          }}
+        >
+          {ch}
+        </span>
+      ))}
     </span>
   );
 }

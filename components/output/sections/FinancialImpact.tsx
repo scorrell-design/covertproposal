@@ -218,7 +218,7 @@ interface ImpactCardProps {
 function ImpactCard({ heading, subhead, accent, rows }: ImpactCardProps) {
   return (
     <div
-      className="min-w-0"
+      className="min-w-0 h-full flex flex-col"
       style={{
         backgroundColor: "var(--on-dark-surface)",
         border: "1px solid var(--on-dark-border)",
@@ -227,50 +227,56 @@ function ImpactCard({ heading, subhead, accent, rows }: ImpactCardProps) {
         padding: "clamp(28px, 3.5vw, 40px)",
       }}
     >
-      <h3
-        className="font-bold"
-        style={{
-          fontSize: "clamp(20px, 2.2vw, 26px)",
-          letterSpacing: "-0.02em",
-          color: accent,
-          lineHeight: 1.15,
-        }}
-      >
-        {heading}
-      </h3>
-      <p
-        className="font-semibold uppercase"
-        style={{
-          fontSize: "12px",
-          color: "var(--on-dark-text-muted)",
-          letterSpacing: "0.12em",
-          marginTop: "8px",
-        }}
-      >
-        {subhead}
-      </p>
+      {/* Fixed-height header so both cards' row regions start at the same line. */}
+      <div style={{ minHeight: "104px" }}>
+        <h3
+          className="font-bold"
+          style={{
+            fontSize: "clamp(20px, 2.2vw, 26px)",
+            letterSpacing: "-0.02em",
+            color: accent,
+            lineHeight: 1.15,
+          }}
+        >
+          {heading}
+        </h3>
+        <p
+          className="font-semibold uppercase"
+          style={{
+            fontSize: "12px",
+            color: "var(--on-dark-text-muted)",
+            letterSpacing: "0.12em",
+            marginTop: "8px",
+          }}
+        >
+          {subhead}
+        </p>
+      </div>
 
+      {/* Equal-height rows (1fr each) — with both cards stretched to the same
+          height and the same row count, row N aligns across both cards. */}
       <div
-        className="flex flex-col"
-        style={{ marginTop: "28px", gap: "20px" }}
+        className="grid flex-1"
+        style={{
+          marginTop: "24px",
+          gridTemplateRows: `repeat(${rows.length}, 1fr)`,
+        }}
       >
         {rows.map((row, i) => (
           <div
             key={row.label}
-            className="flex items-baseline min-w-0"
+            className="flex items-center min-w-0"
             style={{
               gap: "16px",
-              paddingTop: i === 0 ? 0 : "20px",
-              borderTop:
-                i === 0 ? "none" : "1px solid var(--on-dark-border)",
+              borderTop: i === 0 ? "none" : "1px solid var(--on-dark-border)",
             }}
           >
             <span
               className="font-bold flex-shrink-0 text-right"
               style={{
                 fontSize: row.emphasis
-                  ? "clamp(36px, 4vw, 52px)"
-                  : "clamp(28px, 3vw, 40px)",
+                  ? "clamp(34px, 3.6vw, 48px)"
+                  : "clamp(26px, 2.8vw, 38px)",
                 lineHeight: 1,
                 letterSpacing: "-0.03em",
                 color: row.color,
@@ -285,7 +291,6 @@ function ImpactCard({ heading, subhead, accent, rows }: ImpactCardProps) {
                 fontSize: "14px",
                 lineHeight: 1.45,
                 color: "var(--on-dark-text-secondary)",
-                alignSelf: "center",
               }}
             >
               {row.label}

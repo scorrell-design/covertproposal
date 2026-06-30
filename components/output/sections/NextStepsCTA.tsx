@@ -74,13 +74,103 @@ export default function NextStepsCTA({ data }: NextStepsCTAProps) {
           </h2>
         </Reveal>
 
-        {/* Without / With / Difference comparison — three boxes cascade in */}
+        {/* ROI visual — the investment-to-return gap is the single most
+            action-driving figure, so it leads the close as a proportional
+            comparison rather than a buried bullet. */}
+        <Reveal>
+          <div
+            style={{
+              marginTop: "40px",
+              backgroundColor: "var(--on-dark-surface)",
+              border: "1px solid var(--on-dark-border)",
+              borderTop: "3px solid var(--covert-teal)",
+              borderRadius: "20px",
+              padding: "clamp(28px, 4vw, 48px)",
+            }}
+          >
+            <div
+              className="grid items-center"
+              style={{
+                gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))",
+                gap: "clamp(28px, 4vw, 56px)",
+              }}
+            >
+              <div>
+                <span
+                  className="font-bold uppercase"
+                  style={{ fontSize: "12px", letterSpacing: "0.16em", color: "var(--covert-teal)" }}
+                >
+                  Projected 12-month return
+                </span>
+                <p
+                  className="font-bold"
+                  style={{
+                    fontSize: "clamp(72px, 10vw, 124px)",
+                    lineHeight: 0.9,
+                    letterSpacing: "-0.04em",
+                    color: "var(--covert-teal)",
+                    marginTop: "12px",
+                  }}
+                >
+                  {roi}:1
+                </p>
+                <p
+                  style={{
+                    fontSize: "clamp(16px, 1.8vw, 20px)",
+                    color: "var(--on-dark-text)",
+                    lineHeight: 1.45,
+                    marginTop: "16px",
+                    maxWidth: "var(--measure)",
+                  }}
+                >
+                  Every <strong style={{ color: "#FFFFFF" }}>$1</strong> invested in
+                  Covert prevents an estimated{" "}
+                  <strong style={{ color: "var(--covert-teal)" }}>${roi}</strong> in
+                  avoidable medical spend.
+                </p>
+              </div>
+
+              <div>
+                {/* $1 : $roi proportional bars — the gap is the message. */}
+                <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "16px" }}>
+                  <span style={{ width: "120px", flexShrink: 0, fontSize: "13px", color: "var(--on-dark-text-secondary)" }}>
+                    $1 invested
+                  </span>
+                  <div style={{ flex: 1, height: "16px", borderRadius: "8px", backgroundColor: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
+                    <div style={{ height: "100%", width: `${100 / roi}%`, minWidth: "6px", borderRadius: "8px", backgroundColor: "#FF8A8A" }} />
+                  </div>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+                  <span style={{ width: "120px", flexShrink: 0, fontSize: "13px", color: "#FFFFFF", fontWeight: 600 }}>
+                    ${roi} prevented
+                  </span>
+                  <div style={{ flex: 1, height: "16px", borderRadius: "8px", backgroundColor: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
+                    <div style={{ height: "100%", width: "100%", borderRadius: "8px", background: "linear-gradient(90deg, var(--covert-teal-mid), var(--covert-teal))" }} />
+                  </div>
+                </div>
+                <div style={{ marginTop: "28px", paddingTop: "24px", borderTop: "1px solid var(--on-dark-border)" }}>
+                  <p
+                    className="font-bold"
+                    style={{ fontSize: "clamp(28px, 3.4vw, 44px)", lineHeight: 1, letterSpacing: "-0.03em", color: "#FFFFFF" }}
+                  >
+                    {formatCurrency(netRoi)}
+                  </p>
+                  <p style={{ fontSize: "14px", color: "var(--on-dark-text-secondary)", marginTop: "8px" }}>
+                    net reduction in avoidable medical spend, year one
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Reveal>
+
+        {/* Without / With comparison — two boxes cascade in */}
         <Stagger
           className="grid"
           style={{
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
             gap: "20px",
-            marginTop: "40px",
+            marginTop: "20px",
           }}
         >
           <Column
@@ -103,17 +193,6 @@ export default function NextStepsCTA({ data }: NextStepsCTAProps) {
               "Prescriber behavior corrected at the source",
               "Members safely stepped down",
               "Catastrophic events prevented",
-            ]}
-          />
-          <Column
-            heading="The Difference"
-            headingColor="#FFFFFF"
-            accent="#FFFFFF"
-            items={[
-              `<strong style="color:#FFFFFF">${formatCurrency(netRoi)}</strong> reduction in avoidable medical spend`,
-              `<strong style="color:#FFFFFF">${roi}:1</strong> projected ROI`,
-              "Improved member outcomes",
-              "Safer opioid prescribing practices",
             ]}
           />
         </Stagger>

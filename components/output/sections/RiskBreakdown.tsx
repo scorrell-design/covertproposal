@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { ShieldAlert, AlertTriangle, HeartPulse } from "lucide-react";
-import LabelWithDescription from "@/components/shared/LabelWithDescription";
 import { PCRData } from "@/lib/types";
 import {
   formatNumber,
@@ -76,11 +75,28 @@ export default function RiskBreakdown({ data }: RiskBreakdownProps) {
             textWrap: "balance",
           }}
         >
-          <span style={{ color: "var(--covert-teal)" }}>
-            {formatNumber(data.identifiedMembers)}
-          </span>{" "}
-          plan members need case management
+          Not all risk is equal.{" "}
+          <span style={{ color: "var(--covert-teal)" }}>Here's the breakdown.</span>
         </h2>
+        {/* The 5,028 is the focal hero of the prior section; here it's a small
+            contextual caption so the two sections don't repeat the same giant
+            number back-to-back. */}
+        <p
+          style={{
+            fontSize: "16px",
+            color: "var(--on-dark-text-secondary)",
+            lineHeight: 1.6,
+            marginTop: "16px",
+            maxWidth: "640px",
+          }}
+        >
+          All{" "}
+          <strong style={{ color: "#FFFFFF" }}>
+            {formatNumber(data.identifiedMembers)}
+          </strong>{" "}
+          identified members need active case management — but the deeper the
+          tier, the more urgent the intervention.
+        </p>
 
         {/* Stacked bar */}
         <div
@@ -123,43 +139,82 @@ export default function RiskBreakdown({ data }: RiskBreakdownProps) {
           ))}
         </div>
 
-        {/* Tier breakdown list */}
+        {/* Tier breakdown list — each tier carries a severity status pill
+            (color + label, colorblind-safe; the most severe tier is a solid
+            fill, the rest tinted) so severity reads without relying on color
+            alone (WCAG 1.4.1; Atlassian lozenge). */}
         <div className="flex flex-col" style={{ gap: "10px", marginTop: "32px" }}>
-          {tierData.map((tier) => (
-            <div
-              key={tier.key}
-              className="flex items-center min-w-0"
-              style={{
-                borderRadius: "12px",
-                padding: "16px 20px",
-                backgroundColor: "var(--on-dark-surface)",
-                border: "1px solid var(--on-dark-border)",
-                borderLeftWidth: "4px",
-                borderLeftColor: tier.color,
-                gap: "16px",
-              }}
-            >
-              <div className="flex-1 min-w-0">
-                <LabelWithDescription
-                  label={tier.label}
-                  description={tier.desc}
-                  labelColor={tier.textColor}
-                  descriptionColor="var(--on-dark-text-secondary)"
-                  descriptionSize="14px"
-                />
-              </div>
-              <span
-                className="font-bold flex-shrink-0"
+          {tierData.map((tier) => {
+            const solid = tier.key === "catastrophicRisk";
+            return (
+              <div
+                key={tier.key}
+                className="min-w-0"
                 style={{
-                  fontSize: "22px",
-                  color: tier.textColor,
-                  letterSpacing: "-0.02em",
+                  borderRadius: "12px",
+                  padding: "16px 20px",
+                  backgroundColor: "var(--on-dark-surface)",
+                  border: "1px solid var(--on-dark-border)",
+                  borderLeftWidth: "4px",
+                  borderLeftColor: tier.color,
                 }}
               >
-                {tier.count}
-              </span>
-            </div>
-          ))}
+                {/* Pill + count share a line so the number sits right beside the
+                    tier it quantifies, not floating at the far edge. */}
+                <div className="flex items-center" style={{ gap: "14px" }}>
+                  <span
+                    className="inline-flex items-center font-bold uppercase"
+                    style={{
+                      gap: "7px",
+                      padding: "5px 11px",
+                      borderRadius: "999px",
+                      fontSize: "11px",
+                      letterSpacing: "0.05em",
+                      backgroundColor: solid
+                        ? tier.color
+                        : `color-mix(in srgb, ${tier.color} 15%, transparent)`,
+                      color: solid ? "#17171A" : tier.textColor,
+                      border: solid
+                        ? "none"
+                        : `1px solid color-mix(in srgb, ${tier.color} 40%, transparent)`,
+                    }}
+                  >
+                    <span
+                      aria-hidden
+                      style={{
+                        width: "7px",
+                        height: "7px",
+                        borderRadius: "999px",
+                        backgroundColor: solid ? "#17171A" : tier.color,
+                      }}
+                    />
+                    {tier.label}
+                  </span>
+                  <span
+                    className="font-bold"
+                    style={{
+                      fontSize: "26px",
+                      color: tier.textColor,
+                      letterSpacing: "-0.02em",
+                      lineHeight: 1,
+                    }}
+                  >
+                    {formatNumber(tier.count)}
+                  </span>
+                </div>
+                <p
+                  style={{
+                    fontSize: "14px",
+                    color: "var(--on-dark-text-secondary)",
+                    lineHeight: 1.45,
+                    marginTop: "8px",
+                  }}
+                >
+                  {tier.desc}
+                </p>
+              </div>
+            );
+          })}
         </div>
 
         {/* Catastrophic callout */}

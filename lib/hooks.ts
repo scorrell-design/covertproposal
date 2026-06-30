@@ -46,6 +46,25 @@ export function useCountUp(
 }
 
 /**
+ * Reactive `prefers-reduced-motion` flag. SSR-safe (false until mount) and
+ * updates live if the OS setting changes. Motion wrappers use it to snap to
+ * their final state instead of animating (WCAG 2.3.3).
+ */
+export function usePrefersReducedMotion() {
+  const [reduced, setReduced] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(mq.matches);
+    const onChange = () => setReduced(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  return reduced;
+}
+
+/**
  * Measure a container's pixel width (and re-measure on resize). Used to give
  * Recharts explicit dimensions instead of its ResponsiveContainer, which can
  * render an empty chart when its first async measurement is 0 — common inside

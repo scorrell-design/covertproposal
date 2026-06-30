@@ -3,78 +3,86 @@
 import { AlertTriangle } from "lucide-react";
 import { PCRData } from "@/lib/types";
 import { useInView } from "react-intersection-observer";
+import { usePrefersReducedMotion } from "@/lib/hooks";
 import Reveal from "@/components/shared/Reveal";
-import Stagger from "@/components/shared/Stagger";
+import { formatNumber } from "@/lib/calculations";
 
 interface ClinicalWarningSignsProps {
   data: PCRData;
 }
 
-interface RingIndicatorProps {
+interface WarningBarProps {
   value: number;
   label: string;
   color: string;
+  /** Largest value in the set — the shared scale all bars are measured against. */
+  max: number;
   animate: boolean;
+  /** Stagger offset in ms. */
+  delay: number;
 }
 
-function RingIndicator({ value, label, color, animate }: RingIndicatorProps) {
-  const circumference = 2 * Math.PI * 50;
-  const fillPercent = Math.min(value / 100, 1);
-  const offset = circumference * (1 - fillPercent);
+/**
+ * One ranked horizontal bar. Length encodes the count against a shared scale,
+ * so any two indicators are directly comparable at a glance (Cleveland: length
+ * against a common baseline beats angle/area). Replaces the old radial rings,
+ * which filled completely for any value >100 and carried no information.
+ */
+function WarningBar({ value, label, color, max, animate, delay }: WarningBarProps) {
+  const reduced = usePrefersReducedMotion();
+  const pct = max > 0 ? (value / max) * 100 : 0;
+  const grown = reduced || animate;
 
   return (
-    <div className="flex flex-col items-center gap-3">
-      <svg width="128" height="128" viewBox="0 0 120 120" role="img" aria-label={`${value} — ${label}`}>
-        <circle
-          cx="60"
-          cy="60"
-          r="50"
-          fill="none"
-          stroke="rgba(255,255,255,0.10)"
-          strokeWidth="10"
-        />
-        <circle
-          cx="60"
-          cy="60"
-          r="50"
-          fill="none"
-          stroke={color}
-          strokeWidth="10"
-          strokeLinecap="round"
-          strokeDasharray={circumference}
-          strokeDashoffset={animate ? offset : circumference}
-          transform="rotate(-90 60 60)"
-          style={{
-            transition: "stroke-dashoffset 1.2s ease-out",
-            ["--circumference" as string]: circumference,
-            ["--target-offset" as string]: offset,
-          }}
-        />
-        <text
-          x="60"
-          y="60"
-          textAnchor="middle"
-          dominantBaseline="central"
-          fill="#FFFFFF"
-          fontFamily="Satoshi, sans-serif"
-          fontSize="28"
-          fontWeight="700"
-          letterSpacing="-1"
-        >
-          {value}
-        </text>
-      </svg>
-      <p
-        className="text-center"
+    <div
+      className="grid items-center"
+      style={{ gridTemplateColumns: "minmax(0, 280px) 1fr", gap: "24px" }}
+    >
+      <span
+        className="font-medium"
         style={{
-          fontSize: "13px",
-          color: "var(--on-dark-text-secondary)",
-          maxWidth: "150px",
-          lineHeight: 1.4,
+          fontSize: "17px",
+          color: "var(--on-dark-text)",
+          lineHeight: 1.3,
         }}
       >
         {label}
-      </p>
+      </span>
+      <div className="flex items-center" style={{ gap: "14px" }}>
+        <div
+          style={{
+            flex: 1,
+            height: "12px",
+            borderRadius: "6px",
+            backgroundColor: "rgba(255,255,255,0.06)",
+            overflow: "hidden",
+          }}
+        >
+          <div
+            style={{
+              height: "100%",
+              borderRadius: "6px",
+              backgroundColor: color,
+              width: grown ? `${Math.max(pct, 1.5)}%` : "0%",
+              transition: reduced
+                ? "none"
+                : `width 0.8s cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms`,
+            }}
+          />
+        </div>
+        <span
+          className="font-bold"
+          style={{
+            fontSize: "20px",
+            color: "#FFFFFF",
+            letterSpacing: "-0.02em",
+            minWidth: "62px",
+            textAlign: "right",
+          }}
+        >
+          {formatNumber(value)}
+        </span>
+      </div>
     </div>
   );
 }
@@ -84,13 +92,13 @@ export default function ClinicalWarningSigns({
 }: ClinicalWarningSignsProps) {
   const { ref, inView } = useInView({ threshold: 0.3, triggerOnce: true });
 
-  const rings = [
+  const indicators = [
     {
       value: data.prescribersExcessiveRefills,
       label: "Prescribers writing >3 refills",
       color: "#FF8A8A",
     },
-    // 6th ring (Jesse 6/29): pharmacies dispensing opioid Rx with >3 refills.
+    // (Jesse 6/29): pharmacies dispensing opioid Rx with >3 refills.
     // Hidden when the figure isn't present in the data.
     ...(typeof data.pharmaciesOver3Refills === "number"
       ? [
@@ -123,7 +131,11 @@ export default function ClinicalWarningSigns({
       label: "Pharmacies missing multi-prescriber activity",
       color: "var(--covert-teal)",
     },
-  ];
+  ]
+    // Ranked largest-first on a shared scale (Knaflic: "order in the sort").
+    .sort((a, b) => b.value - a.value);
+
+  const max = indicators[0]?.value ?? 0;
 
   return (
     <section
@@ -168,23 +180,24 @@ export default function ClinicalWarningSigns({
           </h2>
         </Reveal>
 
-        {/* 3-across grid (Jesse 6/29): 3 per row on desktop, 2 on tablet,
-            1 on mobile. Rings cascade in one-by-one as the section scrolls in. */}
-        <Stagger
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-items-center"
-          style={{ rowGap: "48px", columnGap: "32px", marginTop: "56px" }}
-          step={100}
+        {/* Ranked horizontal bars on a shared scale — any two indicators are
+            directly comparable by length. Bars grow in as the section reveals. */}
+        <div
+          className="flex flex-col"
+          style={{ gap: "22px", marginTop: "56px" }}
         >
-          {rings.map((ring) => (
-            <RingIndicator
-              key={ring.label}
-              value={ring.value}
-              label={ring.label}
-              color={ring.color}
+          {indicators.map((ind, i) => (
+            <WarningBar
+              key={ind.label}
+              value={ind.value}
+              label={ind.label}
+              color={ind.color}
+              max={max}
               animate={inView}
+              delay={i * 80}
             />
           ))}
-        </Stagger>
+        </div>
 
         <Reveal>
           <p
