@@ -41,9 +41,9 @@ export default function RiskBreakdown({ data }: RiskBreakdownProps) {
     <section
       className="w-full"
       style={{
-        paddingTop: "clamp(72px, 8vw, 112px)",
-        paddingBottom: "clamp(72px, 8vw, 112px)",
-        backgroundColor: "var(--covert-black)",
+        paddingTop: "clamp(52px, 6vw, 84px)",
+        paddingBottom: "clamp(52px, 6vw, 84px)",
+        backgroundColor: "transparent",
         color: "#FFFFFF",
       }}
     >
@@ -53,7 +53,7 @@ export default function RiskBreakdown({ data }: RiskBreakdownProps) {
           <span
             className="font-bold uppercase"
             style={{
-              fontSize: "11px",
+              fontSize: "13px",
               color: "var(--covert-teal)",
               letterSpacing: "0.16em",
             }}

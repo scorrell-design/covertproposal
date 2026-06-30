@@ -1,0 +1,5 @@
+[build]
+  command = "PATH=\"./node_modules/.bin:$PATH\" npm run build"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"

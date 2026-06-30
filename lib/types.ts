@@ -25,6 +25,10 @@ export interface PCRData {
   pharmaciesDispensingOpioids: number;
   pharmaciesEarlyRefills: number;
   pharmaciesHighDosage: number;
+  // Pharmacies dispensing opioid Rx with >3 refills (Jesse 6/29 — 6th ring on
+  // Clinical Warning Signs). Optional: older PCRs / parses may not populate it,
+  // in which case the ring is hidden.
+  pharmaciesOver3Refills?: number;
   // Pharmacies that filled an opioid Rx for the same member from multiple
   // prescribers (PCR p4 "Pharmacies > 1 Prescriber") — confirmed by Jesse 6/3/26.
   pharmaciesMultiPrescriber: number;

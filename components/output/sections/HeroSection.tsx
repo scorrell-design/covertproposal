@@ -17,9 +17,9 @@ export default function HeroSection({ data }: HeroSectionProps) {
     <section
       className="w-full relative overflow-hidden"
       style={{
-        paddingTop: "clamp(96px, 12vw, 160px)",
-        paddingBottom: "clamp(80px, 10vw, 140px)",
-        backgroundColor: "var(--covert-black)",
+        paddingTop: "clamp(88px, 11vw, 144px)",
+        paddingBottom: "clamp(56px, 7vw, 96px)",
+        backgroundColor: "transparent",
         color: "#FFFFFF",
       }}
     >
@@ -45,7 +45,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
           <span
             className="font-bold uppercase"
             style={{
-              fontSize: "11px",
+              fontSize: "13px",
               color: "var(--covert-teal)",
               letterSpacing: "0.16em",
             }}

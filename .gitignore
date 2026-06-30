@@ -43,3 +43,7 @@ next-env.d.ts
 
 # prisma generated client (regenerated via `prisma generate` on install/build)
 /lib/generated
+
+# netlify (local build state + generated edge lockfile)
+.netlify
+deno.lock

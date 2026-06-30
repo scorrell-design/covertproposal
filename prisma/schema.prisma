@@ -99,3 +99,19 @@ model EngagementRequest {
 
   @@index([proposalId])
 }
+
+/// Transient storage for a chunked PCR upload. The client splits the PDF into
+/// sub-6MB parts (the AWS Lambda invocation payload cap that backs Netlify
+/// Functions) and POSTs each to /api/parse/chunk; /api/parse reassembles them,
+/// runs the extractor, then deletes the rows. Nothing here should outlive a
+/// single parse — `createdAt` lets a sweep reclaim abandoned uploads.
+model PcrUploadChunk {
+  id        String   @id @default(cuid())
+  uploadId  String
+  index     Int
+  data      Bytes
+  createdAt DateTime @default(now())
+
+  @@unique([uploadId, index])
+  @@index([uploadId])
+}

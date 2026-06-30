@@ -2,18 +2,15 @@
 
 import { Activity, Info } from "lucide-react";
 import SectionLabel from "@/components/shared/SectionLabel";
-import TealHighlight from "@/components/shared/TealHighlight";
 import TickerCard from "@/components/shared/TickerCard";
-import { useLiveTicker } from "@/lib/hooks";
+import Reveal from "@/components/shared/Reveal";
+import Stagger from "@/components/shared/Stagger";
+import SplitFlapNumber from "@/components/shared/SplitFlapNumber";
 import { PCRData } from "@/lib/types";
 import {
-  calcPreventableSpend,
-  calcDailyCostOfInaction,
-  calcMonthlyPreventable,
+  calcAvoidedMedicalSpend,
   calcProjectedOverdoseDeaths,
   calcProjectedAbuseAddiction,
-  calcAtRiskCadence,
-  formatCurrency,
 } from "@/lib/calculations";
 import { useState } from "react";
 
@@ -23,34 +20,41 @@ interface LiveRiskTickersProps {
 
 export default function LiveRiskTickers({ data }: LiveRiskTickersProps) {
   const [showTooltip, setShowTooltip] = useState(false);
-  // Preventable spend now uses the at-risk basis (Jesse 6/26) so the ticker
-  // matches the Clinical & Financial Impact section.
-  const preventable = calcPreventableSpend(data.identifiedMembers);
-  // Per Jesse (6/3/26): show preventable cost as a MONTHLY figure — daily isn't
-  // large enough to land for smaller groups; monthly reads for all clients.
-  const monthly = calcMonthlyPreventable(preventable);
-  // Real-time accrual rate (per-second) still drives the "since report generated" line.
-  const dailyCost = calcDailyCostOfInaction(preventable);
-  const accumulated = useLiveTicker(dailyCost);
-  // Box 5 — overdose deaths: members managing withdrawal ÷ 820, hidden < 300 members.
+
+  // Per Jesse (6/29): every category is now shown as a MONTHLY figure — its
+  // annual basis ÷ 12 — except the projected overdose-death box, which stays a
+  // 12-month total and is pulled out below the rest.
+  //
+  // Box 1 (static): medical spend attributable to opioid withdrawal symptoms
+  // (at-risk basis, identified members × $23,790) ÷ 12.
+  const monthlyMedicalSpend = Math.round(
+    calcAvoidedMedicalSpend(data.identifiedMembers) / 12,
+  );
+  // Box 2: newly identified at-risk members per month.
+  const monthlyIdentified = Math.round(data.identifiedMembers / 12);
+  // Box 3: members entering a path to abuse or addiction per month.
+  const monthlyAbuseAddiction = Math.round(
+    calcProjectedAbuseAddiction(data.identifiedMembers) / 12,
+  );
+  // Overdose deaths: members managing withdrawal ÷ 820, hidden < 300 members.
+  // Kept as an annual (next-12-months) figure — not divided by 12.
   const overdoseDeaths = calcProjectedOverdoseDeaths(
     data.withdrawalSymptomMembers,
     data.totalPlanMembers,
   );
-  const abuseAddiction = calcProjectedAbuseAddiction(data.identifiedMembers);
-  const cadence = calcAtRiskCadence(data.identifiedMembers);
 
   return (
     <section
       className="w-full"
       style={{
-        paddingTop: "clamp(72px, 8vw, 112px)",
-        paddingBottom: "clamp(72px, 8vw, 112px)",
-        backgroundColor: "#0B0B0B",
+        paddingTop: "clamp(52px, 6vw, 84px)",
+        paddingBottom: "clamp(52px, 6vw, 84px)",
+        backgroundColor: "transparent",
         color: "#FFFFFF",
       }}
     >
       <div className="mx-auto px-6 md:px-10 lg:px-16" style={{ maxWidth: "1100px" }}>
+       <Reveal>
         <div className="flex items-center gap-2" style={{ marginBottom: "24px" }}>
           <SectionLabel icon={Activity} text="Live Risk Tickers" />
           <div className="relative">
@@ -113,70 +117,92 @@ export default function LiveRiskTickers({ data }: LiveRiskTickersProps) {
               color: "var(--on-dark-text)",
             }}
           >
-            Every month of inaction translates to{" "}
-            <TealHighlight>{formatCurrency(monthly)}</TealHighlight> in
-            preventable medical costs — your plan is subsidizing the
-            consequences of upstream prescribing failures.
+            Every month of inaction allows opioid risk to grow across your
+            health plan.
           </p>
         </div>
+       </Reveal>
 
-        {/* Ticker grid */}
-        <div
+        {/* Monthly ticker grid — each category broken down per month (Jesse 6/29).
+            Cards cascade in one-by-one and their figures split-flap into place. */}
+        <Stagger
           className="grid"
           style={{
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
             gap: "24px",
           }}
         >
-          {/* 1: Monthly cost lost — with live real-time accrual */}
+          {/* 1: Monthly medical spend */}
           <TickerCard
-            value={`$${(monthly + accumulated).toLocaleString()}`}
+            value={monthlyMedicalSpend}
+            prefix="$"
             label="Medical cost lost every month without action"
+            sublabel="Medical spend attributable to opioid withdrawal symptoms, per month"
             borderColor="#DC2626"
             valueColor="#DC2626"
-            animate={false}
-            liveAccumulator={
-              accumulated > 0
-                ? `+ $${accumulated.toLocaleString()} since this report was generated`
-                : undefined
-            }
           />
 
-          {/* 2: Preventable spend */}
+          {/* 2: Newly identified at-risk members per month */}
           <TickerCard
-            value={formatCurrency(preventable)}
-            label="Preventable spend accumulating right now"
-            borderColor="#F59E0B"
-            valueColor="#F59E0B"
-          />
-
-          {/* 3: Members at elevated risk */}
-          <TickerCard
-            value={data.identifiedMembers}
-            label="Members identified at elevated opioid risk"
-            sublabel={`~${cadence.value} new at-risk patient${cadence.value !== 1 ? "s" : ""} every ${cadence.cadence}`}
+            value={monthlyIdentified}
+            label="Newly identified at-risk members"
+            sublabel="Members entering elevated opioid risk each month"
             borderColor="var(--covert-teal)"
             valueColor="var(--covert-teal)"
           />
 
-          {/* 4: Projected abuse/addiction */}
+          {/* 3: Members entering a path to abuse/addiction per month */}
           <TickerCard
-            value={abuseAddiction}
+            value={monthlyAbuseAddiction}
             label="Members on a path to abuse or addiction"
+            sublabel="New members each month"
             borderColor="#FF8A8A"
             valueColor="#FF8A8A"
           />
+        </Stagger>
 
-          {/* 5: Projected overdose deaths (conditional — hidden < 300 members) */}
-          {overdoseDeaths !== null && (
-            <TickerCard
-              value={overdoseDeaths}
-              label="Health plan members projected to die from opioid overdose in the next 12 months"
-              borderColor="#FFFFFF"
-              valueColor="#FFFFFF"
-            />
-          )}
-        </div>
+        {/* Projected overdose deaths — pulled out below, larger (Jesse 6/29).
+            Annual (next-12-months) figure, not a monthly breakdown. */}
+        {overdoseDeaths !== null && (
+          <Reveal style={{ marginTop: "24px" }}>
+            <div
+              className="flex flex-col items-center text-center md:flex-row md:items-center md:text-left"
+              style={{
+                backgroundColor: "var(--on-dark-surface)",
+                border: "1px solid var(--on-dark-border)",
+                borderTop: "3px solid #FFFFFF",
+                borderRadius: "16px",
+                padding: "clamp(32px, 5vw, 48px)",
+                gap: "clamp(16px, 4vw, 48px)",
+              }}
+            >
+              <p
+                className="font-bold"
+                style={{
+                  fontSize: "clamp(72px, 11vw, 132px)",
+                  lineHeight: 1,
+                  letterSpacing: "-0.04em",
+                  color: "#FFFFFF",
+                  flexShrink: 0,
+                }}
+              >
+                <SplitFlapNumber value={overdoseDeaths} />
+              </p>
+              <p
+                style={{
+                  fontSize: "clamp(18px, 2.2vw, 24px)",
+                  lineHeight: 1.4,
+                  color: "var(--on-dark-text)",
+                  fontWeight: 500,
+                  maxWidth: "520px",
+                }}
+              >
+                health plan member{overdoseDeaths !== 1 ? "s" : ""} projected to
+                die from opioid overdose in the next 12 months.
+              </p>
+            </div>
+          </Reveal>
+        )}
       </div>
     </section>
   );

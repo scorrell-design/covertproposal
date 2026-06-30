@@ -1,49 +1,32 @@
 "use client";
 
-import { useCountUp } from "@/lib/hooks";
+import SplitFlapNumber from "@/components/shared/SplitFlapNumber";
 
 interface TickerCardProps {
-  value: string | number;
+  value: number;
+  prefix?: string;
+  suffix?: string;
   label: string;
   sublabel?: string;
   borderColor: string;
   valueColor?: string;
   borderStyle?: "solid" | "dashed";
-  animate?: boolean;
-  liveAccumulator?: string;
 }
 
 export default function TickerCard({
   value,
+  prefix,
+  suffix,
   label,
   sublabel,
   borderColor,
   valueColor,
   borderStyle = "solid",
-  animate = true,
-  liveAccumulator,
 }: TickerCardProps) {
-  const numericValue =
-    typeof value === "number" ? value : parseInt(value.replace(/[^0-9]/g, ""));
-  const isFormatted = typeof value === "string" && value.startsWith("$");
-  const { count, ref } = useCountUp(
-    numericValue,
-    1500,
-    animate,
-  );
-
-  const displayValue =
-    typeof value === "string" && !animate
-      ? value
-      : isFormatted
-        ? `$${count.toLocaleString()}`
-        : count.toLocaleString();
-
   return (
     <div
-      ref={ref}
       data-ticker
-      className="transition-all duration-200 hover:-translate-y-0.5 min-w-0"
+      className="transition-all duration-200 hover:-translate-y-0.5 min-w-0 h-full"
       style={{
         backgroundColor: "var(--on-dark-surface)",
         border: "1px solid var(--on-dark-border)",
@@ -60,10 +43,9 @@ export default function TickerCard({
           color: valueColor || borderColor,
           lineHeight: 1.05,
           letterSpacing: "-0.03em",
-          wordBreak: "break-word",
         }}
       >
-        {displayValue}
+        <SplitFlapNumber value={value} prefix={prefix} suffix={suffix} />
       </p>
       <p
         style={{
@@ -84,11 +66,6 @@ export default function TickerCard({
           }}
         >
           {sublabel}
-        </p>
-      )}
-      {liveAccumulator && (
-        <p style={{ fontSize: "12px", color: "#FF8A8A", marginTop: "10px" }}>
-          {liveAccumulator}
         </p>
       )}
     </div>

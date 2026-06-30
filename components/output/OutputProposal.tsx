@@ -1,6 +1,8 @@
 "use client";
 
 import NavBar from "./NavBar";
+import Reveal from "@/components/shared/Reveal";
+import ScrollProgress from "@/components/shared/ScrollProgress";
 import HeroSection from "./sections/HeroSection";
 import ExecutiveSummary from "./sections/ExecutiveSummary";
 import LiveRiskTickers from "./sections/LiveRiskTickers";
@@ -32,21 +34,36 @@ export default function OutputProposal({ data, onBack, onShare, onDownloaded }: 
   };
 
   return (
-    <div className="w-full min-h-screen" style={{ backgroundColor: "var(--covert-bg)" }}>
+    <div
+      className="w-full min-h-screen"
+      style={{
+        // Dark canvas base so scroll-revealed sections rise against a
+        // continuous surface (never a flash of white) and the whole report
+        // reads as one fluid page rather than stacked slabs.
+        background:
+          "linear-gradient(180deg, #141417 0%, #121214 50%, #141417 100%)",
+      }}
+    >
       <NavBar onBack={onBack} onShare={onShare} onDownloadPDF={handleDownloadPDF} />
+      <ScrollProgress />
 
-      {/* Section order per Jesse (6/26): Scope → Cause → Severity → Cost →
-          Action. "What the Data Shows" (ExecutiveSummary) now leads as the
-          combined data section; the close is a single merged section. */}
+      {/* Section order per Jesse (6/29): the Member Risk Breakdown follows the
+          "What the Data Shows" narrative directly (Scope → who's at risk →
+          prescribers causing it → clinical signs → cost → action).
+
+          Single-block sections rise as one via Reveal. Grid-heavy sections
+          (ClinicalWarningSigns, LiveRiskTickers, FinancialImpact, NextStepsCTA)
+          are NOT wrapped here — they reveal their header and stagger their
+          cards internally, so the cards cascade in one-by-one. */}
       <div id="proposal-output">
         <HeroSection data={data} />
-        <ExecutiveSummary data={data} />
-        <PrescriberPatterns data={data} />
+        <Reveal><ExecutiveSummary data={data} /></Reveal>
+        <Reveal><RiskBreakdown data={data} /></Reveal>
+        <Reveal><PrescriberPatterns data={data} /></Reveal>
         <ClinicalWarningSigns data={data} />
-        <RiskBreakdown data={data} />
         <LiveRiskTickers data={data} />
-        <WithdrawalIndicators data={data} />
-        <ChronicConditions data={data} />
+        <Reveal><WithdrawalIndicators data={data} /></Reveal>
+        <Reveal><ChronicConditions data={data} /></Reveal>
         <FinancialImpact data={data} />
         <NextStepsCTA data={data} />
         <Footer />

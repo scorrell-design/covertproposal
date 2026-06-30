@@ -6,13 +6,15 @@ import {
   BarChart,
   CartesianGrid,
   Cell,
+  LabelList,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
 import { PCRData } from "@/lib/types";
 import { formatNumber } from "@/lib/calculations";
-import { useCountUp, useContainerWidth } from "@/lib/hooks";
+import { useContainerWidth } from "@/lib/hooks";
+import SplitFlapNumber from "@/components/shared/SplitFlapNumber";
 
 interface WithdrawalIndicatorsProps {
   data: PCRData;
@@ -21,7 +23,6 @@ interface WithdrawalIndicatorsProps {
 export default function WithdrawalIndicators({
   data,
 }: WithdrawalIndicatorsProps) {
-  const { count, ref } = useCountUp(data.wsiUniqueMembers);
   const { ref: chartRef, width: chartWidth } = useContainerWidth();
   const sorted = [...data.wsiBreakdown].sort((a, b) => b.count - a.count);
   const max = sorted[0]?.count ?? 0;
@@ -31,9 +32,9 @@ export default function WithdrawalIndicators({
     <section
       className="w-full"
       style={{
-        paddingTop: "clamp(72px, 8vw, 112px)",
-        paddingBottom: "clamp(72px, 8vw, 112px)",
-        backgroundColor: "#0B0B0B",
+        paddingTop: "clamp(52px, 6vw, 84px)",
+        paddingBottom: "clamp(52px, 6vw, 84px)",
+        backgroundColor: "transparent",
         color: "#FFFFFF",
       }}
     >
@@ -43,7 +44,7 @@ export default function WithdrawalIndicators({
           <span
             className="font-bold uppercase"
             style={{
-              fontSize: "11px",
+              fontSize: "13px",
               color: "var(--covert-teal)",
               letterSpacing: "0.16em",
             }}
@@ -77,7 +78,7 @@ export default function WithdrawalIndicators({
           }}
         >
           {/* Hero stat */}
-          <div ref={ref} className="min-w-0">
+          <div className="min-w-0">
             <p
               className="font-bold"
               style={{
@@ -87,7 +88,7 @@ export default function WithdrawalIndicators({
                 color: "#FF8A8A",
               }}
             >
-              {formatNumber(count)}
+              <SplitFlapNumber value={data.wsiUniqueMembers} />
             </p>
             <p
               className="font-semibold"
@@ -131,8 +132,8 @@ export default function WithdrawalIndicators({
                 />
                 <XAxis
                   type="number"
-                  tick={{ fontSize: 11, fill: "rgba(255,255,255,0.55)" }}
-                  stroke="rgba(255,255,255,0.15)"
+                  tick={{ fontSize: 11, fill: "rgba(255,255,255,0.7)" }}
+                  stroke="rgba(255,255,255,0.25)"
                 />
                 <YAxis
                   type="category"
@@ -142,7 +143,7 @@ export default function WithdrawalIndicators({
                     fontSize: 12,
                     fill: "#FFFFFF",
                   }}
-                  stroke="rgba(255,255,255,0.15)"
+                  stroke="rgba(255,255,255,0.25)"
                 />
                 <Tooltip
                   cursor={{ fill: "rgba(255,138,138,0.08)" }}
@@ -159,7 +160,9 @@ export default function WithdrawalIndicators({
                 />
                 <Bar dataKey="count" radius={[0, 4, 4, 0]}>
                   {sorted.map((entry, idx) => {
-                    const opacity = 0.5 + (entry.count / max) * 0.5;
+                    // Keep a high opacity floor so every bar — including the
+                    // smallest indicators — stays clearly visible (Jesse 6/29).
+                    const opacity = 0.7 + (entry.count / max) * 0.3;
                     return (
                       <Cell
                         key={`cell-${idx}`}
@@ -168,6 +171,13 @@ export default function WithdrawalIndicators({
                       />
                     );
                   })}
+                  <LabelList
+                    dataKey="count"
+                    position="right"
+                    fill="#FFFFFF"
+                    fontSize={11}
+                    formatter={(v) => formatNumber(Number(v))}
+                  />
                 </Bar>
               </BarChart>
             )}

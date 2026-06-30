@@ -2,17 +2,13 @@
 
 import { Stethoscope } from "lucide-react";
 import { PCRData } from "@/lib/types";
-import { useCountUp } from "@/lib/hooks";
+import SplitFlapNumber from "@/components/shared/SplitFlapNumber";
 
 interface PrescriberPatternsProps {
   data: PCRData;
 }
 
 export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
-  const { count: flaggedCount, ref: flaggedRef } = useCountUp(
-    data.identifiedPrescribers,
-  );
-
   const flaggedPct =
     data.totalPrescribersWithOpioid > 0
       ? Math.round(
@@ -24,9 +20,9 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
     <section
       className="w-full relative overflow-hidden"
       style={{
-        paddingTop: "clamp(72px, 8vw, 112px)",
-        paddingBottom: "clamp(72px, 8vw, 112px)",
-        backgroundColor: "var(--covert-black)",
+        paddingTop: "clamp(52px, 6vw, 84px)",
+        paddingBottom: "clamp(52px, 6vw, 84px)",
+        backgroundColor: "transparent",
         color: "#FFFFFF",
       }}
     >
@@ -46,7 +42,7 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
           <span
             className="font-bold uppercase"
             style={{
-              fontSize: "11px",
+              fontSize: "13px",
               color: "var(--covert-teal)",
               letterSpacing: "0.16em",
             }}
@@ -72,7 +68,6 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
 
         {/* Hero number — prescribers flagged for unsafe prescribing */}
         <div
-          ref={flaggedRef}
           className="text-center min-w-0"
           style={{ marginTop: "56px", marginBottom: "56px" }}
         >
@@ -85,7 +80,7 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
               color: "#FF8A8A",
             }}
           >
-            {flaggedCount}
+            <SplitFlapNumber value={data.identifiedPrescribers} />
           </p>
           <p
             style={{
@@ -124,7 +119,7 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
             <h3
               className="font-bold uppercase"
               style={{
-                fontSize: "11px",
+                fontSize: "12px",
                 color: "#FF8A8A",
                 letterSpacing: "0.16em",
               }}
@@ -172,7 +167,7 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
             <h3
               className="font-bold uppercase"
               style={{
-                fontSize: "11px",
+                fontSize: "12px",
                 color: "#FFB36B",
                 letterSpacing: "0.16em",
               }}

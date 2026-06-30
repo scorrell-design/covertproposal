@@ -3,7 +3,7 @@
 import { FileSearch } from "lucide-react";
 import { PCRData } from "@/lib/types";
 import { formatNumber } from "@/lib/calculations";
-import { useCountUp } from "@/lib/hooks";
+import SplitFlapNumber from "@/components/shared/SplitFlapNumber";
 
 interface ExecutiveSummaryProps {
   data: PCRData;
@@ -16,34 +16,20 @@ interface ExecutiveSummaryProps {
  * stat tiles close it out. The donut/pharmacy chart was dropped.
  */
 export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
-  const { count, ref } = useCountUp(data.identifiedMembers);
-
   // Headline stat (Jesse 6/26): the plan's OWN share of opioid recipients
   // flagged with clinical risk indicators — computed, not a borrowed benchmark.
   const atRiskShare =
     data.membersWithOpioidRx > 0
       ? Math.round((data.identifiedMembers / data.membersWithOpioidRx) * 100)
       : 0;
-  const opioidPercentage =
-    data.totalMembersWithAnyRx > 0
-      ? Math.round(
-          (data.membersWithOpioidRx / data.totalMembersWithAnyRx) * 100,
-        )
-      : 0;
-  const withdrawalPercentage =
-    data.membersWithOpioidRx > 0
-      ? Math.round(
-          (data.withdrawalSymptomMembers / data.membersWithOpioidRx) * 100,
-        )
-      : 0;
 
   return (
     <section
       className="w-full relative overflow-hidden"
       style={{
-        paddingTop: "clamp(72px, 8vw, 112px)",
-        paddingBottom: "clamp(72px, 8vw, 112px)",
-        backgroundColor: "var(--covert-black)",
+        paddingTop: "clamp(52px, 6vw, 84px)",
+        paddingBottom: "clamp(52px, 6vw, 84px)",
+        backgroundColor: "transparent",
         color: "#FFFFFF",
       }}
     >
@@ -65,7 +51,7 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
           <span
             className="font-bold uppercase"
             style={{
-              fontSize: "11px",
+              fontSize: "13px",
               color: "var(--covert-teal)",
               letterSpacing: "0.16em",
             }}
@@ -84,19 +70,22 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
           <p
             className="font-bold"
             style={{
-              fontSize: "clamp(72px, 9vw, 120px)",
-              lineHeight: 0.95,
-              letterSpacing: "-0.04em",
-              color: "var(--covert-teal)",
+              // Sized to match the at-risk hero number below it, and set in the
+              // warning coral rather than brand teal so the risk reads instantly
+              // (Jesse 6/29).
+              fontSize: "clamp(80px, 12vw, 160px)",
+              lineHeight: 0.92,
+              letterSpacing: "-0.05em",
+              color: "#FF8A8A",
             }}
           >
             {atRiskShare}%
           </p>
           <p
             style={{
-              fontSize: "clamp(18px, 2vw, 24px)",
+              fontSize: "clamp(18px, 2vw, 26px)",
               color: "#FFFFFF",
-              lineHeight: 1.35,
+              lineHeight: 1.3,
               maxWidth: "440px",
               fontWeight: 500,
             }}
@@ -107,18 +96,16 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
         </div>
         <p
           style={{
-            fontSize: "13px",
+            fontSize: "16px",
             color: "var(--on-dark-text-secondary)",
-            marginTop: "16px",
-            lineHeight: 1.5,
+            marginTop: "20px",
+            lineHeight: 1.55,
             maxWidth: "560px",
           }}
         >
           Chronic opioid users incur roughly{" "}
-          <strong style={{ color: "#FFFFFF" }}>
-            40% higher total medical cost
-          </strong>{" "}
-          than non-users.
+          <strong style={{ color: "#FFFFFF" }}>6x more medical cost</strong> than
+          non-users.
           <sup style={{ fontSize: "9px" }}>†</sup>
         </p>
 
@@ -133,7 +120,6 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
 
         {/* Hero number — the at-risk population */}
         <p
-          ref={ref}
           className="font-bold"
           style={{
             fontSize: "clamp(80px, 12vw, 160px)",
@@ -142,7 +128,7 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
             color: "var(--covert-teal)",
           }}
         >
-          {formatNumber(count)}
+          <SplitFlapNumber value={data.identifiedMembers} />
         </p>
 
         <h2
@@ -185,129 +171,20 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
           </p>
         </div>
 
-        {/* Two key stat tiles — carried over from Prescription Utilization */}
-        <div
-          className="grid"
-          style={{
-            gridTemplateColumns:
-              "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
-            gap: "20px",
-            marginTop: "48px",
-          }}
-        >
-          <StatTile
-            eyebrow="Members with opioid Rx"
-            eyebrowColor="var(--covert-teal)"
-            value={data.membersWithOpioidRx.toLocaleString()}
-            percent={`${opioidPercentage}%`}
-            note="versus average of 10%"
-            accent="var(--covert-teal)"
-          />
-          <StatTile
-            eyebrow="Members with severe withdrawal symptoms"
-            eyebrowColor="#FF8A8A"
-            value={data.withdrawalSymptomMembers.toLocaleString()}
-            percent={`${withdrawalPercentage}% of opioid Rx`}
-            note="Identified via cross-class prescribing pattern analysis"
-            accent="var(--covert-red)"
-          />
-        </div>
-
         <p
           className="italic"
           style={{
-            fontSize: "11px",
-            color: "var(--on-dark-text-muted)",
-            marginTop: "24px",
-            lineHeight: 1.5,
+            fontSize: "13px",
+            color: "var(--on-dark-text-secondary)",
+            marginTop: "32px",
+            lineHeight: 1.6,
           }}
         >
-          *Based on CDC-aligned prescribing risk factors. † Healthcare costs and
-          utilization associated with high-risk prescription opioid use — a
-          retrospective cohort study (PMC, 2018).
+          *Based on Covert client data. † Healthcare costs and utilization
+          associated with high-risk prescription opioid use — a retrospective
+          cohort study (PMC, 2018).
         </p>
       </div>
     </section>
-  );
-}
-
-interface StatTileProps {
-  eyebrow: string;
-  eyebrowColor: string;
-  value: string;
-  percent: string;
-  note: string;
-  accent: string;
-}
-
-function StatTile({
-  eyebrow,
-  eyebrowColor,
-  value,
-  percent,
-  note,
-  accent,
-}: StatTileProps) {
-  return (
-    <div
-      style={{
-        backgroundColor: "var(--on-dark-surface)",
-        border: "1px solid var(--on-dark-border)",
-        borderRadius: "16px",
-        padding: "22px 24px",
-      }}
-    >
-      <p
-        className="font-semibold uppercase"
-        style={{
-          fontSize: "11px",
-          color: eyebrowColor,
-          letterSpacing: "0.12em",
-        }}
-      >
-        {eyebrow}
-      </p>
-      <div
-        className="flex items-center"
-        style={{ gap: "12px", marginTop: "10px", flexWrap: "wrap" }}
-      >
-        <span
-          className="font-bold"
-          style={{
-            fontSize: "clamp(34px, 3.6vw, 46px)",
-            lineHeight: 1,
-            letterSpacing: "-0.03em",
-            color: "#FFFFFF",
-          }}
-        >
-          {value}
-        </span>
-        <span
-          className="inline-flex items-center justify-center font-semibold"
-          style={{
-            fontSize: "13px",
-            color: "#FFFFFF",
-            backgroundColor: accent,
-            borderRadius: "999px",
-            padding: "6px 14px",
-            lineHeight: 1,
-            minHeight: "26px",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {percent}
-        </span>
-      </div>
-      <p
-        className="italic"
-        style={{
-          fontSize: "12px",
-          color: "var(--on-dark-text-muted)",
-          marginTop: "8px",
-        }}
-      >
-        {note}
-      </p>
-    </div>
   );
 }

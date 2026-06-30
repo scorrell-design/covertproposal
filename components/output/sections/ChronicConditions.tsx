@@ -12,14 +12,14 @@ import {
 } from "recharts";
 import { PCRData } from "@/lib/types";
 import { formatNumber } from "@/lib/calculations";
-import { useCountUp, useContainerWidth } from "@/lib/hooks";
+import { useContainerWidth } from "@/lib/hooks";
+import SplitFlapNumber from "@/components/shared/SplitFlapNumber";
 
 interface ChronicConditionsProps {
   data: PCRData;
 }
 
 export default function ChronicConditions({ data }: ChronicConditionsProps) {
-  const { count, ref } = useCountUp(data.chronicCostFactors);
   const { ref: chartRef, width: chartWidth } = useContainerWidth();
   const sorted = [...data.chronicConditions].sort((a, b) => b.count - a.count);
   const max = sorted[0]?.count ?? 0;
@@ -29,9 +29,9 @@ export default function ChronicConditions({ data }: ChronicConditionsProps) {
     <section
       className="w-full relative overflow-hidden"
       style={{
-        paddingTop: "clamp(72px, 8vw, 112px)",
-        paddingBottom: "clamp(72px, 8vw, 112px)",
-        backgroundColor: "var(--covert-black)",
+        paddingTop: "clamp(52px, 6vw, 84px)",
+        paddingBottom: "clamp(52px, 6vw, 84px)",
+        backgroundColor: "transparent",
         color: "#FFFFFF",
       }}
     >
@@ -51,7 +51,7 @@ export default function ChronicConditions({ data }: ChronicConditionsProps) {
           <span
             className="font-bold uppercase"
             style={{
-              fontSize: "11px",
+              fontSize: "13px",
               color: "var(--covert-teal)",
               letterSpacing: "0.16em",
             }}
@@ -138,7 +138,7 @@ export default function ChronicConditions({ data }: ChronicConditionsProps) {
           </div>
 
           {/* Hero stat */}
-          <div ref={ref} className="min-w-0">
+          <div className="min-w-0">
             <p
               className="font-bold"
               style={{
@@ -148,7 +148,7 @@ export default function ChronicConditions({ data }: ChronicConditionsProps) {
                 color: "var(--covert-teal)",
               }}
             >
-              {formatNumber(count)}
+              <SplitFlapNumber value={data.chronicCostFactors} />
             </p>
             <p
               className="font-semibold"
@@ -230,8 +230,8 @@ export default function ChronicConditions({ data }: ChronicConditionsProps) {
         <p
           className="italic"
           style={{
-            fontSize: "11px",
-            color: "var(--on-dark-text-muted)",
+            fontSize: "13px",
+            color: "var(--on-dark-text-secondary)",
             marginTop: "16px",
           }}
         >

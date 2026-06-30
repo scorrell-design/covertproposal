@@ -4,8 +4,15 @@ const LIGHT_OVERRIDES_CSS = `
   [data-pdf-export], [data-pdf-export] * {
     color-scheme: light !important;
   }
+  [data-pdf-export] [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
   [data-pdf-export] {
     --covert-black: #FFFFFF;
+    --covert-canvas: #FFFFFF;
+    --covert-surface-1: #FFFFFF;
+    --covert-surface-2: #FFFFFF;
     --covert-bg: #FFFFFF;
     --covert-bg-secondary: #F8FAFC;
     --covert-text-dark: #0F172A;

@@ -9,6 +9,11 @@
   --covert-bg: #FFFFFF;
   --covert-bg-secondary: #F8FAFC;
   --covert-black: #171717;
+  /* Unified dark canvas — the page base plus two near-identical surface tones
+     used to give sections gentle rhythm without hard "slab" banding. */
+  --covert-canvas: #121214;
+  --covert-surface-1: #18181B;
+  --covert-surface-2: #141417;
   --covert-text-dark: #1A1A2E;
   --covert-text-secondary: #6D7482;
   --covert-border: #E5E7EB;
@@ -30,6 +35,33 @@
 
 html, body {
   width: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Animated / data figures use tabular figures so digits hold a constant width
+   while counting — no horizontal jitter as the value climbs. */
+[data-ticker] p,
+[data-count] {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
 
 body {
@@ -104,6 +136,14 @@ body {
 @keyframes checkmark {
   from { opacity: 0; transform: scale(0.8); }
   to { opacity: 1; transform: scale(1); }
+}
+
+/* Split-flap "fold" — each digit folds down into place like a train-station
+   departure board. Replayed every time a digit changes during the shuffle. */
+@keyframes flap {
+  0% { transform: rotateX(88deg); opacity: 0.25; }
+  55% { transform: rotateX(-14deg); opacity: 1; }
+  100% { transform: rotateX(0deg); }
 }
 
 .animate-fade-in {

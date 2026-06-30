@@ -68,10 +68,13 @@ check(
   riHits.length > 0 ? `Found in: ${riHits.join(", ")}` : undefined,
 );
 
-// 8. CTA headline uses identifiedMembers + "directly affected"
+// 8. CTA close trimmed (Jesse 6/29): the report now ends on the heading, the
+// three comparison boxes, and the Request button — the "directly affected"
+// transition headline and the closing stat tiles were removed.
 check(
-  "CTA headline interpolates identifiedMembers",
-  /identifiedMembers/.test(joined) && /directly affected/.test(joined),
+  "CTA close trimmed to heading + 3 boxes + Request button (no 'directly affected' headline)",
+  !/directly affected/.test(joined) &&
+    /Request Client Service Agreement/.test(joined),
 );
 
 // 9. Data type has pharmaciesDispensingOpioids

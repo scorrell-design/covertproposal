@@ -3,6 +3,8 @@
 import { AlertTriangle } from "lucide-react";
 import { PCRData } from "@/lib/types";
 import { useInView } from "react-intersection-observer";
+import Reveal from "@/components/shared/Reveal";
+import Stagger from "@/components/shared/Stagger";
 
 interface ClinicalWarningSignsProps {
   data: PCRData;
@@ -88,10 +90,21 @@ export default function ClinicalWarningSigns({
       label: "Prescribers writing >3 refills",
       color: "#FF8A8A",
     },
+    // 6th ring (Jesse 6/29): pharmacies dispensing opioid Rx with >3 refills.
+    // Hidden when the figure isn't present in the data.
+    ...(typeof data.pharmaciesOver3Refills === "number"
+      ? [
+          {
+            value: data.pharmaciesOver3Refills,
+            label: "Pharmacies dispensing >3 refills",
+            color: "#FF8A8A",
+          },
+        ]
+      : []),
     {
       value: data.crossLocationRefills,
       label: "Cross-location pharmacy refills",
-      color: "#FF8A8A",
+      color: "#FFB36B",
     },
     {
       value: data.pharmaciesEarlyRefills,
@@ -117,45 +130,50 @@ export default function ClinicalWarningSigns({
       ref={ref}
       className="w-full relative overflow-hidden"
       style={{
-        paddingTop: "clamp(72px, 8vw, 112px)",
-        paddingBottom: "clamp(72px, 8vw, 112px)",
-        backgroundColor: "#0B0B0B",
+        paddingTop: "clamp(52px, 6vw, 84px)",
+        paddingBottom: "clamp(52px, 6vw, 84px)",
+        backgroundColor: "transparent",
         color: "#FFFFFF",
       }}
     >
       <div className="mx-auto px-6 md:px-10 lg:px-16 relative" style={{ maxWidth: "1100px" }}>
-        <div className="flex items-center gap-2" style={{ marginBottom: "12px" }}>
-          <AlertTriangle size={14} style={{ color: "var(--covert-teal)" }} />
-          <span
-            className="font-bold uppercase"
+        <Reveal>
+          <div className="flex items-center gap-2" style={{ marginBottom: "12px" }}>
+            <AlertTriangle size={14} style={{ color: "var(--covert-teal)" }} />
+            <span
+              className="font-bold uppercase"
+              style={{
+                fontSize: "13px",
+                color: "var(--covert-teal)",
+                letterSpacing: "0.16em",
+              }}
+            >
+              Clinical Warning Signs
+            </span>
+          </div>
+
+          <h2
+            className="font-bold"
             style={{
-              fontSize: "11px",
-              color: "var(--covert-teal)",
-              letterSpacing: "0.16em",
+              fontSize: "clamp(28px, 3.2vw, 40px)",
+              lineHeight: 1.1,
+              letterSpacing: "-0.02em",
+              color: "#FFFFFF",
+              textWrap: "balance",
+              maxWidth: "640px",
             }}
           >
-            Clinical Warning Signs
-          </span>
-        </div>
+            Clinical red flags in{" "}
+            <span style={{ color: "var(--covert-teal)" }}>your population.</span>
+          </h2>
+        </Reveal>
 
-        <h2
-          className="font-bold"
-          style={{
-            fontSize: "clamp(28px, 3.2vw, 40px)",
-            lineHeight: 1.1,
-            letterSpacing: "-0.02em",
-            color: "#FFFFFF",
-            textWrap: "balance",
-            maxWidth: "640px",
-          }}
-        >
-          Clinical red flags in{" "}
-          <span style={{ color: "var(--covert-teal)" }}>your population.</span>
-        </h2>
-
-        <div
-          className="flex justify-center flex-wrap"
-          style={{ gap: "40px", marginTop: "56px" }}
+        {/* 3-across grid (Jesse 6/29): 3 per row on desktop, 2 on tablet,
+            1 on mobile. Rings cascade in one-by-one as the section scrolls in. */}
+        <Stagger
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-items-center"
+          style={{ rowGap: "48px", columnGap: "32px", marginTop: "56px" }}
+          step={100}
         >
           {rings.map((ring) => (
             <RingIndicator
@@ -166,21 +184,23 @@ export default function ClinicalWarningSigns({
               animate={inView}
             />
           ))}
-        </div>
+        </Stagger>
 
-        <p
-          className="text-center"
-          style={{
-            fontSize: "16px",
-            color: "var(--on-dark-text-secondary)",
-            maxWidth: "780px",
-            margin: "48px auto 0",
-            lineHeight: 1.7,
-          }}
-        >
-          These indicators constitute clinical evidence of systemic
-          prescribing failures preventable by early intervention.
-        </p>
+        <Reveal>
+          <p
+            className="text-center"
+            style={{
+              fontSize: "16px",
+              color: "var(--on-dark-text-secondary)",
+              maxWidth: "780px",
+              margin: "48px auto 0",
+              lineHeight: 1.7,
+            }}
+          >
+            These indicators constitute clinical evidence of systemic
+            prescribing failures preventable by early intervention.
+          </p>
+        </Reveal>
       </div>
     </section>
   );

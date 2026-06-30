@@ -1,31 +1,46 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useInView } from "react-intersection-observer";
 
 export function useCountUp(
   end: number,
-  duration: number = 1500,
+  duration: number = 1900,
   startOnView: boolean = true,
 ) {
   const [count, setCount] = useState(0);
-  const [hasStarted, setHasStarted] = useState(false);
+  // Ref (not state) so guarding against re-runs doesn't itself setState in the
+  // effect body — the animation only ever starts once.
+  const hasStarted = useRef(false);
   const { ref, inView } = useInView({ threshold: 0.3, triggerOnce: true });
 
   useEffect(() => {
-    if (!startOnView || !inView || hasStarted) return;
-    setHasStarted(true);
+    if (!startOnView || !inView || hasStarted.current) return;
+    hasStarted.current = true;
 
+    // Respect reduced-motion: present the final figure without the ramp.
+    const prefersReduced =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReduced) {
+      const id = requestAnimationFrame(() => setCount(end));
+      return () => cancelAnimationFrame(id);
+    }
+
+    let frame = 0;
     const startTime = performance.now();
-    const animate = (now: number) => {
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.round(eased * end));
-      if (progress < 1) requestAnimationFrame(animate);
+    const tick = (now: number) => {
+      const progress = Math.min((now - startTime) / duration, 1);
+      // Smootherstep (6t⁵−15t⁴+10t³): eases gently in AND out, so the figure
+      // glides up and settles precisely rather than snapping toward the target.
+      // Reads as a deliberate, high-tech count rather than an aggressive blur.
+      const eased = progress * progress * progress * (progress * (progress * 6 - 15) + 10);
+      setCount(progress < 1 ? Math.round(eased * end) : end);
+      if (progress < 1) frame = requestAnimationFrame(tick);
     };
-    requestAnimationFrame(animate);
-  }, [inView, end, duration, hasStarted, startOnView]);
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [inView, end, duration, startOnView]);
 
   return { count, ref };
 }
@@ -51,31 +66,4 @@ export function useContainerWidth() {
   }, []);
 
   return { ref, width };
-}
-
-export function useLiveTicker(dailyCost: number) {
-  const [accumulated, setAccumulated] = useState(0);
-  const startTime = useRef(Date.now());
-  const isPaused = useRef(false);
-
-  const handleVisibility = useCallback(() => {
-    isPaused.current = document.hidden;
-  }, []);
-
-  useEffect(() => {
-    document.addEventListener("visibilitychange", handleVisibility);
-    const interval = setInterval(() => {
-      if (isPaused.current) return;
-      const elapsed = (Date.now() - startTime.current) / 1000;
-      const costPerSecond = dailyCost / 86400;
-      setAccumulated(Math.round(costPerSecond * elapsed));
-    }, 2000);
-
-    return () => {
-      clearInterval(interval);
-      document.removeEventListener("visibilitychange", handleVisibility);
-    };
-  }, [dailyCost, handleVisibility]);
-
-  return accumulated;
 }
