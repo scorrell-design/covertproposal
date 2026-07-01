@@ -132,6 +132,9 @@ export default function ClinicalWarningSigns({
       color: "var(--covert-teal)",
     },
   ]
+    // Drop any indicator that resolves to 0 — a zero-count red flag isn't a
+    // warning sign, and an empty bar reads as a data error in the proposal.
+    .filter((ind) => ind.value > 0)
     // Ranked largest-first on a shared scale (Knaflic: "order in the sort").
     .sort((a, b) => b.value - a.value);
 

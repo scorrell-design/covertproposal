@@ -104,7 +104,8 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
             gap: "20px",
           }}
         >
-          {/* Chronic Opioid Prescribers */}
+          {/* Chronic Opioid Prescribers — hidden when the count is 0 */}
+          {data.chronicOpioidPrescribers > 0 && (
           <div
             className="min-w-0"
             style={{
@@ -151,8 +152,10 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
               escalation in your population.
             </p>
           </div>
+          )}
 
-          {/* Acute Opioid Prescribers */}
+          {/* Acute Opioid Prescribers — hidden when the count is 0 */}
+          {data.acuteOpioidPrescribers > 0 && (
           <div
             className="min-w-0"
             style={{
@@ -199,6 +202,7 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
               patterns. Highly responsive to targeted outreach.
             </p>
           </div>
+          )}
         </div>
 
         <p

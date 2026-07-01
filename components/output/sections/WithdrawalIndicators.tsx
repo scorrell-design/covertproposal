@@ -24,7 +24,10 @@ export default function WithdrawalIndicators({
   data,
 }: WithdrawalIndicatorsProps) {
   const { ref: chartRef, width: chartWidth } = useContainerWidth();
-  const sorted = [...data.wsiBreakdown].sort((a, b) => b.count - a.count);
+  const sorted = [...data.wsiBreakdown]
+    // Drop any symptom with a 0 count — an empty bar reads as a data error.
+    .filter((entry) => entry.count > 0)
+    .sort((a, b) => b.count - a.count);
   const max = sorted[0]?.count ?? 0;
   const chartHeight = 320;
 
