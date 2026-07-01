@@ -1,8 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { AlertTriangle } from "lucide-react";
 import { PCRData } from "@/lib/types";
-import { useInView } from "react-intersection-observer";
 import { usePrefersReducedMotion } from "@/lib/hooks";
 import Reveal from "@/components/shared/Reveal";
 import { formatNumber } from "@/lib/calculations";
@@ -90,7 +90,10 @@ function WarningBar({ value, label, color, max, animate, delay }: WarningBarProp
 export default function ClinicalWarningSigns({
   data,
 }: ClinicalWarningSignsProps) {
-  const { ref, inView } = useInView({ threshold: 0.3, triggerOnce: true });
+  // Fill the bars on mount, not on scroll-into-view: an off-screen section
+  // must still render filled bars when the report is cloned for PDF/print.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   const indicators = [
     {
@@ -142,7 +145,6 @@ export default function ClinicalWarningSigns({
 
   return (
     <section
-      ref={ref}
       className="w-full relative overflow-hidden"
       style={{
         paddingTop: "clamp(52px, 6vw, 84px)",
@@ -196,7 +198,7 @@ export default function ClinicalWarningSigns({
               label={ind.label}
               color={ind.color}
               max={max}
-              animate={inView}
+              animate={mounted}
               delay={i * 80}
             />
           ))}

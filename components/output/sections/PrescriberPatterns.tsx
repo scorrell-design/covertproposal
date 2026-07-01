@@ -2,6 +2,7 @@
 
 import { Stethoscope } from "lucide-react";
 import { PCRData } from "@/lib/types";
+import { formatNumber } from "@/lib/calculations";
 import SplitFlapNumber from "@/components/shared/SplitFlapNumber";
 
 interface PrescriberPatternsProps {
@@ -137,7 +138,7 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
                 color: "#FFFFFF",
               }}
             >
-              {data.chronicOpioidPrescribers}
+              {formatNumber(data.chronicOpioidPrescribers)}
             </p>
             <p
               style={{
@@ -187,7 +188,7 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
                 color: "#FFFFFF",
               }}
             >
-              {data.acuteOpioidPrescribers}
+              {formatNumber(data.acuteOpioidPrescribers)}
             </p>
             <p
               style={{

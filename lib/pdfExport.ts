@@ -1,5 +1,17 @@
 "use client";
 
+/**
+ * PDF export via the browser's native print engine.
+ *
+ * We build a light-themed *clone* of the report, drop it into the page as a
+ * print-only root, and call window.print(). The browser rasterizes nothing —
+ * text stays crisp vector and selectable, SVG charts render natively, and page
+ * breaks are handled by the print engine. (The previous html2canvas approach
+ * produced blank charts, mangled number spacing, and choked on modern CSS
+ * color functions.) @media print rules in globals.css hide the live app and
+ * page-break the clone.
+ */
+
 const LIGHT_OVERRIDES_CSS = `
   [data-pdf-export], [data-pdf-export] * {
     color-scheme: light !important;
@@ -53,6 +65,26 @@ function rgbaWhiteToDark(value: string): string {
   );
 }
 
+/**
+ * Pale accent hexes (chosen to pop on the dark theme) are near-invisible as
+ * text/fill on the white PDF. Remap them to a readable dark amber that keeps
+ * the warm identity. Applies to text colour, borders, and SVG fill.
+ */
+const DARK_AMBER = "#B45309";
+const PALE_ACCENT_REMAP: Record<string, string> = {
+  // Keyed on both hex and the rgb() form the browser serializes inline
+  // styles to when read back via element.style.
+  "#fcd34d": DARK_AMBER, // high-tier text
+  "rgb(252, 211, 77)": DARK_AMBER,
+  "#fde68a": DARK_AMBER, // moderate-tier text
+  "rgb(253, 230, 138)": DARK_AMBER,
+  "#fef3c7": DARK_AMBER, // medically-emergent tier text + accent
+  "rgb(254, 243, 199)": DARK_AMBER,
+};
+function remapPale(value: string): string | null {
+  return PALE_ACCENT_REMAP[value.trim().toLowerCase()] ?? null;
+}
+
 function lightenForPdf(el: HTMLElement) {
   const s = el.style;
 
@@ -74,6 +106,9 @@ function lightenForPdf(el: HTMLElement) {
         s.color = "#0F172A";
       } else if (/rgba\(\s*255/i.test(s.color)) {
         s.color = rgbaWhiteToDark(s.color);
+      } else {
+        const dark = remapPale(s.color);
+        if (dark) s.color = dark;
       }
     }
 
@@ -88,6 +123,11 @@ function lightenForPdf(el: HTMLElement) {
     }
     if (s.borderLeft && /rgba\(\s*255/i.test(s.borderLeft)) {
       s.borderLeft = rgbaWhiteToDark(s.borderLeft);
+    }
+    // Pale left-accent on tier cards (borderLeftColor uses the raw hex).
+    if (s.borderLeftColor) {
+      const dark = remapPale(s.borderLeftColor);
+      if (dark) s.borderLeftColor = dark;
     }
     if (s.background && /radial-gradient/i.test(s.background)) {
       s.background = "none";
@@ -123,129 +163,78 @@ function lightenForPdf(el: HTMLElement) {
   Array.from(el.children).forEach((c) => lightenForPdf(c as HTMLElement));
 }
 
-export async function generatePDF(clientName: string): Promise<void> {
-  const [{ default: jsPDF }, { default: html2canvas }] = await Promise.all([
-    import("jspdf"),
-    import("html2canvas"),
-  ]);
+/** Print contact card that replaces the interactive CTA buttons. */
+const CONTACT_CARD_HTML = `
+  <div style="text-align:center;color:#0F172A;font-family:Satoshi,sans-serif;background-color:#F8FAFC;border:1px solid #E5E7EB;border-radius:12px;padding:20px 24px;">
+    <p style="font-weight:700;font-size:18px;margin-bottom:12px;color:#0F172A;">Engage Covert Today</p>
+    <p style="font-size:14px;margin-bottom:4px;color:#0F172A;">Jesse Lisson — Vice President, Covert</p>
+    <p style="font-size:14px;margin-bottom:4px;color:#0F172A;">(602) 315-3842</p>
+    <p style="font-size:14px;margin-bottom:4px;color:#0F172A;">jlisson@cleverbenefits.com</p>
+    <p style="font-size:14px;color:#14B8A6;font-weight:600;">www.covertplan.com</p>
+  </div>
+`;
 
+/**
+ * Build the light-themed, print-ready clone of #proposal-output. Hidden on
+ * screen (display:none); the @media print stylesheet reveals it and hides the
+ * live app. Exported so a preview surface can render it for visual checks.
+ */
+export function buildPrintClone(): HTMLElement | null {
   const proposalEl = document.getElementById("proposal-output");
-  if (!proposalEl) return;
-
-  const tickerElements = proposalEl.querySelectorAll("[data-ticker]");
-  tickerElements.forEach((el) => el.setAttribute("data-paused", "true"));
+  if (!proposalEl) return null;
 
   const clone = proposalEl.cloneNode(true) as HTMLElement;
   clone.setAttribute("data-pdf-export", "true");
-  clone.style.width = "794px";
-  clone.style.position = "absolute";
-  clone.style.left = "-9999px";
-  clone.style.top = "0";
-  clone.style.backgroundColor = "#FFFFFF";
+  clone.setAttribute("data-print-root", "true");
+  clone.style.display = "none";
 
   const styleEl = document.createElement("style");
   styleEl.textContent = LIGHT_OVERRIDES_CSS;
   clone.insertBefore(styleEl, clone.firstChild);
 
-  document.body.appendChild(clone);
-
   lightenForPdf(clone);
 
-  // Replace CTA buttons with print-friendly contact card
-  const ctaButtons = clone.querySelectorAll("[data-cta-buttons]");
-  ctaButtons.forEach((el) => {
-    el.innerHTML = `
-      <div style="text-align:center;color:#0F172A;font-family:Satoshi,sans-serif;background-color:#F8FAFC;border:1px solid #E5E7EB;border-radius:12px;padding:20px 24px;">
-        <p style="font-weight:700;font-size:18px;margin-bottom:12px;color:#0F172A;">Engage Covert Today</p>
-        <p style="font-size:14px;margin-bottom:4px;color:#0F172A;">Jesse Lisson — Vice President, Covert</p>
-        <p style="font-size:14px;margin-bottom:4px;color:#0F172A;">(602) 315-3842</p>
-        <p style="font-size:14px;margin-bottom:4px;color:#0F172A;">jlisson@cleverbenefits.com</p>
-        <p style="font-size:14px;color:#14B8A6;font-weight:600;">www.covertplan.com</p>
-      </div>
-    `;
-  });
+  clone
+    .querySelectorAll("[data-cta-buttons]")
+    .forEach((el) => (el.innerHTML = CONTACT_CARD_HTML));
 
-  try {
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = pdf.internal.pageSize.getHeight();
-    const footerReservedMm = 14;
-    const pageTopMm = 0;
-    const usablePageMm = pdfHeight - footerReservedMm - pageTopMm;
-
-    // Render each section to its own canvas, then pack onto pages.
-    const sections = Array.from(
-      clone.querySelectorAll("section, footer"),
-    ) as HTMLElement[];
-
-    type SectionImage = {
-      dataUrl: string;
-      mmHeight: number;
-    };
-
-    const sectionImages: SectionImage[] = [];
-    for (const section of sections) {
-      const canvas = await html2canvas(section, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        windowWidth: 794,
-        backgroundColor: "#FFFFFF",
-      });
-      const mmHeight = (canvas.height * pdfWidth) / canvas.width;
-      sectionImages.push({
-        dataUrl: canvas.toDataURL("image/jpeg", 0.95),
-        mmHeight,
-      });
-    }
-
-    // Pack sections onto pages. Each section is placed in full —
-    // a section never gets split across a page boundary.
-    let pageNumber = 1;
-    let cursorMm = pageTopMm;
-    addPageFooter(pdf, 1, pdfWidth, pdfHeight);
-
-    for (const img of sectionImages) {
-      // Clamp absurdly tall sections to a single page (shouldn't happen
-      // with current section heights ~< 265mm, but be defensive)
-      const drawHeight = Math.min(img.mmHeight, usablePageMm);
-      const fitsOnCurrentPage =
-        cursorMm + drawHeight <= usablePageMm + pageTopMm + 0.5;
-
-      if (!fitsOnCurrentPage) {
-        pageNumber++;
-        pdf.addPage();
-        cursorMm = pageTopMm;
-        addPageFooter(pdf, pageNumber, pdfWidth, pdfHeight);
-      }
-
-      pdf.addImage(img.dataUrl, "JPEG", 0, cursorMm, pdfWidth, drawHeight);
-      cursorMm += drawHeight;
-    }
-
-    const safeName = clientName.replace(/[^a-zA-Z0-9]/g, "_");
-    pdf.save(`Covert_Proposal_${safeName}.pdf`);
-  } finally {
-    document.body.removeChild(clone);
-    tickerElements.forEach((el) => el.removeAttribute("data-paused"));
-  }
+  return clone;
 }
 
-function addPageFooter(
-  pdf: import("jspdf").jsPDF,
-  page: number,
-  width: number,
-  height: number,
-) {
-  pdf.setFillColor(248, 250, 252);
-  pdf.rect(0, height - 10, width, 10, "F");
-  pdf.setFont("helvetica", "normal");
-  pdf.setFontSize(8);
-  pdf.setTextColor(71, 85, 105);
-  pdf.text(
-    `Covert  |  Page ${page}  |  © 2026 Clever Ventures, LLC — www.covertplan.com`,
-    width / 2,
-    height - 4,
-    { align: "center" },
-  );
+export async function generatePDF(clientName: string): Promise<void> {
+  const clone = buildPrintClone();
+  if (!clone) return;
+
+  document.body.appendChild(clone);
+
+  // Wait for fonts so the print engine measures glyphs correctly.
+  if (document.fonts?.ready) {
+    try {
+      await document.fonts.ready;
+    } catch {
+      /* non-fatal */
+    }
+  }
+
+  const prevTitle = document.title;
+  const safeName = clientName.replace(/[^a-zA-Z0-9]/g, "_") || "Report";
+  // The print dialog seeds the "Save as PDF" filename from document.title.
+  document.title = `Covert_Proposal_${safeName}`;
+
+  await new Promise<void>((resolve) => {
+    let done = false;
+    const cleanup = () => {
+      if (done) return;
+      done = true;
+      window.removeEventListener("afterprint", cleanup);
+      document.title = prevTitle;
+      if (clone.parentNode) clone.parentNode.removeChild(clone);
+      resolve();
+    };
+    window.addEventListener("afterprint", cleanup);
+    window.print();
+    // window.print() blocks until the dialog closes in Chromium, so afterprint
+    // has already fired by here; this is the fallback for browsers that don't.
+    setTimeout(cleanup, 500);
+  });
 }

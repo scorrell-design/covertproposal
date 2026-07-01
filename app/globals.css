@@ -88,6 +88,54 @@ html {
   }
 }
 
+/* ── Print / PDF ──────────────────────────────────────────────────────────
+   generatePDF() appends a light-themed clone as [data-print-root] and calls
+   window.print(). These rules show only that clone, force every scroll-gated
+   reveal to its final state, control page breaks, and tighten the on-screen
+   section padding down to print-appropriate spacing. */
+@media print {
+  html, body {
+    background: #ffffff !important;
+    width: auto !important;
+  }
+  /* Print only the prepared clone; hide the live app, nav, side rail. */
+  body > *:not([data-print-root]) {
+    display: none !important;
+  }
+  [data-print-root] {
+    display: block !important;
+    position: static !important;
+    left: auto !important;
+    width: 100% !important;
+  }
+  /* Reveal-on-scroll and count-up figures land in their final state. */
+  [data-print-root] [data-reveal],
+  [data-print-root] [data-count],
+  [data-print-root] [data-count] * {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  /* Colours/backgrounds must print, not get stripped by the browser. */
+  [data-print-root] * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  /* Keep a section intact on one page; tighten the generous on-screen rhythm. */
+  [data-print-root] section {
+    break-inside: avoid;
+    padding-top: 26px !important;
+    padding-bottom: 26px !important;
+  }
+  /* The hero carries the largest top padding on screen — pull it in for print. */
+  [data-print-root] section:first-of-type {
+    padding-top: 16px !important;
+  }
+  @page {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+}
+
 body {
   font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
   background: var(--covert-bg);

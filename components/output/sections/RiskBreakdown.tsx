@@ -22,6 +22,19 @@ const TIERS = [
   { key: "matMembers", label: "MAT Enrolled", color: "#FFB36B", textColor: "#FFB36B", desc: "Existing prescribing patterns have escalated to opioid addiction" },
 ] as const;
 
+/**
+ * Translucent tint from a 6-digit hex. Uses rgba() rather than
+ * color-mix(): the latter serializes to color(srgb …), which the PDF
+ * rasterizer (html2canvas) cannot parse and aborts the whole export on.
+ */
+function hexToRgba(hex: string, alpha: number): string {
+  const h = hex.replace("#", "");
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 export default function RiskBreakdown({ data }: RiskBreakdownProps) {
   // Fill the distribution bar on mount rather than on scroll-into-view: the
   // IntersectionObserver doesn't reliably fire before a PDF capture or when the
@@ -177,11 +190,11 @@ export default function RiskBreakdown({ data }: RiskBreakdownProps) {
                       letterSpacing: "0.05em",
                       backgroundColor: solid
                         ? tier.color
-                        : `color-mix(in srgb, ${tier.color} 15%, transparent)`,
+                        : hexToRgba(tier.color, 0.15),
                       color: solid ? "#17171A" : tier.textColor,
                       border: solid
                         ? "none"
-                        : `1px solid color-mix(in srgb, ${tier.color} 40%, transparent)`,
+                        : `1px solid ${hexToRgba(tier.color, 0.4)}`,
                     }}
                   >
                     <span
