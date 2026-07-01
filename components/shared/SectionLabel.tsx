@@ -14,7 +14,7 @@ export default function SectionLabel({ icon: Icon, text }: SectionLabelProps) {
       <span
         className="font-bold uppercase"
         style={{
-          fontSize: "13px",
+          fontSize: "var(--fs-eyebrow)",
           color: "var(--covert-teal)",
           letterSpacing: "0.16em",
         }}

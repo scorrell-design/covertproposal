@@ -36,6 +36,25 @@
      section aligns to the same left edge and prose never runs too wide. */
   --report-max: 1100px;
   --measure: 66ch;
+
+  /* Type scale — SINGLE SOURCE OF TRUTH for every text role in the report.
+     Two families, deliberately kept distinct so hierarchy reads at a glance:
+       • SMALL ROLES (fixed px): eyebrow / caption / label / body — supporting
+         text. 13px is the hard floor; nothing renders smaller.
+       • BIG ROLES (fluid clamp): headlines and figures — the eye-catchers.
+         Headlines (hero > h2 > h3) are the large SENTENCES that must stick out;
+         figures (display > stat-lg > stat) are the large NUMBERS. */
+  --fs-eyebrow: 13px;                    /* uppercase section labels */
+  --fs-caption: 13px;                    /* smallest tier: footnotes, meta, muted sub-descriptors */
+  --fs-label: 15px;                      /* stat labels / the "subtext" under a figure */
+  --fs-body: 16px;                       /* body copy */
+  --fs-lead: clamp(18px, 1.6vw, 21px);   /* intro / lead paragraphs */
+  --fs-h3: clamp(20px, 2.2vw, 26px);     /* sub-headings */
+  --fs-h2: clamp(30px, 3.6vw, 46px);     /* section headlines — the big section eye-catchers */
+  --fs-hero: clamp(40px, 6vw, 72px);     /* the single hero headline sentence */
+  --fs-stat: clamp(40px, 4.8vw, 60px);   /* card / inline stat figures */
+  --fs-stat-lg: clamp(52px, 7vw, 92px);  /* prominent stat figures */
+  --fs-display: clamp(64px, 9vw, 132px); /* hero / marquee figures */
 }
 
 html, body {

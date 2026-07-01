@@ -71,7 +71,9 @@ export default function LiveRiskTickers({ data }: LiveRiskTickersProps) {
                 border: "1px solid var(--covert-text-secondary)",
                 background: "none",
                 cursor: "help",
-                marginTop: "-4px",
+                // SectionLabel carries a 16px bottom margin, which shifts its
+                // text ~8px above the flex line-center; pull the icon up to match.
+                marginTop: "-8px",
               }}
               aria-label="How tickers are calculated"
             >
@@ -86,7 +88,7 @@ export default function LiveRiskTickers({ data }: LiveRiskTickersProps) {
                   backgroundColor: "var(--covert-black)",
                   color: "rgba(255,255,255,0.9)",
                   borderRadius: "8px",
-                  fontSize: "12px",
+                  fontSize: "var(--fs-caption)",
                   lineHeight: 1.6,
                   boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
                 }}
@@ -112,7 +114,7 @@ export default function LiveRiskTickers({ data }: LiveRiskTickersProps) {
         >
           <p
             style={{
-              fontSize: "16px",
+              fontSize: "var(--fs-body)",
               lineHeight: 1.6,
               color: "var(--on-dark-text)",
             }}
@@ -138,8 +140,8 @@ export default function LiveRiskTickers({ data }: LiveRiskTickersProps) {
             prefix="$"
             label="Medical cost lost every month without action"
             sublabel="Medical spend attributable to opioid withdrawal symptoms, per month"
-            borderColor="#DC2626"
-            valueColor="#DC2626"
+            borderColor="var(--covert-amber)"
+            valueColor="var(--covert-amber)"
           />
 
           {/* 2: Newly identified at-risk members per month */}
@@ -179,7 +181,7 @@ export default function LiveRiskTickers({ data }: LiveRiskTickersProps) {
               <p
                 className="font-bold"
                 style={{
-                  fontSize: "clamp(72px, 11vw, 132px)",
+                  fontSize: "var(--fs-display)",
                   lineHeight: 1,
                   letterSpacing: "-0.04em",
                   color: "#FFFFFF",
@@ -190,7 +192,7 @@ export default function LiveRiskTickers({ data }: LiveRiskTickersProps) {
               </p>
               <p
                 style={{
-                  fontSize: "clamp(18px, 2.2vw, 24px)",
+                  fontSize: "var(--fs-lead)",
                   lineHeight: 1.4,
                   color: "var(--on-dark-text)",
                   fontWeight: 500,

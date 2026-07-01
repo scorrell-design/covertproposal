@@ -41,7 +41,7 @@ function WarningBar({ value, label, color, max, animate, delay }: WarningBarProp
       <span
         className="font-medium"
         style={{
-          fontSize: "17px",
+          fontSize: "var(--fs-body)",
           color: "var(--on-dark-text)",
           lineHeight: 1.3,
         }}
@@ -73,7 +73,7 @@ function WarningBar({ value, label, color, max, animate, delay }: WarningBarProp
         <span
           className="font-bold"
           style={{
-            fontSize: "20px",
+            fontSize: "var(--fs-h3)",
             color: "#FFFFFF",
             letterSpacing: "-0.02em",
             minWidth: "62px",
@@ -158,7 +158,7 @@ export default function ClinicalWarningSigns({
             <span
               className="font-bold uppercase"
               style={{
-                fontSize: "13px",
+                fontSize: "var(--fs-eyebrow)",
                 color: "var(--covert-teal)",
                 letterSpacing: "0.16em",
               }}
@@ -170,7 +170,7 @@ export default function ClinicalWarningSigns({
           <h2
             className="font-bold"
             style={{
-              fontSize: "clamp(28px, 3.2vw, 40px)",
+              fontSize: "var(--fs-h2)",
               lineHeight: 1.1,
               letterSpacing: "-0.02em",
               color: "#FFFFFF",
@@ -206,7 +206,7 @@ export default function ClinicalWarningSigns({
           <p
             className="text-center"
             style={{
-              fontSize: "16px",
+              fontSize: "var(--fs-body)",
               color: "var(--on-dark-text-secondary)",
               maxWidth: "820px",
               margin: "48px auto 0",

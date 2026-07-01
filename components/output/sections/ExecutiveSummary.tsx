@@ -51,7 +51,7 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
           <span
             className="font-bold uppercase"
             style={{
-              fontSize: "13px",
+              fontSize: "var(--fs-eyebrow)",
               color: "var(--covert-teal)",
               letterSpacing: "0.16em",
             }}
@@ -76,7 +76,7 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
               className="font-bold"
               style={{
                 // Coral rather than brand teal so the risk reads instantly (Jesse 6/29).
-                fontSize: "clamp(72px, 9vw, 132px)",
+                fontSize: "var(--fs-display)",
                 lineHeight: 0.9,
                 letterSpacing: "-0.05em",
                 color: "#FF8A8A",
@@ -86,7 +86,7 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
             </p>
             <p
               style={{
-                fontSize: "clamp(17px, 1.7vw, 22px)",
+                fontSize: "var(--fs-lead)",
                 color: "#FFFFFF",
                 lineHeight: 1.35,
                 maxWidth: "var(--measure)",
@@ -110,33 +110,33 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
           >
             <span
               className="font-bold uppercase"
-              style={{ fontSize: "11px", letterSpacing: "0.14em", color: "var(--on-dark-text-muted)" }}
+              style={{ fontSize: "var(--fs-eyebrow)", letterSpacing: "0.14em", color: "var(--on-dark-text-muted)" }}
             >
               Medical cost vs. non-users
             </span>
             <div style={{ marginTop: "20px" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
-                <span style={{ fontSize: "13px", color: "var(--on-dark-text-secondary)", width: "150px", flexShrink: 0 }}>
+                <span style={{ fontSize: "var(--fs-caption)", color: "var(--on-dark-text-secondary)", width: "150px", flexShrink: 0 }}>
                   Non-users
                 </span>
                 <div style={{ flex: 1, display: "flex", alignItems: "center", gap: "10px" }}>
                   <div style={{ height: "12px", width: "16%", borderRadius: "6px", backgroundColor: "rgba(255,255,255,0.22)" }} />
-                  <span style={{ fontSize: "13px", color: "var(--on-dark-text-muted)" }}>1×</span>
+                  <span style={{ fontSize: "var(--fs-caption)", color: "var(--on-dark-text-muted)" }}>1×</span>
                 </div>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                <span style={{ fontSize: "13px", color: "#FFFFFF", width: "150px", flexShrink: 0 }}>
+                <span style={{ fontSize: "var(--fs-caption)", color: "#FFFFFF", width: "150px", flexShrink: 0 }}>
                   Chronic opioid users
                 </span>
                 <div style={{ flex: 1, display: "flex", alignItems: "center", gap: "10px" }}>
                   <div style={{ height: "12px", width: "92%", borderRadius: "6px", background: "linear-gradient(90deg, #FF8A8A, #FF6B6B)" }} />
-                  <span style={{ fontSize: "15px", color: "#FF8A8A", fontWeight: 700 }}>6×</span>
+                  <span style={{ fontSize: "var(--fs-label)", color: "#FF8A8A", fontWeight: 700 }}>6×</span>
                 </div>
               </div>
             </div>
             <p
               style={{
-                fontSize: "13px",
+                fontSize: "var(--fs-caption)",
                 color: "var(--on-dark-text-secondary)",
                 marginTop: "16px",
                 lineHeight: 1.5,
@@ -144,7 +144,7 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
             >
               Chronic opioid users incur roughly{" "}
               <strong style={{ color: "#FFFFFF" }}>6× more medical cost</strong>{" "}
-              than non-users.<sup style={{ fontSize: "9px" }}>†</sup>
+              than non-users.<sup style={{ fontSize: "var(--fs-caption)" }}>†</sup>
             </p>
           </div>
         </div>
@@ -165,7 +165,7 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
         <p
           className="font-bold"
           style={{
-            fontSize: "clamp(72px, 11vw, 150px)",
+            fontSize: "var(--fs-display)",
             lineHeight: 0.9,
             letterSpacing: "-0.05em",
             color: "var(--covert-teal)",
@@ -177,7 +177,7 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
         <h2
           className="font-bold"
           style={{
-            fontSize: "clamp(28px, 3.2vw, 40px)",
+            fontSize: "var(--fs-h2)",
             lineHeight: 1.12,
             letterSpacing: "-0.02em",
             color: "#FFFFFF",
@@ -198,7 +198,7 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
             gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 320px), 1fr))",
             gap: "clamp(24px, 3vw, 48px)",
             marginTop: "28px",
-            fontSize: "16px",
+            fontSize: "var(--fs-body)",
             color: "var(--on-dark-text-secondary)",
             lineHeight: 1.7,
           }}
@@ -220,7 +220,7 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
         <p
           className="italic"
           style={{
-            fontSize: "13px",
+            fontSize: "var(--fs-caption)",
             color: "var(--on-dark-text-secondary)",
             marginTop: "32px",
             lineHeight: 1.6,

@@ -39,7 +39,7 @@ export default function TickerCard({
       <p
         className="font-bold"
         style={{
-          fontSize: "clamp(34px, 3.4vw, 44px)",
+          fontSize: "var(--fs-stat)",
           color: valueColor || borderColor,
           lineHeight: 1.05,
           letterSpacing: "-0.03em",
@@ -49,7 +49,7 @@ export default function TickerCard({
       </p>
       <p
         style={{
-          fontSize: "14px",
+          fontSize: "var(--fs-label)",
           color: "var(--on-dark-text-secondary)",
           lineHeight: 1.5,
           marginTop: "14px",
@@ -60,7 +60,7 @@ export default function TickerCard({
       {sublabel && (
         <p
           style={{
-            fontSize: "12px",
+            fontSize: "var(--fs-caption)",
             color: "var(--on-dark-text-muted)",
             marginTop: "6px",
           }}

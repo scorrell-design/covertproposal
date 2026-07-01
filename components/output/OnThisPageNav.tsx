@@ -81,7 +81,7 @@ export default function OnThisPageNav({ sections }: OnThisPageNavProps) {
             <span
               className="opacity-0 group-hover:opacity-100"
               style={{
-                fontSize: "12px",
+                fontSize: "var(--fs-caption)",
                 fontWeight: isActive ? 700 : 500,
                 color: isActive ? "var(--covert-teal)" : "var(--on-dark-text-secondary)",
                 transition: "opacity 0.2s ease, color 0.2s ease",

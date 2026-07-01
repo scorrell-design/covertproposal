@@ -16,7 +16,7 @@ export default function Footer() {
         style={{ maxWidth: "1100px", paddingTop: "32px", paddingBottom: "32px" }}
       >
         <CovertLogo size={24} white showWordmark />
-        <span style={{ fontSize: "12px", color: "var(--on-dark-text-muted)" }}>
+        <span style={{ fontSize: "var(--fs-caption)", color: "var(--on-dark-text-muted)" }}>
           © 2026 Clever Ventures, LLC
         </span>
       </div>

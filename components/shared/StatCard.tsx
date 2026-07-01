@@ -15,7 +15,7 @@ export default function StatCard({
   sublabel,
   borderColor = "var(--covert-teal)",
   valueColor = "var(--covert-black)",
-  valueSize = "38px",
+  valueSize = "var(--fs-stat)",
 }: StatCardProps) {
   return (
     <div
@@ -37,7 +37,7 @@ export default function StatCard({
       <p
         className="mt-2"
         style={{
-          fontSize: "14px",
+          fontSize: "var(--fs-label)",
           color: "var(--covert-text-secondary)",
           lineHeight: 1.5,
         }}
@@ -48,7 +48,7 @@ export default function StatCard({
         <p
           className="mt-1"
           style={{
-            fontSize: "12px",
+            fontSize: "var(--fs-caption)",
             color: "var(--covert-text-secondary)",
           }}
         >

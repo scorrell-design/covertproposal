@@ -130,7 +130,7 @@ export default function FinancialImpact({ data }: FinancialImpactProps) {
             <span
               className="font-bold uppercase"
               style={{
-                fontSize: "13px",
+                fontSize: "var(--fs-eyebrow)",
                 color: "var(--covert-teal)",
                 letterSpacing: "0.16em",
               }}
@@ -142,7 +142,7 @@ export default function FinancialImpact({ data }: FinancialImpactProps) {
           <h2
             className="font-bold"
             style={{
-              fontSize: "clamp(28px, 3.2vw, 40px)",
+              fontSize: "var(--fs-h2)",
               lineHeight: 1.1,
               letterSpacing: "-0.02em",
               color: "#FFFFFF",
@@ -192,7 +192,7 @@ export default function FinancialImpact({ data }: FinancialImpactProps) {
               borderRadius: "16px",
               padding: "24px 32px",
               fontWeight: 500,
-              fontSize: "15px",
+              fontSize: "var(--fs-body)",
               lineHeight: 1.6,
               maxWidth: "880px",
               margin: "clamp(32px, 4vw, 48px) auto 0",
@@ -232,7 +232,7 @@ function ImpactCard({ heading, subhead, accent, rows }: ImpactCardProps) {
         <h3
           className="font-bold"
           style={{
-            fontSize: "clamp(20px, 2.2vw, 26px)",
+            fontSize: "var(--fs-h3)",
             letterSpacing: "-0.02em",
             color: accent,
             lineHeight: 1.15,
@@ -243,7 +243,7 @@ function ImpactCard({ heading, subhead, accent, rows }: ImpactCardProps) {
         <p
           className="font-semibold uppercase"
           style={{
-            fontSize: "12px",
+            fontSize: "var(--fs-eyebrow)",
             color: "var(--on-dark-text-muted)",
             letterSpacing: "0.12em",
             marginTop: "8px",
@@ -275,8 +275,8 @@ function ImpactCard({ heading, subhead, accent, rows }: ImpactCardProps) {
               className="font-bold flex-shrink-0 text-right"
               style={{
                 fontSize: row.emphasis
-                  ? "clamp(34px, 3.6vw, 48px)"
-                  : "clamp(26px, 2.8vw, 38px)",
+                  ? "var(--fs-stat)"
+                  : "var(--fs-h3)",
                 lineHeight: 1,
                 letterSpacing: "-0.03em",
                 color: row.color,
@@ -288,7 +288,7 @@ function ImpactCard({ heading, subhead, accent, rows }: ImpactCardProps) {
             <span
               className="min-w-0"
               style={{
-                fontSize: "14px",
+                fontSize: "var(--fs-label)",
                 lineHeight: 1.45,
                 color: "var(--on-dark-text-secondary)",
               }}

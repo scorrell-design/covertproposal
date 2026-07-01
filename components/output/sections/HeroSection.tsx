@@ -45,7 +45,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
           <span
             className="font-bold uppercase"
             style={{
-              fontSize: "13px",
+              fontSize: "var(--fs-eyebrow)",
               color: "var(--covert-teal)",
               letterSpacing: "0.16em",
             }}
@@ -57,7 +57,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
         <h1
           className="font-bold"
           style={{
-            fontSize: "clamp(40px, 5.6vw, 64px)",
+            fontSize: "var(--fs-hero)",
             lineHeight: 1.02,
             letterSpacing: "-0.03em",
             color: "#FFFFFF",
@@ -72,7 +72,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
         <p
           className="mt-8"
           style={{
-            fontSize: "clamp(16px, 1.4vw, 19px)",
+            fontSize: "var(--fs-lead)",
             color: "rgba(255,255,255,0.72)",
             lineHeight: 1.6,
             maxWidth: "720px",
@@ -98,7 +98,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
               color: "#FFFFFF",
               borderRadius: "999px",
               padding: "10px 20px",
-              fontSize: "12px",
+              fontSize: "var(--fs-caption)",
               fontWeight: 600,
               letterSpacing: "0.06em",
               textTransform: "uppercase",
@@ -109,7 +109,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
           <span
             className="hidden sm:inline"
             style={{
-              fontSize: "12px",
+              fontSize: "var(--fs-caption)",
               color: "rgba(255,255,255,0.45)",
               letterSpacing: "0.16em",
               textTransform: "uppercase",

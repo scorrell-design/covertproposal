@@ -51,7 +51,7 @@ export default function ChronicConditions({ data }: ChronicConditionsProps) {
           <span
             className="font-bold uppercase"
             style={{
-              fontSize: "13px",
+              fontSize: "var(--fs-eyebrow)",
               color: "var(--covert-teal)",
               letterSpacing: "0.16em",
             }}
@@ -63,7 +63,7 @@ export default function ChronicConditions({ data }: ChronicConditionsProps) {
         <h2
           className="font-bold"
           style={{
-            fontSize: "clamp(28px, 3.2vw, 40px)",
+            fontSize: "var(--fs-h2)",
             lineHeight: 1.1,
             letterSpacing: "-0.02em",
             color: "#FFFFFF",
@@ -98,14 +98,14 @@ export default function ChronicConditions({ data }: ChronicConditionsProps) {
                 <CartesianGrid horizontal={false} stroke="rgba(255,255,255,0.08)" />
                 <XAxis
                   type="number"
-                  tick={{ fontSize: 11, fill: "rgba(255,255,255,0.55)" }}
+                  tick={{ fontSize: 13, fill: "rgba(255,255,255,0.55)" }}
                   stroke="rgba(255,255,255,0.15)"
                 />
                 <YAxis
                   type="category"
                   dataKey="name"
                   width={120}
-                  tick={{ fontSize: 12, fill: "#FFFFFF" }}
+                  tick={{ fontSize: 13, fill: "#FFFFFF" }}
                   stroke="rgba(255,255,255,0.15)"
                 />
                 <Tooltip
@@ -114,7 +114,7 @@ export default function ChronicConditions({ data }: ChronicConditionsProps) {
                     backgroundColor: "#FFFFFF",
                     border: "none",
                     borderRadius: "6px",
-                    fontSize: "12px",
+                    fontSize: "var(--fs-caption)",
                     color: "var(--covert-black)",
                   }}
                   itemStyle={{ color: "var(--covert-black)" }}
@@ -142,7 +142,7 @@ export default function ChronicConditions({ data }: ChronicConditionsProps) {
             <p
               className="font-bold"
               style={{
-                fontSize: "clamp(64px, 7vw, 96px)",
+                fontSize: "var(--fs-stat-lg)",
                 lineHeight: 1,
                 letterSpacing: "-0.04em",
                 color: "var(--covert-teal)",
@@ -153,7 +153,7 @@ export default function ChronicConditions({ data }: ChronicConditionsProps) {
             <p
               className="font-semibold"
               style={{
-                fontSize: "15px",
+                fontSize: "var(--fs-label)",
                 color: "#FFFFFF",
                 marginTop: "12px",
                 lineHeight: 1.4,
@@ -164,7 +164,7 @@ export default function ChronicConditions({ data }: ChronicConditionsProps) {
             </p>
             <p
               style={{
-                fontSize: "13px",
+                fontSize: "var(--fs-caption)",
                 color: "var(--on-dark-text-secondary)",
                 marginTop: "12px",
                 lineHeight: 1.6,
@@ -182,7 +182,7 @@ export default function ChronicConditions({ data }: ChronicConditionsProps) {
         <p
           className="italic"
           style={{
-            fontSize: "13px",
+            fontSize: "var(--fs-caption)",
             color: "var(--on-dark-text-secondary)",
             marginTop: "32px",
           }}

@@ -50,7 +50,7 @@ export default function NextStepsCTA({ data }: NextStepsCTAProps) {
             <span
               className="font-bold uppercase"
               style={{
-                fontSize: "13px",
+                fontSize: "var(--fs-eyebrow)",
                 color: "var(--covert-teal)",
                 letterSpacing: "0.16em",
               }}
@@ -62,7 +62,7 @@ export default function NextStepsCTA({ data }: NextStepsCTAProps) {
           <h2
             className="font-bold"
             style={{
-              fontSize: "clamp(28px, 3.2vw, 40px)",
+              fontSize: "var(--fs-h2)",
               lineHeight: 1.1,
               letterSpacing: "-0.02em",
               color: "#FFFFFF",
@@ -98,14 +98,14 @@ export default function NextStepsCTA({ data }: NextStepsCTAProps) {
               <div>
                 <span
                   className="font-bold uppercase"
-                  style={{ fontSize: "12px", letterSpacing: "0.16em", color: "var(--covert-teal)" }}
+                  style={{ fontSize: "var(--fs-eyebrow)", letterSpacing: "0.16em", color: "var(--covert-teal)" }}
                 >
                   Projected 12-month return
                 </span>
                 <p
                   className="font-bold"
                   style={{
-                    fontSize: "clamp(72px, 10vw, 124px)",
+                    fontSize: "var(--fs-display)",
                     lineHeight: 0.9,
                     letterSpacing: "-0.04em",
                     color: "var(--covert-teal)",
@@ -116,7 +116,7 @@ export default function NextStepsCTA({ data }: NextStepsCTAProps) {
                 </p>
                 <p
                   style={{
-                    fontSize: "clamp(16px, 1.8vw, 20px)",
+                    fontSize: "var(--fs-lead)",
                     color: "var(--on-dark-text)",
                     lineHeight: 1.45,
                     marginTop: "16px",
@@ -133,7 +133,7 @@ export default function NextStepsCTA({ data }: NextStepsCTAProps) {
               <div>
                 {/* $1 : $roi proportional bars — the gap is the message. */}
                 <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "16px" }}>
-                  <span style={{ width: "120px", flexShrink: 0, fontSize: "13px", color: "var(--on-dark-text-secondary)" }}>
+                  <span style={{ width: "120px", flexShrink: 0, fontSize: "var(--fs-caption)", color: "var(--on-dark-text-secondary)" }}>
                     $1 invested
                   </span>
                   <div style={{ flex: 1, height: "16px", borderRadius: "8px", backgroundColor: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
@@ -141,7 +141,7 @@ export default function NextStepsCTA({ data }: NextStepsCTAProps) {
                   </div>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-                  <span style={{ width: "120px", flexShrink: 0, fontSize: "13px", color: "#FFFFFF", fontWeight: 600 }}>
+                  <span style={{ width: "120px", flexShrink: 0, fontSize: "var(--fs-label)", color: "#FFFFFF", fontWeight: 600 }}>
                     ${roi} prevented
                   </span>
                   <div style={{ flex: 1, position: "relative" }}>
@@ -162,17 +162,17 @@ export default function NextStepsCTA({ data }: NextStepsCTAProps) {
                     />
                   </div>
                 </div>
-                <p style={{ fontSize: "12px", color: "var(--on-dark-text-muted)", marginTop: "10px", paddingLeft: "134px" }}>
+                <p style={{ fontSize: "var(--fs-caption)", color: "var(--on-dark-text-muted)", marginTop: "10px", paddingLeft: "134px" }}>
                   ╎ Break-even (1:1) — projected return clears it ~{roi}×.
                 </p>
                 <div style={{ marginTop: "24px", paddingTop: "24px", borderTop: "1px solid var(--on-dark-border)" }}>
                   <p
                     className="font-bold"
-                    style={{ fontSize: "clamp(28px, 3.4vw, 44px)", lineHeight: 1, letterSpacing: "-0.03em", color: "#FFFFFF" }}
+                    style={{ fontSize: "var(--fs-stat)", lineHeight: 1, letterSpacing: "-0.03em", color: "#FFFFFF" }}
                   >
                     {formatCurrency(netRoi)}
                   </p>
-                  <p style={{ fontSize: "14px", color: "var(--on-dark-text-secondary)", marginTop: "8px" }}>
+                  <p style={{ fontSize: "var(--fs-label)", color: "var(--on-dark-text-secondary)", marginTop: "8px" }}>
                     net reduction in avoidable medical spend, year one
                   </p>
                 </div>
@@ -231,7 +231,7 @@ export default function NextStepsCTA({ data }: NextStepsCTAProps) {
                 border: "none",
                 borderRadius: "999px",
                 padding: "18px 40px",
-                fontSize: "16px",
+                fontSize: "var(--fs-body)",
                 cursor: "pointer",
                 textDecoration: "none",
               }}
@@ -274,7 +274,7 @@ function Column({ heading, headingColor, accent, items }: ColumnProps) {
       <h3
         className="font-bold uppercase"
         style={{
-          fontSize: "12px",
+          fontSize: "var(--fs-eyebrow)",
           color: headingColor,
           letterSpacing: "0.16em",
           marginBottom: "20px",
@@ -288,7 +288,7 @@ function Column({ heading, headingColor, accent, items }: ColumnProps) {
             key={item}
             className="flex items-start min-w-0"
             style={{
-              fontSize: "14px",
+              fontSize: "var(--fs-label)",
               lineHeight: 1.6,
               gap: "10px",
               color: "var(--on-dark-text-secondary)",

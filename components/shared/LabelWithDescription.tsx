@@ -16,8 +16,8 @@ export default function LabelWithDescription({
   separator = "dash",
   labelColor = "var(--covert-black)",
   descriptionColor = "var(--covert-text-secondary)",
-  labelSize = "15px",
-  descriptionSize = "13px",
+  labelSize = "var(--fs-label)",
+  descriptionSize = "var(--fs-caption)",
 }: LabelWithDescriptionProps) {
   if (separator === "break") {
     return (

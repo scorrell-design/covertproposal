@@ -47,7 +47,7 @@ export default function WithdrawalIndicators({
           <span
             className="font-bold uppercase"
             style={{
-              fontSize: "13px",
+              fontSize: "var(--fs-eyebrow)",
               color: "var(--covert-teal)",
               letterSpacing: "0.16em",
             }}
@@ -59,7 +59,7 @@ export default function WithdrawalIndicators({
         <h2
           className="font-bold"
           style={{
-            fontSize: "clamp(28px, 3.2vw, 40px)",
+            fontSize: "var(--fs-h2)",
             lineHeight: 1.1,
             letterSpacing: "-0.02em",
             color: "#FFFFFF",
@@ -85,7 +85,7 @@ export default function WithdrawalIndicators({
             <p
               className="font-bold"
               style={{
-                fontSize: "clamp(64px, 7vw, 96px)",
+                fontSize: "var(--fs-stat-lg)",
                 lineHeight: 1,
                 letterSpacing: "-0.04em",
                 color: "#FF8A8A",
@@ -96,7 +96,7 @@ export default function WithdrawalIndicators({
             <p
               className="font-semibold"
               style={{
-                fontSize: "15px",
+                fontSize: "var(--fs-label)",
                 color: "#FFFFFF",
                 marginTop: "12px",
                 lineHeight: 1.4,
@@ -107,7 +107,7 @@ export default function WithdrawalIndicators({
             </p>
             <p
               style={{
-                fontSize: "13px",
+                fontSize: "var(--fs-caption)",
                 color: "var(--on-dark-text-secondary)",
                 marginTop: "12px",
                 lineHeight: 1.6,
@@ -135,7 +135,7 @@ export default function WithdrawalIndicators({
                 />
                 <XAxis
                   type="number"
-                  tick={{ fontSize: 11, fill: "rgba(255,255,255,0.7)" }}
+                  tick={{ fontSize: 13, fill: "rgba(255,255,255,0.7)" }}
                   stroke="rgba(255,255,255,0.25)"
                 />
                 <YAxis
@@ -143,7 +143,7 @@ export default function WithdrawalIndicators({
                   dataKey="name"
                   width={150}
                   tick={{
-                    fontSize: 12,
+                    fontSize: 13,
                     fill: "#FFFFFF",
                   }}
                   stroke="rgba(255,255,255,0.25)"
@@ -154,7 +154,7 @@ export default function WithdrawalIndicators({
                     backgroundColor: "#FFFFFF",
                     border: "none",
                     borderRadius: "6px",
-                    fontSize: "12px",
+                    fontSize: "var(--fs-caption)",
                     color: "var(--covert-black)",
                   }}
                   itemStyle={{ color: "var(--covert-black)" }}
@@ -178,7 +178,7 @@ export default function WithdrawalIndicators({
                     dataKey="count"
                     position="right"
                     fill="#FFFFFF"
-                    fontSize={11}
+                    fontSize={13}
                     formatter={(v) => formatNumber(Number(v))}
                   />
                 </Bar>

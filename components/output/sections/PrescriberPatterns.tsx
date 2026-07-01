@@ -42,7 +42,7 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
           <span
             className="font-bold uppercase"
             style={{
-              fontSize: "13px",
+              fontSize: "var(--fs-eyebrow)",
               color: "var(--covert-teal)",
               letterSpacing: "0.16em",
             }}
@@ -54,7 +54,7 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
         <h2
           className="font-bold"
           style={{
-            fontSize: "clamp(28px, 3.2vw, 40px)",
+            fontSize: "var(--fs-h2)",
             lineHeight: 1.1,
             letterSpacing: "-0.02em",
             color: "#FFFFFF",
@@ -74,7 +74,7 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
           <p
             className="font-bold"
             style={{
-              fontSize: "clamp(72px, 9vw, 132px)",
+              fontSize: "var(--fs-display)",
               lineHeight: 1,
               letterSpacing: "-0.04em",
               color: "#FF8A8A",
@@ -84,7 +84,7 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
           </p>
           <p
             style={{
-              fontSize: "16px",
+              fontSize: "var(--fs-body)",
               color: "var(--on-dark-text-secondary)",
               marginTop: "16px",
               lineHeight: 1.5,
@@ -120,7 +120,7 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
             <h3
               className="font-bold uppercase"
               style={{
-                fontSize: "12px",
+                fontSize: "var(--fs-caption)",
                 color: "#FF8A8A",
                 letterSpacing: "0.16em",
               }}
@@ -130,7 +130,7 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
             <p
               className="font-bold"
               style={{
-                fontSize: "clamp(48px, 5vw, 64px)",
+                fontSize: "var(--fs-stat)",
                 lineHeight: 1,
                 letterSpacing: "-0.04em",
                 marginTop: "12px",
@@ -141,7 +141,7 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
             </p>
             <p
               style={{
-                fontSize: "14px",
+                fontSize: "var(--fs-label)",
                 color: "var(--on-dark-text-secondary)",
                 lineHeight: 1.6,
                 marginTop: "16px",
@@ -170,7 +170,7 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
             <h3
               className="font-bold uppercase"
               style={{
-                fontSize: "12px",
+                fontSize: "var(--fs-caption)",
                 color: "#FFB36B",
                 letterSpacing: "0.16em",
               }}
@@ -180,7 +180,7 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
             <p
               className="font-bold"
               style={{
-                fontSize: "clamp(48px, 5vw, 64px)",
+                fontSize: "var(--fs-stat)",
                 lineHeight: 1,
                 letterSpacing: "-0.04em",
                 marginTop: "12px",
@@ -191,7 +191,7 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
             </p>
             <p
               style={{
-                fontSize: "14px",
+                fontSize: "var(--fs-label)",
                 color: "var(--on-dark-text-secondary)",
                 lineHeight: 1.6,
                 marginTop: "16px",
@@ -207,7 +207,7 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
 
         <p
           className="mt-6 italic"
-          style={{ fontSize: "12px", color: "var(--on-dark-text-muted)" }}
+          style={{ fontSize: "var(--fs-caption)", color: "var(--on-dark-text-muted)" }}
         >
           Based on CDC-aligned prescribing risk factors.
         </p>

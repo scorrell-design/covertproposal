@@ -60,7 +60,7 @@ export default function RiskBreakdown({ data }: RiskBreakdownProps) {
           <span
             className="font-bold uppercase"
             style={{
-              fontSize: "13px",
+              fontSize: "var(--fs-eyebrow)",
               color: "var(--covert-teal)",
               letterSpacing: "0.16em",
             }}
@@ -72,7 +72,7 @@ export default function RiskBreakdown({ data }: RiskBreakdownProps) {
         <h2
           className="font-bold"
           style={{
-            fontSize: "clamp(28px, 3.2vw, 40px)",
+            fontSize: "var(--fs-h2)",
             lineHeight: 1.1,
             letterSpacing: "-0.02em",
             color: "#FFFFFF",
@@ -87,7 +87,7 @@ export default function RiskBreakdown({ data }: RiskBreakdownProps) {
             number back-to-back. */}
         <p
           style={{
-            fontSize: "16px",
+            fontSize: "var(--fs-body)",
             color: "var(--on-dark-text-secondary)",
             lineHeight: 1.6,
             marginTop: "16px",
@@ -133,7 +133,7 @@ export default function RiskBreakdown({ data }: RiskBreakdownProps) {
                   color: "var(--covert-black)",
                   padding: "6px 12px",
                   borderRadius: "6px",
-                  fontSize: "12px",
+                  fontSize: "var(--fs-caption)",
                   marginBottom: "8px",
                   fontWeight: 600,
                 }}
@@ -173,7 +173,7 @@ export default function RiskBreakdown({ data }: RiskBreakdownProps) {
                       gap: "7px",
                       padding: "5px 11px",
                       borderRadius: "999px",
-                      fontSize: "11px",
+                      fontSize: "var(--fs-caption)",
                       letterSpacing: "0.05em",
                       backgroundColor: solid
                         ? tier.color
@@ -198,7 +198,7 @@ export default function RiskBreakdown({ data }: RiskBreakdownProps) {
                   <span
                     className="font-bold"
                     style={{
-                      fontSize: "26px",
+                      fontSize: "var(--fs-h3)",
                       color: tier.textColor,
                       letterSpacing: "-0.02em",
                       lineHeight: 1,
@@ -209,7 +209,7 @@ export default function RiskBreakdown({ data }: RiskBreakdownProps) {
                 </div>
                 <p
                   style={{
-                    fontSize: "14px",
+                    fontSize: "var(--fs-label)",
                     color: "var(--on-dark-text-secondary)",
                     lineHeight: 1.45,
                     marginTop: "8px",
@@ -246,7 +246,7 @@ export default function RiskBreakdown({ data }: RiskBreakdownProps) {
             />
             <p
               className="min-w-0"
-              style={{ fontSize: "15px", lineHeight: 1.6, color: "#FFFFFF" }}
+              style={{ fontSize: "var(--fs-body)", lineHeight: 1.6, color: "#FFFFFF" }}
             >
               <strong>
                 {data.catastrophicRisk} member
@@ -286,7 +286,7 @@ export default function RiskBreakdown({ data }: RiskBreakdownProps) {
             />
             <p
               className="min-w-0"
-              style={{ fontSize: "15px", lineHeight: 1.6, color: "#FFFFFF" }}
+              style={{ fontSize: "var(--fs-body)", lineHeight: 1.6, color: "#FFFFFF" }}
             >
               <strong>{data.matMembers} members</strong>{" "}
               are enrolled in Medication-Assisted Treatment. These patients
