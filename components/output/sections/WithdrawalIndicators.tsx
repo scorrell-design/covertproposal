@@ -29,7 +29,9 @@ export default function WithdrawalIndicators({
     .filter((entry) => entry.count > 0)
     .sort((a, b) => b.count - a.count);
   const max = sorted[0]?.count ?? 0;
-  const chartHeight = 320;
+  // Scale with the indicator count so every bar keeps a readable row height —
+  // a fixed height made recharts drop every other category label (Jesse 7/1).
+  const chartHeight = Math.max(320, sorted.length * 34);
 
   return (
     <section
@@ -127,7 +129,8 @@ export default function WithdrawalIndicators({
                 height={chartHeight}
                 data={sorted}
                 layout="vertical"
-                margin={{ top: 4, right: 24, left: 8, bottom: 4 }}
+                // Right margin fits the count label beside the longest bar.
+                margin={{ top: 4, right: 56, left: 8, bottom: 4 }}
               >
                 <CartesianGrid
                   horizontal={false}
@@ -141,7 +144,12 @@ export default function WithdrawalIndicators({
                 <YAxis
                   type="category"
                   dataKey="name"
-                  width={150}
+                  // Wide enough for the longest PCR indicator name
+                  // ("PhenothiazineAntihistamines") — 150px clipped it.
+                  width={190}
+                  // Force a tick per indicator — the default interval skips
+                  // labels when they crowd, hiding every other symptom (Jesse 7/1).
+                  interval={0}
                   tick={{
                     fontSize: 13,
                     fill: "#FFFFFF",

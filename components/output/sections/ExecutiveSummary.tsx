@@ -144,7 +144,7 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
             >
               Chronic opioid users incur roughly{" "}
               <strong style={{ color: "#FFFFFF" }}>6× more medical cost</strong>{" "}
-              than non-users.<sup style={{ fontSize: "var(--fs-caption)" }}>†</sup>
+              than non-users.<sup style={{ fontSize: "var(--fs-caption)" }}>*</sup>
             </p>
           </div>
         </div>
@@ -226,9 +226,7 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
             lineHeight: 1.6,
           }}
         >
-          *Based on Covert client data. † Healthcare costs and utilization
-          associated with high-risk prescription opioid use — a retrospective
-          cohort study (PMC, 2018).
+          *Based on Covert client data.
         </p>
       </div>
     </section>

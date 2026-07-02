@@ -16,22 +16,33 @@ export const ABUSE_ADDICTION_RATE = 0.25;
 // event, each carrying ~$100,000 in projected exposure.
 export const CATASTROPHIC_EXPOSURE_PER_MEMBER = 100000;
 
-// Preventable spend = 75% of the annual exposure. Annual exposure is the
-// at-risk basis (Jesse 6/26): identified members × $23,790.
-export function calcPreventableSpend(identifiedMembers: number): number {
+// Total Medical Claims Exposure Caused by Opioid Overprescribing (Jesse 7/1):
+// members with chronic cost factors × $23,790. Row 3 of "The cost of doing
+// nothing".
+export function calcTotalClaimsExposure(chronicCostFactors: number): number {
+  return chronicCostFactors * SAVINGS_PER_AT_RISK_MEMBER;
+}
+
+// Reduction in Avoidable Medical Claims (Jesse 7/1): 75% of the Total Medical
+// Claims Exposure. Shown in row 3 of "The return of correcting it" AND in the
+// Decision close — Jesse requires those two figures to always match, so both
+// must read from this one function.
+export function calcAvoidableClaimsReduction(chronicCostFactors: number): number {
   return Math.round(
-    calcAvoidedMedicalSpend(identifiedMembers) * PREVENTABLE_REDUCTION_RATE,
+    calcTotalClaimsExposure(chronicCostFactors) * PREVENTABLE_REDUCTION_RATE,
   );
 }
 
-// Net ROI (Jesse 6/26) = preventable spend (at-risk basis) − Covert cost
-// (members currently on an opioid Rx × $600).
+// Net ROI (Jesse 6/26, rebased 7/1) = reduction in avoidable medical claims −
+// Covert cost (members currently on an opioid Rx × $600). Internal form
+// preview only; the report itself shows the un-netted reduction.
 export function calcNetROI(
-  identifiedMembers: number,
+  chronicCostFactors: number,
   membersWithOpioidRx: number,
 ): number {
   return (
-    calcPreventableSpend(identifiedMembers) - calcCovertCost(membersWithOpioidRx)
+    calcAvoidableClaimsReduction(chronicCostFactors) -
+    calcCovertCost(membersWithOpioidRx)
   );
 }
 

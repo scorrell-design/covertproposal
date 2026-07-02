@@ -107,6 +107,84 @@ check(
     !/Guaranteed ROI/.test(joined),
 );
 
+// === July 1 revisions ===
+
+// 12. PMC 2018 citation removed; the Covert-client-data footnote retained and
+//     the 6× stat's reference symbol (*) matches it. No stray † anywhere.
+check(
+  "PMC citation removed; * footnote retained; no stray †",
+  !/PMC, 2018|retrospective\s+cohort study/.test(joined) &&
+    /\*Based on Covert client data\./.test(joined) &&
+    !/†/.test(joined),
+);
+
+// 13. "Highly responsive to targeted outreach" removed from the acute
+//     prescriber card (223 card) — must not imply only this group responds.
+check(
+  '"Highly responsive to targeted outreach" removed',
+  !/Highly responsive to targeted outreach/.test(joined),
+);
+
+// 14. Pharmacies dispensing >3 refills: extracted from the PCR text
+//     ("771 Pharmacies > 3 Refills"), in the Claude schema, and rendered as
+//     the 6th pharmacy-utilization metric.
+const textFieldsSrc =
+  allSource.find((f) => /lib\/pcr\/textFields\.ts$/.test(f.file))?.src ?? "";
+const schemaSrc =
+  allSource.find((f) => /lib\/pcr\/schema\.ts$/.test(f.file))?.src ?? "";
+check(
+  "pharmaciesOver3Refills extracted (text + schema) and rendered",
+  /pharmaciesOver3Refills/.test(textFieldsSrc) &&
+    /pharmaciesOver3Refills/.test(schemaSrc) &&
+    /Pharmacies dispensing >3 refills/.test(joined),
+);
+
+// 15. Every withdrawal-symptom indicator label visible — recharts must not
+//     skip alternate category ticks (interval={0} on the WSI YAxis).
+const wsiSrc =
+  allSource.find((f) => /WithdrawalIndicators\.tsx$/.test(f.file))?.src ?? "";
+check(
+  "WSI chart shows every indicator label (interval={0})",
+  /interval=\{0\}/.test(wsiSrc),
+);
+
+// 16. Cost of doing nothing row 3 = Total Medical Claims Exposure
+//     (chronic cost factors × $23,790) via a named helper.
+const financialSrc =
+  allSource.find((f) => /FinancialImpact\.tsx$/.test(f.file))?.src ?? "";
+check(
+  "Total Medical Claims Exposure = chronicCostFactors × $23,790",
+  /calcTotalClaimsExposure\s*\(\s*chronicCostFactors\s*:/.test(joined) ||
+    (/calcTotalClaimsExposure/.test(financialSrc) &&
+      /chronicCostFactors\s*\*\s*SAVINGS_PER_AT_RISK_MEMBER/.test(joined)),
+);
+
+// 17. Return row 3 and the Decision-close figure both read from
+//     calcAvoidableClaimsReduction (75% of exposure) so they can never drift.
+const ctaSrc =
+  allSource.find((f) => /NextStepsCTA\.tsx$/.test(f.file))?.src ?? "";
+check(
+  "Return row 3 and Decision close share calcAvoidableClaimsReduction",
+  /calcAvoidableClaimsReduction\(data\.chronicCostFactors\)/.test(financialSrc) &&
+    /calcAvoidableClaimsReduction\(data\.chronicCostFactors\)/.test(ctaSrc) &&
+    /PREVENTABLE_REDUCTION_RATE/.test(joined),
+);
+
+// 18. Withdrawal-members card replaced by the chronic-cost-factors card in
+//     "The cost of doing nothing" (the 641 → 733 swap).
+check(
+  "Cost card no longer shows the withdrawal-members row",
+  !/withdrawalSymptomMembers\)\s*\)?,?\s*\n?\s*label:\s*"members begin managing/.test(
+    financialSrc,
+  ) && !/members begin managing severe withdrawal symptoms/.test(financialSrc),
+);
+
+// 19. "With Covert — 12 Months" bullets bolded.
+check(
+  '"With Covert — 12 Months" bullets bolded',
+  /heading="With Covert — 12 Months"[\s\S]{0,200}bold/.test(ctaSrc),
+);
+
 // Report
 const failed = results.filter((r) => !r.pass);
 console.log("\n=== JESSE FEEDBACK AUDIT ===\n");

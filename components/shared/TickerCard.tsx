@@ -1,6 +1,7 @@
 "use client";
 
 import SplitFlapNumber from "@/components/shared/SplitFlapNumber";
+import { useFitText } from "@/lib/hooks";
 
 interface TickerCardProps {
   value: number;
@@ -23,6 +24,14 @@ export default function TickerCard({
   valueColor,
   borderStyle = "solid",
 }: TickerCardProps) {
+  // Big figures (e.g. "$9,968,010") must never escape the card — shrink the
+  // font to the card's width when the one-line figure is too wide (Steph 7/2).
+  const valueRef = useFitText<HTMLParagraphElement>("var(--fs-stat)", [
+    value,
+    prefix,
+    suffix,
+  ]);
+
   return (
     <div
       data-ticker
@@ -37,6 +46,7 @@ export default function TickerCard({
       }}
     >
       <p
+        ref={valueRef}
         className="font-bold"
         style={{
           fontSize: "var(--fs-stat)",

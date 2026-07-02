@@ -75,6 +75,7 @@ const FIELD_LABELS: Record<string, string> = {
   acuteOpioidPrescribers: "Acute opioid prescribers",
   membersMultiplePrescribers: "Members using multiple prescribers",
   membersOver3Refills: "Members receiving >3 refills",
+  pharmaciesOver3Refills: "Pharmacies dispensing >3 refills",
   wsiBreakdown: "Withdrawal symptom breakdown (chart)",
   chronicConditions: "Chronic conditions breakdown (chart)",
 };

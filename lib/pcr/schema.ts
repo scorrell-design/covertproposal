@@ -34,6 +34,7 @@ export const pcrExtractionSchema = z.object({
   pharmaciesDispensingOpioids: nint,
   pharmaciesEarlyRefills: nint,
   pharmaciesHighDosage: nint,
+  pharmaciesOver3Refills: nint,
   pharmaciesMultiPrescriber: nint,
   crossLocationRefills: nint,
   membersMultiplePrescribers: nint,

@@ -5,9 +5,10 @@ import { PCRData } from "@/lib/types";
 import Reveal from "@/components/shared/Reveal";
 import Stagger from "@/components/shared/Stagger";
 import {
-  calcPreventableSpend,
+  calcAvoidableClaimsReduction,
   calcProjectedAbuseAddiction,
   calcProjectedOverdoseDeaths,
+  calcTotalClaimsExposure,
   formatCurrency,
   formatNumber,
 } from "@/lib/calculations";
@@ -39,6 +40,9 @@ export default function FinancialImpact({ data }: FinancialImpactProps) {
   );
 
   // The cost of doing nothing — annualized member harm.
+  // Rows per Jesse 7/1: the withdrawal-members card was replaced by the
+  // chronic-cost-factors card (row 2), and row 3 is now the Total Medical
+  // Claims Exposure in dollars (chronic cost factors × $23,790).
   const costRows: ImpactRow[] = [
     {
       display: formatNumber(calcProjectedAbuseAddiction(data.identifiedMembers)),
@@ -46,13 +50,13 @@ export default function FinancialImpact({ data }: FinancialImpactProps) {
       color: "#FF8A8A",
     },
     {
-      display: formatNumber(data.withdrawalSymptomMembers),
-      label: "members begin managing severe withdrawal symptoms",
+      display: formatNumber(data.chronicCostFactors),
+      label: "members experience chronic conditions and opioid withdrawal symptoms",
       color: "#FFB36B",
     },
     {
-      display: formatNumber(data.chronicCostFactors),
-      label: "members experience chronic conditions and opioid withdrawal symptoms",
+      display: formatCurrency(calcTotalClaimsExposure(data.chronicCostFactors)),
+      label: "total medical claims exposure caused by opioid overprescribing",
       color: "#FCD34D",
     },
     ...(overdoseDeaths !== null
@@ -67,10 +71,12 @@ export default function FinancialImpact({ data }: FinancialImpactProps) {
       : []),
   ];
 
-  // The return of correcting it — each value is its basis × 0.75.
+  // The return of correcting it — each value is its basis × 0.75. Row 3 is
+  // 75% of the Total Medical Claims Exposure shown opposite (Jesse 7/1) and
+  // must always match the figure in the Decision close.
   const discontinue = Math.round(data.identifiedMembers * 0.75);
   const prescribersAdopting = Math.round(data.identifiedPrescribers * 0.75);
-  const avoidableReduction = calcPreventableSpend(data.identifiedMembers);
+  const avoidableReduction = calcAvoidableClaimsReduction(data.chronicCostFactors);
 
   const returnRows: ImpactRow[] = [
     {
@@ -86,7 +92,7 @@ export default function FinancialImpact({ data }: FinancialImpactProps) {
     },
     {
       display: formatCurrency(avoidableReduction),
-      label: "reduction in avoidable medical spend",
+      label: "reduction in avoidable medical claims",
       color: "var(--covert-teal)",
     },
     ...(overdoseDeaths !== null

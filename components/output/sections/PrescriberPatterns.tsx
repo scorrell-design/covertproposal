@@ -200,7 +200,7 @@ export default function PrescriberPatterns({ data }: PrescriberPatternsProps) {
             >
               Prescribers writing short-course opioids that initiate the
               dependence pathway. Typically unaware of cumulative patient-level
-              patterns. Highly responsive to targeted outreach.
+              patterns.
             </p>
           </div>
           )}

@@ -42,6 +42,7 @@ const MATCHERS: Matcher[] = [
   { field: "pharmaciesMultiPrescriber", pattern: /([\d,]+)\s+Pharmacies\s*>\s*1\s+Prescriber/i },
   { field: "pharmaciesEarlyRefills", pattern: /([\d,]+)\s+Pharmacies\s*>\s*2\s+Days\s+Early Refill/i },
   { field: "pharmaciesHighDosage", pattern: /([\d,]+)\s+Pharmacies\s*>\s*50\s+MME/i },
+  { field: "pharmaciesOver3Refills", pattern: /([\d,]+)\s+Pharmacies\s*>\s*3\s+Refills/i },
 
   { field: "catastrophicRisk", pattern: /total of\s+([\d,]+)\s+(?:high\s+)?catastrophic member/i },
   // pdf.js reading order detaches these totals from their headline labels and

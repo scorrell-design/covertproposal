@@ -86,3 +86,42 @@ export function useContainerWidth() {
 
   return { ref, width };
 }
+
+/**
+ * Shrink an element's font-size so its single-line content never spills out
+ * of its own box (Steph 7/2 — large ticker figures were escaping their card).
+ * `baseFontSize` is the element's design size (e.g. "var(--fs-stat)"): each
+ * fit resets to it, measures, and only ever scales DOWN — short figures keep
+ * the full design size. It must be passed explicitly because React owns the
+ * inline style; clearing fontSize to "" would silently drop to the root 16px.
+ * Re-fits on resize and when deps change.
+ */
+export function useFitText<T extends HTMLElement>(
+  baseFontSize: string,
+  deps: readonly unknown[] = [],
+) {
+  const ref = useRef<T>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const fit = () => {
+      el.style.fontSize = baseFontSize; // design size first, then measure
+      const { scrollWidth, clientWidth } = el;
+      if (clientWidth > 0 && scrollWidth > clientWidth) {
+        const base = parseFloat(window.getComputedStyle(el).fontSize);
+        const fitted = Math.floor((base * clientWidth) / scrollWidth);
+        el.style.fontSize = `${Math.max(14, fitted)}px`;
+      }
+    };
+
+    fit();
+    const observer = new ResizeObserver(fit);
+    observer.observe(el);
+    return () => observer.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [baseFontSize, ...deps]);
+
+  return ref;
+}

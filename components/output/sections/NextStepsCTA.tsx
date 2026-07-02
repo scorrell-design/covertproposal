@@ -4,7 +4,7 @@ import { PCRData } from "@/lib/types";
 import Reveal from "@/components/shared/Reveal";
 import Stagger from "@/components/shared/Stagger";
 import {
-  calcNetROI,
+  calcAvoidableClaimsReduction,
   calcROIRatio,
   formatCurrency,
 } from "@/lib/calculations";
@@ -20,7 +20,9 @@ interface NextStepsCTAProps {
  * and below those elements was removed per Jesse.
  */
 export default function NextStepsCTA({ data }: NextStepsCTAProps) {
-  const netRoi = calcNetROI(data.identifiedMembers, data.membersWithOpioidRx);
+  // Jesse 7/1: this figure must exactly match row 3 of "The return of
+  // correcting it" — both read from calcAvoidableClaimsReduction.
+  const claimsReduction = calcAvoidableClaimsReduction(data.chronicCostFactors);
   const roi = calcROIRatio(data.identifiedMembers, data.membersWithOpioidRx);
 
   return (
@@ -170,10 +172,10 @@ export default function NextStepsCTA({ data }: NextStepsCTAProps) {
                     className="font-bold"
                     style={{ fontSize: "var(--fs-stat)", lineHeight: 1, letterSpacing: "-0.03em", color: "#FFFFFF" }}
                   >
-                    {formatCurrency(netRoi)}
+                    {formatCurrency(claimsReduction)}
                   </p>
                   <p style={{ fontSize: "var(--fs-label)", color: "var(--on-dark-text-secondary)", marginTop: "8px" }}>
-                    net reduction in avoidable medical spend, year one
+                    reduction in avoidable medical claims, year one
                   </p>
                 </div>
               </div>
@@ -205,6 +207,8 @@ export default function NextStepsCTA({ data }: NextStepsCTAProps) {
             heading="With Covert — 12 Months"
             headingColor="var(--covert-teal)"
             accent="var(--covert-teal)"
+            // Bulleted text bolded to emphasize expected outcomes (Jesse 7/1).
+            bold
             items={[
               "75% reduction in avoidable spend",
               "Prescriber behavior corrected at the source",
@@ -257,9 +261,11 @@ interface ColumnProps {
   headingColor: string;
   accent: string;
   items: string[];
+  /** Bold every bullet (Jesse 7/1 — the "With Covert" outcomes card). */
+  bold?: boolean;
 }
 
-function Column({ heading, headingColor, accent, items }: ColumnProps) {
+function Column({ heading, headingColor, accent, items, bold }: ColumnProps) {
   return (
     <div
       className="min-w-0"
@@ -305,6 +311,7 @@ function Column({ heading, headingColor, accent, items }: ColumnProps) {
             />
             <span
               className="min-w-0"
+              style={bold ? { fontWeight: 700, color: "#FFFFFF" } : undefined}
               dangerouslySetInnerHTML={{ __html: item }}
             />
           </li>

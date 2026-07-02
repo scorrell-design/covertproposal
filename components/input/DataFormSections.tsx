@@ -14,10 +14,10 @@ import {
 } from "lucide-react";
 import { PCRData } from "@/lib/types";
 import {
-  calcAvoidedMedicalSpend,
-  calcPreventableSpend,
+  calcAvoidableClaimsReduction,
   calcCovertCost,
   calcNetROI,
+  calcTotalClaimsExposure,
   formatCurrency,
 } from "@/lib/calculations";
 
@@ -192,12 +192,13 @@ export default function DataFormSections({
     onChange({ ...data, [field]: parsed });
   };
 
-  // Per Jesse (6/26): annual exposure = identified members × $23,790; case
-  // management investment = members on an opioid Rx × $600. Both feed Net ROI.
-  const exposure = calcAvoidedMedicalSpend(data.identifiedMembers);
-  const preventable = calcPreventableSpend(data.identifiedMembers);
+  // Per Jesse (7/1): total claims exposure = chronic cost factors × $23,790,
+  // reduction = 75% of that; case management investment = members on an
+  // opioid Rx × $600. Both feed Net ROI.
+  const exposure = calcTotalClaimsExposure(data.chronicCostFactors);
+  const reduction = calcAvoidableClaimsReduction(data.chronicCostFactors);
   const caseMgmt = calcCovertCost(data.membersWithOpioidRx);
-  const netRoi = calcNetROI(data.identifiedMembers, data.membersWithOpioidRx);
+  const netRoi = calcNetROI(data.chronicCostFactors, data.membersWithOpioidRx);
 
   return (
     <div className="flex flex-col gap-4">
@@ -347,6 +348,12 @@ export default function DataFormSections({
             autoFilled={isAutoFilled}
           />
           <FormField
+            label="Pharmacies Dispensing >3 Refills"
+            value={data.pharmaciesOver3Refills ?? 0}
+            onChange={(v) => update("pharmaciesOver3Refills", v)}
+            autoFilled={isAutoFilled}
+          />
+          <FormField
             label="Pharmacies Missing Multi-Prescriber Activity"
             value={data.pharmaciesMultiPrescriber}
             onChange={(v) => update("pharmaciesMultiPrescriber", v)}
@@ -391,7 +398,7 @@ export default function DataFormSections({
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FormField
-            label="Annual Exposure from Withdrawal Symptoms"
+            label="Total Medical Claims Exposure"
             value={formatCurrency(exposure)}
             onChange={() => {}}
             type="text"
@@ -399,8 +406,8 @@ export default function DataFormSections({
             autoLabel="auto-calculated"
           />
           <FormField
-            label="Preventable Medical Spend"
-            value={formatCurrency(preventable)}
+            label="Reduction in Avoidable Medical Claims"
+            value={formatCurrency(reduction)}
             onChange={() => {}}
             type="text"
             readOnly

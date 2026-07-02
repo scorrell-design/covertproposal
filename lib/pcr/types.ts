@@ -21,10 +21,11 @@ export interface FieldResult<T = number> {
   conflict?: { text: T | null; vision: T | null };
 }
 
-/** Every scalar field in PCRData that we attempt to extract. */
+/** Every scalar field in PCRData that we attempt to extract. Optionality is
+ * stripped so optional numerics (e.g. pharmaciesOver3Refills) are included. */
 export type PCRScalarField = NonNullable<
   {
-    [K in keyof PCRData]: PCRData[K] extends number ? K : never;
+    [K in keyof PCRData]-?: NonNullable<PCRData[K]> extends number ? K : never;
   }[keyof PCRData]
 >;
 
