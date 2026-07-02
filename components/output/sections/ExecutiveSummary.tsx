@@ -194,13 +194,12 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
           <span style={{ color: "var(--covert-teal)" }}>preventable harm.</span>
         </h2>
 
-        {/* Supporting narrative — two columns so the lower half fills the width
-            instead of a single narrow left rail. */}
+        {/* Supporting narrative — one full-width block, single reading path
+            (Steph 7/2: side-by-side columns left no clear place to start). */}
         <div
-          className="grid"
+          className="flex flex-col"
           style={{
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 320px), 1fr))",
-            gap: "clamp(24px, 3vw, 48px)",
+            gap: "16px",
             marginTop: "28px",
             fontSize: "var(--fs-body)",
             color: "var(--on-dark-text-secondary)",
@@ -236,37 +235,62 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
         </p>
 
         {/* Section close (Jesse 7/2): the plan's total avoidable medical spend
-            — big, attention-grabbing, directly under the references. Brand
-            amber (the money-risk accent, same as the monthly-spend ticker);
-            no reference mark on the stat itself — at display size the †
-            reads as a stray plus sign (Steph 7/2). */}
-        <div style={{ marginTop: "clamp(40px, 5vw, 56px)" }}>
+            directly under the references. Contained in an amber-accented card
+            (mirrors the overdose pull-out) at stat-lg — a third naked
+            display-size figure floating over the caption line above hijacked
+            the reading flow (Steph 7/2). No reference mark on the stat itself
+            — at stat size the † reads as a stray plus sign. */}
+        <div
+          className="flex flex-col items-center text-center md:flex-row md:items-center md:text-left"
+          style={{
+            marginTop: "clamp(32px, 4vw, 48px)",
+            backgroundColor: "var(--on-dark-surface)",
+            border: "1px solid var(--on-dark-border)",
+            borderTop: "3px solid var(--covert-amber)",
+            borderRadius: "16px",
+            padding: "clamp(28px, 4vw, 44px)",
+            gap: "clamp(16px, 4vw, 48px)",
+          }}
+        >
           <p
             className="font-bold"
             style={{
-              fontSize: "var(--fs-display)",
-              lineHeight: 0.9,
-              letterSpacing: "-0.05em",
+              fontSize: "var(--fs-stat-lg)",
+              lineHeight: 1,
+              letterSpacing: "-0.04em",
               color: "var(--covert-amber)",
+              flexShrink: 0,
             }}
           >
             {formatCurrency(calcTotalClaimsExposure(data.chronicCostFactors))}
           </p>
-          <p
-            style={{
-              fontSize: "var(--fs-body)",
-              color: "var(--on-dark-text-secondary)",
-              lineHeight: 1.7,
-              maxWidth: "720px",
-              marginTop: "16px",
-            }}
-          >
-            The estimated medical spend attributable to your health plan
-            members identified as at risk due to opioid overprescribing. This
-            includes healthcare costs associated with opioid withdrawal
-            symptoms and related healthcare utilization during the past 12
-            months.
-          </p>
+          <div>
+            <p
+              className="font-semibold"
+              style={{
+                fontSize: "var(--fs-lead)",
+                color: "#FFFFFF",
+                lineHeight: 1.35,
+              }}
+            >
+              Total avoidable medical spend
+            </p>
+            <p
+              style={{
+                fontSize: "var(--fs-label)",
+                color: "var(--on-dark-text-secondary)",
+                lineHeight: 1.6,
+                maxWidth: "560px",
+                marginTop: "10px",
+              }}
+            >
+              The estimated medical spend attributable to your health plan
+              members identified as at risk due to opioid overprescribing.
+              This includes healthcare costs associated with opioid withdrawal
+              symptoms and related healthcare utilization during the past 12
+              months.
+            </p>
+          </div>
         </div>
       </div>
     </section>
