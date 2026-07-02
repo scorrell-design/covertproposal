@@ -6,9 +6,12 @@ export const COST_PER_MEMBER_ON_OPIOID = 600;
 //   savings = at-risk (identified) members × $23,790
 export const SAVINGS_PER_AT_RISK_MEMBER = 23790;
 export const PREVENTABLE_REDUCTION_RATE = 0.75;
-// Overdose-death projection — per Jesse (5/28/26): members managing withdrawal
-// symptoms ÷ 820, suppressed entirely when the plan has < 300 members.
-export const OVERDOSE_DEATH_DIVISOR = 820;
+// Overdose-death estimate — per Jesse (7/2/26, supersedes the 5/28 ÷820 rule):
+// at-risk (identified) members × 0.0167. The rate is the 2023 U.S. opioid
+// overdose mortality among people with opioid use disorder — 80,000 deaths
+// (CDC) ÷ 4.8M with OUD (SAMHSA NSDUH) ≈ 1.67%. Population suppression under
+// 300 members is retained from the 5/28 rule.
+export const OVERDOSE_DEATH_RATE = 0.0167;
 export const OVERDOSE_MIN_POPULATION = 300;
 export const ABUSE_ADDICTION_RATE = 0.25;
 // Catastrophic-risk exposure per member — per Jesse (6/30/26): members nearing
@@ -47,16 +50,31 @@ export function calcNetROI(
 }
 
 /**
- * Projected opioid-overdose deaths in the next 12 months.
- * Formula (Jesse, 5/28/26): members managing withdrawal symptoms ÷ 820.
+ * Estimated annual opioid overdose deaths within the health plan.
+ * Formula (Jesse, 7/2/26): at-risk (identified) members × 0.0167 — the
+ * CDC/SAMHSA 2023 population-level mortality rate among people with OUD.
  * Returns null when the plan is under 300 members (stat is suppressed).
  */
 export function calcProjectedOverdoseDeaths(
-  withdrawalMembers: number,
+  identifiedMembers: number,
   totalPlanMembers: number,
 ): number | null {
   if (totalPlanMembers < OVERDOSE_MIN_POPULATION) return null;
-  const value = Math.round(withdrawalMembers / OVERDOSE_DEATH_DIVISOR);
+  const value = Math.round(identifiedMembers * OVERDOSE_DEATH_RATE);
+  return value > 0 ? value : null;
+}
+
+/**
+ * Estimated lives saved (Jesse 7/2/26): 75% of the estimated annual opioid
+ * overdose deaths — the last row of "The return of correcting it".
+ */
+export function calcEstimatedLivesSaved(
+  identifiedMembers: number,
+  totalPlanMembers: number,
+): number | null {
+  const deaths = calcProjectedOverdoseDeaths(identifiedMembers, totalPlanMembers);
+  if (deaths === null) return null;
+  const value = Math.round(deaths * PREVENTABLE_REDUCTION_RATE);
   return value > 0 ? value : null;
 }
 

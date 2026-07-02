@@ -2,7 +2,11 @@
 
 import { FileSearch } from "lucide-react";
 import { PCRData } from "@/lib/types";
-import { formatNumber } from "@/lib/calculations";
+import {
+  calcTotalClaimsExposure,
+  formatCurrency,
+  formatNumber,
+} from "@/lib/calculations";
 import SplitFlapNumber from "@/components/shared/SplitFlapNumber";
 
 interface ExecutiveSummaryProps {
@@ -207,8 +211,8 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
             {formatNumber(data.membersWithOpioidRx)} of your members are
             currently filling opioid prescriptions. The flagged group above
             shows clinical indicators of escalation — severe withdrawal
-            symptoms, cross-location refills, multiple prescribers, early
-            refills, and dosages exceeding CDC guidance.
+            symptoms, use of multiple pharmacy locations, multiple prescribers,
+            early refills, and high dosage prescriptions.
           </p>
           <p>
             This is not random. This is the downstream effect of prescriber
@@ -226,8 +230,43 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
             lineHeight: 1.6,
           }}
         >
-          *Based on Covert client data.
+          *Based on Covert client data. † Healthcare costs and utilization
+          associated with high-risk prescription opioid use — a retrospective
+          cohort study (PMC, 2018).
         </p>
+
+        {/* Section close (Jesse 7/2): the plan's total avoidable medical spend
+            — big, attention-grabbing, directly under the references. Amber to
+            match this same figure's row in "The cost of doing nothing". */}
+        <div style={{ marginTop: "clamp(40px, 5vw, 56px)" }}>
+          <p
+            className="font-bold"
+            style={{
+              fontSize: "var(--fs-display)",
+              lineHeight: 0.9,
+              letterSpacing: "-0.05em",
+              color: "#FCD34D",
+            }}
+          >
+            {formatCurrency(calcTotalClaimsExposure(data.chronicCostFactors))}
+            <sup style={{ fontSize: "0.35em", letterSpacing: 0 }}>†</sup>
+          </p>
+          <p
+            style={{
+              fontSize: "var(--fs-body)",
+              color: "var(--on-dark-text-secondary)",
+              lineHeight: 1.7,
+              maxWidth: "720px",
+              marginTop: "16px",
+            }}
+          >
+            The estimated medical spend attributable to your health plan
+            members identified as at risk due to opioid overprescribing. This
+            includes healthcare costs associated with opioid withdrawal
+            symptoms and related healthcare utilization during the past 12
+            months.
+          </p>
+        </div>
       </div>
     </section>
   );

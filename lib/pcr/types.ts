@@ -22,7 +22,7 @@ export interface FieldResult<T = number> {
 }
 
 /** Every scalar field in PCRData that we attempt to extract. Optionality is
- * stripped so optional numerics (e.g. pharmaciesOver3Refills) are included. */
+ * stripped so any optional numerics are included. */
 export type PCRScalarField = NonNullable<
   {
     [K in keyof PCRData]-?: NonNullable<PCRData[K]> extends number ? K : never;

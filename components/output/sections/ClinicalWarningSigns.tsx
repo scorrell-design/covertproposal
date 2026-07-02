@@ -95,36 +95,29 @@ export default function ClinicalWarningSigns({
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
+  // Labels simplified for non-clinical readers (Jesse 7/2) — recipients won't
+  // parse pharmacy-side clinical metrics, so each indicator reads as the plain
+  // behavior it flags. The "Pharmacies dispensing >3 refills" metric was
+  // dropped the same day: that figure isn't received in the PCR data.
   const indicators = [
     {
       value: data.prescribersExcessiveRefills,
       label: "Prescribers writing >3 refills",
       color: "#FF8A8A",
     },
-    // (Jesse 6/29): pharmacies dispensing opioid Rx with >3 refills.
-    // Hidden when the figure isn't present in the data.
-    ...(typeof data.pharmaciesOver3Refills === "number"
-      ? [
-          {
-            value: data.pharmaciesOver3Refills,
-            label: "Pharmacies dispensing >3 refills",
-            color: "#FF8A8A",
-          },
-        ]
-      : []),
     {
       value: data.crossLocationRefills,
-      label: "Cross-location pharmacy refills",
+      label: "Members using multiple pharmacy locations",
       color: "#FFB36B",
     },
     {
       value: data.pharmaciesEarlyRefills,
-      label: "Pharmacies providing early refills",
+      label: "Early opioid refills",
       color: "#FFB36B",
     },
     {
       value: data.pharmaciesHighDosage,
-      label: "Pharmacies dispensing >50 MME/day",
+      label: "High dosage prescriptions",
       color: "var(--covert-teal)",
     },
     // Pharmacies that filled an opioid Rx for the same member from multiple

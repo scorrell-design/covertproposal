@@ -33,7 +33,6 @@ export const DEMO_DATA: PCRData = {
   pharmaciesDispensingOpioids: 2042,
   pharmaciesEarlyRefills: 127, // Pharmacies >2 days early refill.
   pharmaciesHighDosage: 643, // Pharmacies >50 MME/day.
-  pharmaciesOver3Refills: 771, // Pharmacies dispensing opioid Rx with >3 refills (PCR p4: "771 Pharmacies > 3 Refills").
   pharmaciesMultiPrescriber: 713, // Pharmacies >1 prescriber (same member) — confirmed by Jesse.
   crossLocationRefills: 516, // Pharmacies >1 pharmacy.
   membersMultiplePrescribers: 997, // Members tied to >1 opioid prescriber.

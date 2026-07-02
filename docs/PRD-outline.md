@@ -23,7 +23,7 @@ The output exists in two places:
 
 What exists today is a **prototype**: the front-end is built and styled, demo data comes from a real RxSense PCR, and the PDF download works. What's missing is the backend, real data ingestion, authentication, and CRM hooks. That's the scope of this build.
 
-> **No math on our end.** The PCR already contains every computed figure the proposal shows — risk tiers, prescriber/pharmacy counts, projected cost savings ($57.25M @ 75% on the RxSense sample), cost-per-member, catastrophic exposure, etc. The tool's job is to **read those numbers out of the PCR PDF and place them in the right slots** — not to build calculators. The only on-our-side arithmetic is trivial display math (percentages, and the overdose-death projection: members managing withdrawal ÷ 820).
+> **No math on our end.** The PCR already contains every computed figure the proposal shows — risk tiers, prescriber/pharmacy counts, projected cost savings ($57.25M @ 75% on the RxSense sample), cost-per-member, catastrophic exposure, etc. The tool's job is to **read those numbers out of the PCR PDF and place them in the right slots** — not to build calculators. The only on-our-side arithmetic is trivial display math (percentages, and the overdose-death estimate: at-risk members × 0.0167, per CDC/SAMHSA 2023).
 >
 > **Input is a single PDF.** Jesse plugs in one PCR PDF (e.g. `PCR - Covert-RxSense-07-122025.pdf`); the upload accepts PDF only (no CSV/XLSX).
 
@@ -173,7 +173,7 @@ Brennan should pick what he's most comfortable with — none of this is load-bea
 
 - **Input format** → PDF only. ✅ implemented.
 - **No calculators** → the PCR already contains the computed figures; the tool extracts and places them. ✅ implemented.
-- **Overdose-death projection** → members managing withdrawal ÷ 820, suppressed when plan < 300 members. ✅ implemented.
+- **Overdose-death estimate** → at-risk (identified) members × 0.0167 (CDC 2023: 80,000 opioid overdose deaths ÷ SAMHSA 2023: 4.8M with OUD), suppressed when plan < 300 members. Supersedes the 5/28 withdrawal ÷ 820 rule (Jesse 7/2). ✅ implemented.
 - **Page order / layout / copy** → per Jesse's 5/28 markups (see Revision Log). ✅ implemented.
 
 ### Resolved by Jesse 6/3/26 (implemented)
@@ -210,7 +210,7 @@ Source: `Edits 5.28.26.docx` (annotated screenshots of the demo).
 1. **Page reorder:** Hero → **Prescription Utilization** (now p2) → **"120/5,028 members…preventable harm"** (now p3) → **Live Risk Tickers** (now p4) → remaining sections unchanged.
 2. **Hero:** added a right-hand "At a Glance" stat box — pharmacies dispensing opioids, prescribers providing opioids to at-risk patients, members with opioid Rx, members managing severe withdrawal symptoms.
 3. **Executive Summary (p3):** identified-members count is now the hero number with everything stacked below it; removed the right-hand "60 prescribers" box (prescribers are covered later); updated body copy.
-4. **Live Risk Tickers (p4):** restructured to 5 cards; removed the static "18 days" card; **Box 5 = projected opioid-overdose deaths** (withdrawal ÷ 820, hidden < 300 members).
+4. **Live Risk Tickers (p4):** restructured to 5 cards; removed the static "18 days" card; **Box 5 = Estimated Annual Opioid Overdose Deaths** (at-risk members × 0.0167, hidden < 300 members; CDC/SAMHSA population-level footnote below the stat).
 5. **Member Risk Breakdown:** improved visibility of the tier descriptor text.
 6. **Prescribers Creating Risk:** removed the "total prescribers" (108) stat; the flagged count is now the single hero number with "flagged for…" beneath.
 7. **Clinical Warning Signs:** added a 5th wheel — "Pharmacies missing multi-prescriber activity" (**713** per Jesse 6/3: pharmacies that filled for the same member from multiple prescribers).

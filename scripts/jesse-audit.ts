@@ -35,14 +35,17 @@ check(
     !/catastrophicRisk\s*\*\s*100000/.test(joined),
 );
 
-// 3. Overdose-death projection: withdrawal members ÷ 820, suppressed under
-//    300 members (Jesse 5/28/26 — supersedes the prior 825 / 9,000 lives-lost rule).
-const hasOverdoseDivisor = /OVERDOSE_DEATH_DIVISOR\s*=\s*820/.test(joined);
+// 3. Overdose-death estimate: at-risk members × 0.0167 (CDC/SAMHSA 2023),
+//    suppressed under 300 members (Jesse 7/2/26 — supersedes the 5/28 ÷820 rule).
+const hasOverdoseRate = /OVERDOSE_DEATH_RATE\s*=\s*0\.0167/.test(joined);
 const hasOverdoseThreshold = /OVERDOSE_MIN_POPULATION\s*=\s*300/.test(joined);
 const hasOverdoseGate = /totalPlanMembers\s*<\s*OVERDOSE_MIN_POPULATION/.test(joined);
 check(
-  "Overdose-death projection uses ÷820 and is gated under 300 members",
-  hasOverdoseDivisor && hasOverdoseThreshold && hasOverdoseGate,
+  "Overdose-death estimate uses ×0.0167 (CDC/SAMHSA) and is gated under 300 members",
+  hasOverdoseRate &&
+    hasOverdoseThreshold &&
+    hasOverdoseGate &&
+    !/OVERDOSE_DEATH_DIVISOR/.test(joined),
 );
 
 // 4. calcAtRiskCadence helper exists
@@ -109,13 +112,15 @@ check(
 
 // === July 1 revisions ===
 
-// 12. PMC 2018 citation removed; the Covert-client-data footnote retained and
-//     the 6× stat's reference symbol (*) matches it. No stray † anywhere.
+// 12. Reference block (Jesse 7/2 — supersedes the 7/1 "remove PMC" note):
+//     * Covert client data + † the PMC 2018 retrospective cohort study, with
+//     the total-avoidable-spend stat displayed beneath them.
+const execSrc =
+  allSource.find((f) => /ExecutiveSummary\.tsx$/.test(f.file))?.src ?? "";
 check(
-  "PMC citation removed; * footnote retained; no stray †",
-  !/PMC, 2018|retrospective\s+cohort study/.test(joined) &&
-    /\*Based on Covert client data\./.test(joined) &&
-    !/†/.test(joined),
+  "References: * client data + † PMC 2018 cohort study restored",
+  /\*Based on Covert client data\./.test(execSrc) &&
+    /retrospective\s*\n?\s*cohort study \(PMC, 2018\)/.test(execSrc),
 );
 
 // 13. "Highly responsive to targeted outreach" removed from the acute
@@ -125,18 +130,13 @@ check(
   !/Highly responsive to targeted outreach/.test(joined),
 );
 
-// 14. Pharmacies dispensing >3 refills: extracted from the PCR text
-//     ("771 Pharmacies > 3 Refills"), in the Claude schema, and rendered as
-//     the 6th pharmacy-utilization metric.
-const textFieldsSrc =
-  allSource.find((f) => /lib\/pcr\/textFields\.ts$/.test(f.file))?.src ?? "";
-const schemaSrc =
-  allSource.find((f) => /lib\/pcr\/schema\.ts$/.test(f.file))?.src ?? "";
+// 14. Pharmacies dispensing >3 refills REMOVED (Jesse 7/2 — supersedes the
+//     6/29 add): the figure isn't received in the PCR data, so the field is
+//     gone from the type, schema, matchers, form, and report.
 check(
-  "pharmaciesOver3Refills extracted (text + schema) and rendered",
-  /pharmaciesOver3Refills/.test(textFieldsSrc) &&
-    /pharmaciesOver3Refills/.test(schemaSrc) &&
-    /Pharmacies dispensing >3 refills/.test(joined),
+  "pharmaciesOver3Refills removed everywhere (Jesse 7/2)",
+  !/pharmaciesOver3Refills/.test(joined) &&
+    !/label:\s*"Pharmacies [Dd]ispensing >3 [Rr]efills"/.test(joined),
 );
 
 // 15. Every withdrawal-symptom indicator label visible — recharts must not
@@ -183,6 +183,58 @@ check(
 check(
   '"With Covert — 12 Months" bullets bolded',
   /heading="With Covert — 12 Months"[\s\S]{0,200}bold/.test(ctaSrc),
+);
+
+// === July 2 revisions ===
+
+// 20. Total avoidable medical spend displayed at the bottom of "What the Data
+//     Shows", under the references, with Jesse's exact description beneath it.
+check(
+  "Avoidable-spend stat closes 'What the Data Shows' with Jesse's description",
+  /calcTotalClaimsExposure\(data\.chronicCostFactors\)/.test(execSrc) &&
+    /estimated medical spend attributable to your health plan/.test(execSrc),
+);
+
+// 21. Clinical warning-sign labels simplified for non-clinical readers.
+const warningSrc =
+  allSource.find((f) => /ClinicalWarningSigns\.tsx$/.test(f.file))?.src ?? "";
+check(
+  "Warning-sign labels simplified (multiple pharmacy locations / early refills / high dosage)",
+  /Members using multiple pharmacy locations/.test(warningSrc) &&
+    /"Early opioid refills"/.test(warningSrc) &&
+    /"High dosage prescriptions"/.test(warningSrc) &&
+    !/Cross-location pharmacy refills/.test(warningSrc) &&
+    !/Pharmacies providing early refills/.test(warningSrc) &&
+    !/Pharmacies dispensing >50 MME\/day/.test(warningSrc),
+);
+
+// 22. Overdose stat labeled "Estimated Annual Opioid Overdose Deaths" with the
+//     CDC/SAMHSA population-level footnote beneath it (Live Risk Tickers).
+const tickersSrc =
+  allSource.find((f) => /LiveRiskTickers\.tsx$/.test(f.file))?.src ?? "";
+check(
+  "Overdose stat relabeled + CDC/SAMHSA footnote placed below it",
+  /Estimated Annual Opioid Overdose Deaths/.test(tickersSrc) &&
+    /population-level estimate and should not be\s*\n?\s*interpreted as an individual prediction/.test(
+      tickersSrc,
+    ),
+);
+
+// 23. Overdose basis is at-risk (identified) members in both render sites.
+check(
+  "Overdose estimate reads identifiedMembers in tickers + financial impact",
+  /calcProjectedOverdoseDeaths\(\s*data\.identifiedMembers/.test(tickersSrc) &&
+    /calcProjectedOverdoseDeaths\(\s*data\.identifiedMembers/.test(financialSrc),
+);
+
+// 24. Cost-of-doing-nothing last row verbiage + return card's last row =
+//     75% of estimated deaths, labeled "estimated lives saved".
+check(
+  "Impact cards: 'estimated annual opioid overdose deaths' + 'estimated lives saved' (75%)",
+  /estimated annual opioid overdose deaths/.test(financialSrc) &&
+    /"estimated lives saved"/.test(financialSrc) &&
+    /calcEstimatedLivesSaved/.test(financialSrc) &&
+    /deaths\s*\*\s*PREVENTABLE_REDUCTION_RATE/.test(joined),
 );
 
 // Report

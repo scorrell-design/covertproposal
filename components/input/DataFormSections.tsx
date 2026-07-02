@@ -348,12 +348,6 @@ export default function DataFormSections({
             autoFilled={isAutoFilled}
           />
           <FormField
-            label="Pharmacies Dispensing >3 Refills"
-            value={data.pharmaciesOver3Refills ?? 0}
-            onChange={(v) => update("pharmaciesOver3Refills", v)}
-            autoFilled={isAutoFilled}
-          />
-          <FormField
             label="Pharmacies Missing Multi-Prescriber Activity"
             value={data.pharmaciesMultiPrescriber}
             onChange={(v) => update("pharmaciesMultiPrescriber", v)}

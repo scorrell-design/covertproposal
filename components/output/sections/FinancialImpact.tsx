@@ -6,6 +6,7 @@ import Reveal from "@/components/shared/Reveal";
 import Stagger from "@/components/shared/Stagger";
 import {
   calcAvoidableClaimsReduction,
+  calcEstimatedLivesSaved,
   calcProjectedAbuseAddiction,
   calcProjectedOverdoseDeaths,
   calcTotalClaimsExposure,
@@ -34,8 +35,14 @@ interface ImpactRow {
  * preventable-reduction rate).
  */
 export default function FinancialImpact({ data }: FinancialImpactProps) {
+  // Overdose deaths (Jesse 7/2): at-risk members × 0.0167 (CDC/SAMHSA 2023).
   const overdoseDeaths = calcProjectedOverdoseDeaths(
-    data.withdrawalSymptomMembers,
+    data.identifiedMembers,
+    data.totalPlanMembers,
+  );
+  // Last return row (Jesse 7/2): 75% of the estimated annual overdose deaths.
+  const livesSaved = calcEstimatedLivesSaved(
+    data.identifiedMembers,
     data.totalPlanMembers,
   );
 
@@ -63,7 +70,7 @@ export default function FinancialImpact({ data }: FinancialImpactProps) {
       ? [
           {
             display: formatNumber(overdoseDeaths),
-            label: `member${overdoseDeaths !== 1 ? "s die" : " dies"} of an opioid overdose`,
+            label: "estimated annual opioid overdose deaths",
             color: "#FFFFFF",
             emphasis: true,
           },
@@ -95,11 +102,11 @@ export default function FinancialImpact({ data }: FinancialImpactProps) {
       label: "reduction in avoidable medical claims",
       color: "var(--covert-teal)",
     },
-    ...(overdoseDeaths !== null
+    ...(livesSaved !== null
       ? [
           {
-            display: formatNumber(overdoseDeaths),
-            label: `${overdoseDeaths !== 1 ? "lives" : "life"} saved`,
+            display: formatNumber(livesSaved),
+            label: "estimated lives saved",
             color: "var(--covert-teal)",
             emphasis: true,
           },

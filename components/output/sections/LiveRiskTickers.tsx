@@ -36,10 +36,10 @@ export default function LiveRiskTickers({ data }: LiveRiskTickersProps) {
   const monthlyAbuseAddiction = Math.round(
     calcProjectedAbuseAddiction(data.identifiedMembers) / 12,
   );
-  // Overdose deaths: members managing withdrawal ÷ 820, hidden < 300 members.
-  // Kept as an annual (next-12-months) figure — not divided by 12.
+  // Overdose deaths (Jesse 7/2): at-risk members × 0.0167 (CDC/SAMHSA 2023),
+  // hidden < 300 members. Kept as an annual figure — not divided by 12.
   const overdoseDeaths = calcProjectedOverdoseDeaths(
-    data.withdrawalSymptomMembers,
+    data.identifiedMembers,
     data.totalPlanMembers,
   );
 
@@ -163,44 +163,63 @@ export default function LiveRiskTickers({ data }: LiveRiskTickersProps) {
           />
         </Stagger>
 
-        {/* Projected overdose deaths — pulled out below, larger (Jesse 6/29).
-            Annual (next-12-months) figure, not a monthly breakdown. */}
+        {/* Estimated annual opioid overdose deaths — pulled out below, larger
+            (Jesse 6/29). Annual figure, not a monthly breakdown. Label +
+            CDC/SAMHSA methodology footnote per Jesse 7/2. */}
         {overdoseDeaths !== null && (
           <Reveal style={{ marginTop: "24px" }}>
             <div
-              className="flex flex-col items-center text-center md:flex-row md:items-center md:text-left"
               style={{
                 backgroundColor: "var(--on-dark-surface)",
                 border: "1px solid var(--on-dark-border)",
                 borderTop: "3px solid #FFFFFF",
                 borderRadius: "16px",
                 padding: "clamp(32px, 5vw, 48px)",
-                gap: "clamp(16px, 4vw, 48px)",
               }}
             >
+              <div
+                className="flex flex-col items-center text-center md:flex-row md:items-center md:text-left"
+                style={{ gap: "clamp(16px, 4vw, 48px)" }}
+              >
+                <p
+                  className="font-bold"
+                  style={{
+                    fontSize: "var(--fs-display)",
+                    lineHeight: 1,
+                    letterSpacing: "-0.04em",
+                    color: "#FFFFFF",
+                    flexShrink: 0,
+                  }}
+                >
+                  <SplitFlapNumber value={overdoseDeaths} />
+                </p>
+                <p
+                  style={{
+                    fontSize: "var(--fs-lead)",
+                    lineHeight: 1.4,
+                    color: "var(--on-dark-text)",
+                    fontWeight: 500,
+                    maxWidth: "520px",
+                  }}
+                >
+                  Estimated Annual Opioid Overdose Deaths
+                </p>
+              </div>
               <p
-                className="font-bold"
+                className="italic"
                 style={{
-                  fontSize: "var(--fs-display)",
-                  lineHeight: 1,
-                  letterSpacing: "-0.04em",
-                  color: "#FFFFFF",
-                  flexShrink: 0,
+                  fontSize: "var(--fs-caption)",
+                  color: "var(--on-dark-text-secondary)",
+                  lineHeight: 1.6,
+                  marginTop: "24px",
                 }}
               >
-                <SplitFlapNumber value={overdoseDeaths} />
-              </p>
-              <p
-                style={{
-                  fontSize: "var(--fs-lead)",
-                  lineHeight: 1.4,
-                  color: "var(--on-dark-text)",
-                  fontWeight: 500,
-                  maxWidth: "520px",
-                }}
-              >
-                health plan member{overdoseDeaths !== 1 ? "s" : ""} projected to
-                die from opioid overdose in the next 12 months.
+                Estimate based on current U.S. opioid overdose mortality and
+                opioid use disorder prevalence published by the Centers for
+                Disease Control and Prevention (CDC) and the Substance Abuse
+                and Mental Health Services Administration (SAMHSA). This
+                represents a population-level estimate and should not be
+                interpreted as an individual prediction.
               </p>
             </div>
           </Reveal>
