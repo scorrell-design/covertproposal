@@ -64,7 +64,8 @@ export default function FinancialImpact({ data }: FinancialImpactProps) {
     {
       display: formatCurrency(calcTotalClaimsExposure(data.chronicCostFactors)),
       label: "total medical claims exposure caused by opioid overprescribing",
-      color: "#FCD34D",
+      // Brand amber — must match the same figure's stat in "What the Data Shows".
+      color: "var(--covert-amber)",
     },
     ...(overdoseDeaths !== null
       ? [

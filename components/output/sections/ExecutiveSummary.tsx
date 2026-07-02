@@ -236,8 +236,10 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
         </p>
 
         {/* Section close (Jesse 7/2): the plan's total avoidable medical spend
-            — big, attention-grabbing, directly under the references. Amber to
-            match this same figure's row in "The cost of doing nothing". */}
+            — big, attention-grabbing, directly under the references. Brand
+            amber (the money-risk accent, same as the monthly-spend ticker);
+            no reference mark on the stat itself — at display size the †
+            reads as a stray plus sign (Steph 7/2). */}
         <div style={{ marginTop: "clamp(40px, 5vw, 56px)" }}>
           <p
             className="font-bold"
@@ -245,11 +247,10 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
               fontSize: "var(--fs-display)",
               lineHeight: 0.9,
               letterSpacing: "-0.05em",
-              color: "#FCD34D",
+              color: "var(--covert-amber)",
             }}
           >
             {formatCurrency(calcTotalClaimsExposure(data.chronicCostFactors))}
-            <sup style={{ fontSize: "0.35em", letterSpacing: 0 }}>†</sup>
           </p>
           <p
             style={{
