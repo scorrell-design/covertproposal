@@ -6,9 +6,9 @@ import {
   calcAvoidableClaimsReduction,
   calcTotalClaimsExposure,
   formatCurrency,
+  formatNumber,
   PREVENTABLE_REDUCTION_RATE,
 } from "@/lib/calculations";
-import SplitFlapNumber from "@/components/shared/SplitFlapNumber";
 
 interface SavingsProjectionProps {
   data: PCRData;
@@ -21,6 +21,11 @@ interface SavingsProjectionProps {
  * calcAvoidableClaimsReduction shown in the Financial Impact table and the
  * Decision close, so all three always match. Members prevented from future
  * risk uses the same 75% reduction rate applied to the at-risk count.
+ *
+ * Layout (Steph 7/7): a before/after pair of cards — "Your plan today"
+ * (problem, warm accents) beside "With Covert" (payoff, teal) — with each
+ * figure inline next to the words it quantifies, rather than display-size
+ * numbers stacked over small captions.
  */
 export default function SavingsProjection({ data }: SavingsProjectionProps) {
   const planCost = calcTotalClaimsExposure(data.chronicCostFactors);
@@ -66,140 +71,132 @@ export default function SavingsProjection({ data }: SavingsProjectionProps) {
           </span>
         </div>
 
-        {/* The problem in two tiles: how many members, at what cost. */}
         <div
           className="grid"
           style={{
-            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-            gap: "clamp(16px, 2.5vw, 24px)",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 320px), 1fr))",
+            gap: "24px",
             marginTop: "8px",
           }}
         >
-          <div
-            style={{
-              backgroundColor: "var(--on-dark-surface)",
-              border: "1px solid var(--on-dark-border)",
-              borderRadius: "16px",
-              padding: "clamp(22px, 2.5vw, 30px)",
-            }}
-          >
-            <p
-              className="font-bold"
-              style={{
-                fontSize: "var(--fs-stat)",
-                lineHeight: 1,
-                letterSpacing: "-0.03em",
+          <SnapshotCard
+            kicker="Your plan today"
+            accent="#FF8A8A"
+            rows={[
+              {
+                label: "Members at risk",
+                display: formatNumber(data.identifiedMembers),
                 color: "#FF8A8A",
-              }}
-            >
-              <SplitFlapNumber value={data.identifiedMembers} />
-            </p>
-            <p
-              style={{
-                fontSize: "var(--fs-body)",
-                color: "var(--on-dark-text-secondary)",
-                lineHeight: 1.5,
-                marginTop: "12px",
-              }}
-            >
-              of your members are at risk
-            </p>
-          </div>
-
-          <div
-            style={{
-              backgroundColor: "var(--on-dark-surface)",
-              border: "1px solid var(--on-dark-border)",
-              borderRadius: "16px",
-              padding: "clamp(22px, 2.5vw, 30px)",
-            }}
-          >
-            {/* Label above the figure, per Jim's 7/7 wireframe. */}
-            <p
-              style={{
-                fontSize: "var(--fs-body)",
-                color: "var(--on-dark-text-secondary)",
-                lineHeight: 1.5,
-              }}
-            >
-              Costing your plan
-            </p>
-            <p
-              className="font-bold"
-              style={{
-                fontSize: "var(--fs-stat)",
-                lineHeight: 1,
-                letterSpacing: "-0.03em",
+              },
+              {
+                label: "Costing your plan",
+                display: formatCurrency(planCost),
                 color: "var(--covert-amber)",
-                marginTop: "12px",
-              }}
-            >
-              {formatCurrency(planCost)}
-            </p>
-          </div>
-        </div>
-
-        {/* The payoff — Covert's savings and the members kept out of risk. */}
-        <div style={{ marginTop: "clamp(40px, 5vw, 64px)" }}>
-          <p
-            className="font-semibold"
-            style={{
-              fontSize: "var(--fs-lead)",
-              color: "#FFFFFF",
-              lineHeight: 1.35,
-            }}
-          >
-            Covert will save you
-          </p>
-          <p
-            className="font-bold"
-            style={{
-              fontSize: "var(--fs-display)",
-              lineHeight: 0.95,
-              letterSpacing: "-0.05em",
-              color: "var(--covert-teal)",
-              marginTop: "16px",
-            }}
-          >
-            <SplitFlapNumber value={savings} prefix="$" />
-          </p>
-
-          <p
-            className="font-semibold"
-            style={{
-              fontSize: "var(--fs-lead)",
-              color: "#FFFFFF",
-              lineHeight: 1.35,
-              marginTop: "clamp(28px, 3.5vw, 40px)",
-            }}
-          >
-            and prevent
-          </p>
-          <p
-            className="font-bold"
-            style={{
-              fontSize: "var(--fs-stat-lg)",
-              lineHeight: 1,
-              letterSpacing: "-0.04em",
-              color: "var(--covert-teal)",
-              marginTop: "12px",
-            }}
-          >
-            <SplitFlapNumber value={membersPrevented} />
-          </p>
-          <p
-            style={{
-              fontSize: "var(--fs-lead)",
-              color: "var(--on-dark-text-secondary)",
-              lineHeight: 1.5,
-              maxWidth: "var(--measure)",
-              marginTop: "12px",
-            }}
-          >
-            of your plan members from being at risk in the future.
-          </p>
+              },
+            ]}
+          />
+          <SnapshotCard
+            kicker="With Covert"
+            accent="var(--covert-teal)"
+            rows={[
+              {
+                label: "Covert will save you",
+                display: formatCurrency(savings),
+                color: "var(--covert-teal)",
+              },
+              {
+                label: "Members prevented from future risk",
+                display: formatNumber(membersPrevented),
+                color: "var(--covert-teal)",
+              },
+            ]}
+          />
         </div>
       </div>
     </section>
+  );
+}
+
+interface SnapshotRow {
+  display: string;
+  label: string;
+  color: string;
+}
+
+interface SnapshotCardProps {
+  kicker: string;
+  accent: string;
+  rows: SnapshotRow[];
+}
+
+function SnapshotCard({ kicker, accent, rows }: SnapshotCardProps) {
+  return (
+    <div
+      className="min-w-0 h-full flex flex-col"
+      style={{
+        backgroundColor: "var(--on-dark-surface)",
+        border: "1px solid var(--on-dark-border)",
+        borderTop: `3px solid ${accent}`,
+        borderRadius: "20px",
+        padding: "clamp(24px, 3vw, 36px)",
+      }}
+    >
+      <p
+        className="font-bold uppercase"
+        style={{
+          fontSize: "var(--fs-eyebrow)",
+          color: accent,
+          letterSpacing: "0.14em",
+        }}
+      >
+        {kicker}
+      </p>
+
+      {/* Equal-height rows so row N aligns across both cards. */}
+      <div
+        className="grid flex-1"
+        style={{
+          marginTop: "18px",
+          gridTemplateRows: `repeat(${rows.length}, 1fr)`,
+        }}
+      >
+        {/* Label above figure, both full width — inline figure+text squeezed
+            the labels into one-word-per-line columns beside wide dollar
+            figures (Steph 7/7). */}
+        {rows.map((row, i) => (
+          <div
+            key={row.label}
+            className="flex flex-col justify-center min-w-0"
+            style={{
+              gap: "10px",
+              padding: "18px 0",
+              borderTop: i === 0 ? "none" : "1px solid var(--on-dark-border)",
+            }}
+          >
+            <span
+              className="font-medium"
+              style={{
+                fontSize: "var(--fs-lead)",
+                lineHeight: 1.35,
+                color: "#FFFFFF",
+              }}
+            >
+              {row.label}
+            </span>
+            <span
+              className="font-bold"
+              style={{
+                fontSize: "var(--fs-stat)",
+                lineHeight: 1,
+                letterSpacing: "-0.03em",
+                color: row.color,
+              }}
+            >
+              {row.display}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
