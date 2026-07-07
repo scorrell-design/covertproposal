@@ -5,6 +5,7 @@ import Reveal from "@/components/shared/Reveal";
 import ScrollProgress from "@/components/shared/ScrollProgress";
 import OnThisPageNav, { NavSection } from "./OnThisPageNav";
 import HeroSection from "./sections/HeroSection";
+import SavingsProjection from "./sections/SavingsProjection";
 import ExecutiveSummary from "./sections/ExecutiveSummary";
 import LiveRiskTickers from "./sections/LiveRiskTickers";
 import RiskBreakdown from "./sections/RiskBreakdown";
@@ -71,6 +72,9 @@ export default function OutputProposal({ data, onBack, onShare, onDownloaded }: 
           cards internally, so the cards cascade in one-by-one. */}
       <div id="proposal-output">
         <HeroSection data={data} />
+        {/* Savings snapshot directly under the hero (Jim 7/7/26): at-risk
+            count, plan cost, and Covert's projected savings lead the report. */}
+        <Reveal><SavingsProjection data={data} /></Reveal>
         <div id="sec-overview"><Reveal><ExecutiveSummary data={data} /></Reveal></div>
         <div id="sec-risk"><Reveal><RiskBreakdown data={data} /></Reveal></div>
         <div id="sec-prescribers"><Reveal><PrescriberPatterns data={data} /></Reveal></div>

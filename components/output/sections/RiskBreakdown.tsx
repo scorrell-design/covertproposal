@@ -13,13 +13,15 @@ interface RiskBreakdownProps {
   data: PCRData;
 }
 
+// Tier copy simplified to plain language per Jim (7/7/26); the withdrawal tier
+// label shortened from "Medically Emergent Withdrawal" to "Withdrawal".
 const TIERS = [
-  { key: "catastrophicRisk", label: "Catastrophic", color: "#FF6B6B", textColor: "#FF6B6B", desc: "Imminent overdose risk indicators present" },
-  { key: "severeRisk", label: "Severe", color: "#FFB36B", textColor: "#FFB36B", desc: "Multiple high-risk prescribing patterns converging" },
-  { key: "highRisk", label: "High", color: "#F59E0B", textColor: "#FCD34D", desc: "Escalating utilization with unsafe prescriber overlap" },
-  { key: "moderateRisk", label: "Moderate", color: "#FCD34D", textColor: "#FDE68A", desc: "Early-stage risk factors requiring monitoring" },
-  { key: "earlyWithdrawal", label: "Medically Emergent Withdrawal", color: "#FEF3C7", textColor: "#FEF3C7", desc: "Active withdrawal management indicators" },
-  { key: "matMembers", label: "MAT Enrolled", color: "#FFB36B", textColor: "#FFB36B", desc: "Existing prescribing patterns have escalated to opioid addiction" },
+  { key: "catastrophicRisk", label: "Catastrophic", color: "#FF6B6B", textColor: "#FF6B6B", desc: "These members are at immediate risk of an overdose." },
+  { key: "severeRisk", label: "Severe", color: "#FFB36B", textColor: "#FFB36B", desc: "Multiple high-risk warning signs are present." },
+  { key: "highRisk", label: "High", color: "#F59E0B", textColor: "#FCD34D", desc: "Opioid use is increasing, and risk is rising." },
+  { key: "moderateRisk", label: "Moderate", color: "#FCD34D", textColor: "#FDE68A", desc: "Early warning signs of future risk are present." },
+  { key: "earlyWithdrawal", label: "Withdrawal", color: "#FEF3C7", textColor: "#FEF3C7", desc: "Signs of active opioid withdrawal are present." },
+  { key: "matMembers", label: "MAT Enrolled", color: "#FFB36B", textColor: "#FFB36B", desc: "These members are already in treatment for opioid addiction." },
 ] as const;
 
 /**

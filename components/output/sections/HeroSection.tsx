@@ -65,8 +65,8 @@ export default function HeroSection({ data }: HeroSectionProps) {
           }}
         >
           The opioid risk{" "}
-          <span style={{ color: "var(--covert-teal)" }}>already embedded</span>{" "}
-          in your health plan.
+          <span style={{ color: "var(--covert-teal)" }}>living inside</span>{" "}
+          your health plan.
         </h1>
 
         <p
