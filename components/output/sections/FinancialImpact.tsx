@@ -195,7 +195,7 @@ export default function FinancialImpact({ data }: FinancialImpactProps) {
           />
         </Stagger>
 
-        {/* Savings banner — teal accent panel */}
+        {/* Results banner — teal accent panel ("Savings"→"Results", Jesse 7/9) */}
         <Reveal>
           <div
             className="text-center"
@@ -212,7 +212,7 @@ export default function FinancialImpact({ data }: FinancialImpactProps) {
               margin: "clamp(32px, 4vw, 48px) auto 0",
             }}
           >
-            Savings are achieved by correcting prescribing behavior at the
+            Results are achieved by correcting prescribing behavior at the
             source — not through member disruption, utilization management, or
             claims denials.
           </div>

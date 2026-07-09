@@ -112,6 +112,21 @@ export default function SavingsProjection({ data }: SavingsProjectionProps) {
             ]}
           />
         </div>
+
+        {/* Source note lives here, under the savings boxes (Jesse 7/9); the
+            study citation was trimmed to its title only. */}
+        <p
+          className="italic"
+          style={{
+            fontSize: "var(--fs-caption)",
+            color: "var(--on-dark-text-secondary)",
+            marginTop: "24px",
+            lineHeight: 1.6,
+          }}
+        >
+          *Based on Covert client data. † Healthcare costs and utilization
+          associated with high-risk prescription opioid use.
+        </p>
       </div>
     </section>
   );

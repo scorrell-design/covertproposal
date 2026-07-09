@@ -220,22 +220,9 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
           </p>
         </div>
 
-        <p
-          className="italic"
-          style={{
-            fontSize: "var(--fs-caption)",
-            color: "var(--on-dark-text-secondary)",
-            marginTop: "32px",
-            lineHeight: 1.6,
-          }}
-        >
-          *Based on Covert client data. † Healthcare costs and utilization
-          associated with high-risk prescription opioid use — a retrospective
-          cohort study (PMC, 2018).
-        </p>
-
-        {/* Section close (Jesse 7/2): the plan's total avoidable medical spend
-            directly under the references. Contained in an amber-accented card
+        {/* Section close (Jesse 7/2): the plan's total avoidable medical
+            spend. The * / † source note moved under the Projected Savings
+            boxes (Jesse 7/9). Contained in an amber-accented card
             (mirrors the overdose pull-out) at stat-lg — a third naked
             display-size figure floating over the caption line above hijacked
             the reading flow (Steph 7/2). No reference mark on the stat itself

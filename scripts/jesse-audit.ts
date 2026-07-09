@@ -112,15 +112,20 @@ check(
 
 // === July 1 revisions ===
 
-// 12. Reference block (Jesse 7/2 — supersedes the 7/1 "remove PMC" note):
-//     * Covert client data + † the PMC 2018 retrospective cohort study, with
-//     the total-avoidable-spend stat displayed beneath them.
+// 12. Reference block (Jesse 7/9 — supersedes the 7/2 restore): the note
+//     lives under the Projected Savings boxes, the study citation is trimmed
+//     to its title (no "retrospective cohort study (PMC, 2018)"), and it no
+//     longer appears in "What the Data Shows".
+const savingsSrc =
+  allSource.find((f) => /SavingsProjection\.tsx$/.test(f.file))?.src ?? "";
 const execSrc =
   allSource.find((f) => /ExecutiveSummary\.tsx$/.test(f.file))?.src ?? "";
 check(
-  "References: * client data + † PMC 2018 cohort study restored",
-  /\*Based on Covert client data\./.test(execSrc) &&
-    /retrospective\s*\n?\s*cohort study \(PMC, 2018\)/.test(execSrc),
+  "References: trimmed * / † note placed under the Projected Savings boxes",
+  /\*Based on Covert client data\./.test(savingsSrc) &&
+    /high-risk prescription opioid use\./.test(savingsSrc) &&
+    !/\(PMC, 2018\)/.test(joined) &&
+    !/\*Based on Covert client data\./.test(execSrc),
 );
 
 // 13. "Highly responsive to targeted outreach" removed from the acute
