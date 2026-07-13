@@ -115,9 +115,12 @@ export function calcCatastrophicExposure(catastrophicRiskMembers: number): numbe
 }
 
 /**
- * ROI ratio (Jesse 6/3/26) = avoided medical spend ÷ cost.
- *   savings = identified (at-risk) members × $23,790
+ * ROI ratio (Jesse 7/13/26 — supersedes 6/3) = reduction in avoidable medical
+ * spend ÷ cost.
+ *   savings = total avoidable medical spend × .75
+ *             (= at-risk members × $23,790 × .75, via calcAvoidableClaimsReduction)
  *   cost    = members with an opioid Rx × $600
+ * Rounded to the nearest whole ratio (Jesse's example: 14.7:1 → 15:1).
  */
 export function calcROIRatio(
   identifiedMembers: number,
@@ -125,7 +128,7 @@ export function calcROIRatio(
 ): number {
   const cost = calcCovertCost(membersWithOpioidRx);
   if (cost <= 0) return 0;
-  return Math.round(calcAvoidedMedicalSpend(identifiedMembers) / cost);
+  return Math.round(calcAvoidableClaimsReduction(identifiedMembers) / cost);
 }
 
 export function calcAtRiskCadence(identifiedMembers: number): {

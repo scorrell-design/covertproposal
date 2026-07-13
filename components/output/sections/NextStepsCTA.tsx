@@ -199,7 +199,7 @@ export default function NextStepsCTA({ data }: NextStepsCTAProps) {
             items={[
               "Medical spend keeps growing",
               "Prescribers remain uncorrected",
-              "Members escalate to higher risk",
+              "Risk spreads and escalates",
               "Catastrophic events remain likely",
             ]}
           />
@@ -212,7 +212,7 @@ export default function NextStepsCTA({ data }: NextStepsCTAProps) {
             items={[
               "75% reduction in avoidable spend",
               "Prescriber behavior corrected at the source",
-              "Members safely stepped down",
+              "Risk is reduced and reversed",
               "Catastrophic events prevented",
             ]}
           />

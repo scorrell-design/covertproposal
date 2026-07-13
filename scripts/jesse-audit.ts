@@ -278,6 +278,27 @@ check(
   ),
 );
 
+// 28. ROI ratio numerator = reduction in avoidable medical spend (total
+//     avoidable spend × .75), not the un-reduced spend (Jesse 7/13:
+//     14.7:1 → 15:1).
+check(
+  "ROI ratio = calcAvoidableClaimsReduction ÷ Covert cost (Jesse 7/13)",
+  /calcROIRatio[\s\S]{0,300}?calcAvoidableClaimsReduction\(identifiedMembers\)\s*\/\s*cost/.test(
+    allSource.find((f) => /lib\/calculations\.ts$/.test(f.file))?.src ?? "",
+  ),
+);
+
+// 29. Decision-close bullet swap (Jesse 7/13): "Members escalate to higher
+//     risk" → "Risk spreads and escalates"; "Members safely stepped down" →
+//     "Risk is reduced and reversed".
+check(
+  'Decision bullets: "Risk spreads and escalates" / "Risk is reduced and reversed"',
+  /Risk spreads and escalates/.test(ctaSrc) &&
+    /Risk is reduced and reversed/.test(ctaSrc) &&
+    !/Members escalate to higher risk/.test(ctaSrc) &&
+    !/Members safely stepped down/.test(ctaSrc),
+);
+
 // Report
 const failed = results.filter((r) => !r.pass);
 console.log("\n=== JESSE FEEDBACK AUDIT ===\n");
