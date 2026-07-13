@@ -249,7 +249,7 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
               flexShrink: 0,
             }}
           >
-            {formatCurrency(calcTotalClaimsExposure(data.chronicCostFactors))}
+            {formatCurrency(calcTotalClaimsExposure(data.identifiedMembers))}
           </p>
           <div>
             <p

@@ -153,26 +153,30 @@ check(
   /interval=\{0\}/.test(wsiSrc),
 );
 
-// 16. Cost of doing nothing row 3 = Total Medical Claims Exposure
-//     (chronic cost factors × $23,790) via a named helper.
+// 16. Cost of doing nothing row 3 = Total Medical Claims Exposure. Basis per
+//     Jesse 7/13 (supersedes 7/1): total at-risk (identified) members ×
+//     $23,790, via the named helper.
 const financialSrc =
   allSource.find((f) => /FinancialImpact\.tsx$/.test(f.file))?.src ?? "";
 check(
-  "Total Medical Claims Exposure = chronicCostFactors × $23,790",
-  /calcTotalClaimsExposure\s*\(\s*chronicCostFactors\s*:/.test(joined) ||
-    (/calcTotalClaimsExposure/.test(financialSrc) &&
-      /chronicCostFactors\s*\*\s*SAVINGS_PER_AT_RISK_MEMBER/.test(joined)),
+  "Total Medical Claims Exposure = identifiedMembers × $23,790 (Jesse 7/13)",
+  /calcTotalClaimsExposure\s*\(\s*identifiedMembers\s*:/.test(joined) &&
+    /calcTotalClaimsExposure\(data\.identifiedMembers\)/.test(financialSrc) &&
+    /identifiedMembers\s*\*\s*SAVINGS_PER_AT_RISK_MEMBER/.test(joined) &&
+    !/calcTotalClaimsExposure\(data\.chronicCostFactors\)/.test(joined),
 );
 
 // 17. Return row 3 and the Decision-close figure both read from
-//     calcAvoidableClaimsReduction (75% of exposure) so they can never drift.
+//     calcAvoidableClaimsReduction (75% of exposure, at-risk basis per Jesse
+//     7/13) so they can never drift.
 const ctaSrc =
   allSource.find((f) => /NextStepsCTA\.tsx$/.test(f.file))?.src ?? "";
 check(
   "Return row 3 and Decision close share calcAvoidableClaimsReduction",
-  /calcAvoidableClaimsReduction\(data\.chronicCostFactors\)/.test(financialSrc) &&
-    /calcAvoidableClaimsReduction\(data\.chronicCostFactors\)/.test(ctaSrc) &&
-    /PREVENTABLE_REDUCTION_RATE/.test(joined),
+  /calcAvoidableClaimsReduction\(data\.identifiedMembers\)/.test(financialSrc) &&
+    /calcAvoidableClaimsReduction\(data\.identifiedMembers\)/.test(ctaSrc) &&
+    /PREVENTABLE_REDUCTION_RATE/.test(joined) &&
+    !/calcAvoidableClaimsReduction\(data\.chronicCostFactors\)/.test(joined),
 );
 
 // 18. Withdrawal-members card replaced by the chronic-cost-factors card in
@@ -196,7 +200,7 @@ check(
 //     Shows", under the references, with Jesse's exact description beneath it.
 check(
   "Avoidable-spend stat closes 'What the Data Shows' with Jesse's description",
-  /calcTotalClaimsExposure\(data\.chronicCostFactors\)/.test(execSrc) &&
+  /calcTotalClaimsExposure\(data\.identifiedMembers\)/.test(execSrc) &&
     /estimated medical spend attributable to your health plan/.test(execSrc),
 );
 
@@ -240,6 +244,38 @@ check(
     /"estimated lives saved"/.test(financialSrc) &&
     /calcEstimatedLivesSaved/.test(financialSrc) &&
     /deaths\s*\*\s*PREVENTABLE_REDUCTION_RATE/.test(joined),
+);
+
+// === July 13 revisions ===
+
+// 25. Cost row 1 relabeled "members abuse or become addicted to opioids"
+//     (Jesse 7/13 — the figure reflects abuse AND addiction, 25% of at-risk).
+check(
+  'Cost row 1 labeled "members abuse or become addicted to opioids"',
+  /members abuse or become addicted to opioids/.test(financialSrc) &&
+    !/label:\s*"members become addicted to opioids"/.test(financialSrc),
+);
+
+// 26. Cost row 2 = at-risk members × .75 (equivalently at-risk − row 1), via
+//     calcProjectedChronicWithdrawal — no longer the raw chronic-cost-factors
+//     count (Jesse 7/13: 1,187 − 297 = 890).
+check(
+  "Cost row 2 = at-risk − abuse/addiction via calcProjectedChronicWithdrawal",
+  /calcProjectedChronicWithdrawal\(\s*data\.identifiedMembers/.test(
+    financialSrc,
+  ) &&
+    /identifiedMembers\s*-\s*calcProjectedAbuseAddiction\(identifiedMembers\)/.test(
+      joined,
+    ),
+);
+
+// 27. Reduction in avoidable medical spend rounds DOWN to match Jesse's 7/13
+//     worked figure ($28,238,730 × .75 = $21,179,047).
+check(
+  "calcAvoidableClaimsReduction rounds down (Jesse 7/13: $21,179,047)",
+  /calcAvoidableClaimsReduction[\s\S]{0,200}?Math\.floor/.test(
+    allSource.find((f) => /lib\/calculations\.ts$/.test(f.file))?.src ?? "",
+  ),
 );
 
 // Report

@@ -28,8 +28,8 @@ interface SavingsProjectionProps {
  * numbers stacked over small captions.
  */
 export default function SavingsProjection({ data }: SavingsProjectionProps) {
-  const planCost = calcTotalClaimsExposure(data.chronicCostFactors);
-  const savings = calcAvoidableClaimsReduction(data.chronicCostFactors);
+  const planCost = calcTotalClaimsExposure(data.identifiedMembers);
+  const savings = calcAvoidableClaimsReduction(data.identifiedMembers);
   const membersPrevented = Math.round(
     data.identifiedMembers * PREVENTABLE_REDUCTION_RATE,
   );

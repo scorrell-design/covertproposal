@@ -8,6 +8,7 @@ import {
   calcAvoidableClaimsReduction,
   calcEstimatedLivesSaved,
   calcProjectedAbuseAddiction,
+  calcProjectedChronicWithdrawal,
   calcProjectedOverdoseDeaths,
   calcTotalClaimsExposure,
   formatCurrency,
@@ -47,22 +48,24 @@ export default function FinancialImpact({ data }: FinancialImpactProps) {
   );
 
   // The cost of doing nothing — annualized member harm.
-  // Rows per Jesse 7/1: the withdrawal-members card was replaced by the
-  // chronic-cost-factors card (row 2), and row 3 is now the Total Medical
-  // Claims Exposure in dollars (chronic cost factors × $23,790).
+  // Rows per Jesse 7/13: row 1 is 25% of the at-risk population, row 2 is the
+  // remaining 75% (at-risk minus row 1), and row 3 is the Total Medical
+  // Claims Exposure in dollars (total at-risk members × $23,790).
   const costRows: ImpactRow[] = [
     {
       display: formatNumber(calcProjectedAbuseAddiction(data.identifiedMembers)),
-      label: "members become addicted to opioids",
+      label: "members abuse or become addicted to opioids",
       color: "#FF8A8A",
     },
     {
-      display: formatNumber(data.chronicCostFactors),
+      display: formatNumber(
+        calcProjectedChronicWithdrawal(data.identifiedMembers),
+      ),
       label: "members experience chronic conditions and opioid withdrawal symptoms",
       color: "#FFB36B",
     },
     {
-      display: formatCurrency(calcTotalClaimsExposure(data.chronicCostFactors)),
+      display: formatCurrency(calcTotalClaimsExposure(data.identifiedMembers)),
       label: "total medical claims exposure caused by opioid overprescribing",
       // Brand amber — must match the same figure's stat in "What the Data Shows".
       color: "var(--covert-amber)",
@@ -80,11 +83,11 @@ export default function FinancialImpact({ data }: FinancialImpactProps) {
   ];
 
   // The return of correcting it — each value is its basis × 0.75. Row 3 is
-  // 75% of the Total Medical Claims Exposure shown opposite (Jesse 7/1) and
+  // 75% of the Total Medical Claims Exposure shown opposite (Jesse 7/13) and
   // must always match the figure in the Decision close.
   const discontinue = Math.round(data.identifiedMembers * 0.75);
   const prescribersAdopting = Math.round(data.identifiedPrescribers * 0.75);
-  const avoidableReduction = calcAvoidableClaimsReduction(data.chronicCostFactors);
+  const avoidableReduction = calcAvoidableClaimsReduction(data.identifiedMembers);
 
   const returnRows: ImpactRow[] = [
     {

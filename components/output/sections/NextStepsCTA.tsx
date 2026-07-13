@@ -20,9 +20,9 @@ interface NextStepsCTAProps {
  * and below those elements was removed per Jesse.
  */
 export default function NextStepsCTA({ data }: NextStepsCTAProps) {
-  // Jesse 7/1: this figure must exactly match row 3 of "The return of
+  // Jesse 7/13: this figure must exactly match row 3 of "The return of
   // correcting it" — both read from calcAvoidableClaimsReduction.
-  const claimsReduction = calcAvoidableClaimsReduction(data.chronicCostFactors);
+  const claimsReduction = calcAvoidableClaimsReduction(data.identifiedMembers);
   const roi = calcROIRatio(data.identifiedMembers, data.membersWithOpioidRx);
 
   return (

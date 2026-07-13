@@ -19,32 +19,34 @@ export const ABUSE_ADDICTION_RATE = 0.25;
 // event, each carrying ~$100,000 in projected exposure.
 export const CATASTROPHIC_EXPOSURE_PER_MEMBER = 100000;
 
-// Total Medical Claims Exposure Caused by Opioid Overprescribing (Jesse 7/1):
-// members with chronic cost factors × $23,790. Row 3 of "The cost of doing
-// nothing".
-export function calcTotalClaimsExposure(chronicCostFactors: number): number {
-  return chronicCostFactors * SAVINGS_PER_AT_RISK_MEMBER;
+// Total Medical Claims Exposure / Total Avoidable Medical Spend (Jesse 7/13 —
+// supersedes the 7/1 chronic-cost-factors basis): total at-risk (identified)
+// members × $23,790. Row 3 of "The cost of doing nothing", the "What the Data
+// Shows" close, and the Projected Savings plan cost.
+export function calcTotalClaimsExposure(identifiedMembers: number): number {
+  return identifiedMembers * SAVINGS_PER_AT_RISK_MEMBER;
 }
 
-// Reduction in Avoidable Medical Claims (Jesse 7/1): 75% of the Total Medical
-// Claims Exposure. Shown in row 3 of "The return of correcting it" AND in the
-// Decision close — Jesse requires those two figures to always match, so both
-// must read from this one function.
-export function calcAvoidableClaimsReduction(chronicCostFactors: number): number {
-  return Math.round(
-    calcTotalClaimsExposure(chronicCostFactors) * PREVENTABLE_REDUCTION_RATE,
+// Reduction in Avoidable Medical Claims (Jesse 7/13): 75% of the Total
+// Avoidable Medical Spend. Shown in row 3 of "The return of correcting it"
+// AND in the Decision close — Jesse requires those two figures to always
+// match, so both must read from this one function. Rounds down to match
+// Jesse's worked figure ($28,238,730 × .75 = $21,179,047.5 → $21,179,047).
+export function calcAvoidableClaimsReduction(identifiedMembers: number): number {
+  return Math.floor(
+    calcTotalClaimsExposure(identifiedMembers) * PREVENTABLE_REDUCTION_RATE,
   );
 }
 
-// Net ROI (Jesse 6/26, rebased 7/1) = reduction in avoidable medical claims −
+// Net ROI (Jesse 6/26, rebased 7/13) = reduction in avoidable medical claims −
 // Covert cost (members currently on an opioid Rx × $600). Internal form
 // preview only; the report itself shows the un-netted reduction.
 export function calcNetROI(
-  chronicCostFactors: number,
+  identifiedMembers: number,
   membersWithOpioidRx: number,
 ): number {
   return (
-    calcAvoidableClaimsReduction(chronicCostFactors) -
+    calcAvoidableClaimsReduction(identifiedMembers) -
     calcCovertCost(membersWithOpioidRx)
   );
 }
@@ -82,6 +84,19 @@ export function calcProjectedAbuseAddiction(
   identifiedMembers: number,
 ): number {
   return Math.round(identifiedMembers * ABUSE_ADDICTION_RATE);
+}
+
+/**
+ * Members experiencing chronic conditions and opioid withdrawal symptoms
+ * (Jesse 7/13 — supersedes the 7/1 chronic-cost-factors basis): the at-risk
+ * population × 75% — equivalently, at-risk members minus those projected to
+ * abuse or become addicted (1,187 − 297 = 890). Computed by subtraction so
+ * rows 1 + 2 of "The cost of doing nothing" always sum to the at-risk total.
+ */
+export function calcProjectedChronicWithdrawal(
+  identifiedMembers: number,
+): number {
+  return identifiedMembers - calcProjectedAbuseAddiction(identifiedMembers);
 }
 
 /** Avoided medical spend (Jesse 6/3/26): at-risk members × $23,790. */

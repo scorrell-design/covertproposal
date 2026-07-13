@@ -192,13 +192,13 @@ export default function DataFormSections({
     onChange({ ...data, [field]: parsed });
   };
 
-  // Per Jesse (7/1): total claims exposure = chronic cost factors × $23,790,
+  // Per Jesse (7/13): total claims exposure = total at-risk members × $23,790,
   // reduction = 75% of that; case management investment = members on an
   // opioid Rx × $600. Both feed Net ROI.
-  const exposure = calcTotalClaimsExposure(data.chronicCostFactors);
-  const reduction = calcAvoidableClaimsReduction(data.chronicCostFactors);
+  const exposure = calcTotalClaimsExposure(data.identifiedMembers);
+  const reduction = calcAvoidableClaimsReduction(data.identifiedMembers);
   const caseMgmt = calcCovertCost(data.membersWithOpioidRx);
-  const netRoi = calcNetROI(data.chronicCostFactors, data.membersWithOpioidRx);
+  const netRoi = calcNetROI(data.identifiedMembers, data.membersWithOpioidRx);
 
   return (
     <div className="flex flex-col gap-4">
