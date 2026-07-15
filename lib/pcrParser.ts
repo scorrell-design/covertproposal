@@ -30,7 +30,7 @@ function newUploadId(): string {
 export async function parsePCRFileDetailed(
   file: File,
   clientName?: string
-): Promise<ExtractionResult> {
+): Promise<ExtractionResult & { uploadId: string }> {
   const uploadId = newUploadId();
   const totalChunks = Math.max(1, Math.ceil(file.size / CHUNK_SIZE));
 
@@ -64,7 +64,10 @@ export async function parsePCRFileDetailed(
     const body = (await res.json().catch(() => ({}))) as { error?: string };
     throw new Error(body.error ?? "Failed to read the PCR PDF.");
   }
-  return (await res.json()) as ExtractionResult;
+  // The uploaded chunks are kept server-side under this uploadId; passing it to
+  // the save step lets the original PDF be stored with the proposal.
+  const result = (await res.json()) as ExtractionResult;
+  return { ...result, uploadId };
 }
 
 /**

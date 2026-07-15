@@ -28,8 +28,11 @@ export function createProposal(input: {
   pcrData: PCRData;
   provenance?: Provenance;
   sourceFileName?: string;
+  sourceFile?: Uint8Array;
 }) {
   return prisma.proposal.create({
+    // Don't return the multi-MB file blob from the create call.
+    omit: { sourceFile: true },
     data: {
       ownerUserId: input.ownerUserId,
       clientName: input.clientName,
@@ -38,8 +41,30 @@ export function createProposal(input: {
       pcrData: asJson(input.pcrData),
       provenance: input.provenance ? asJson(input.provenance) : Prisma.JsonNull,
       sourceFileName: input.sourceFileName ?? null,
+      sourceFile: input.sourceFile ? Buffer.from(input.sourceFile) : null,
       events: { create: { type: ProposalEventType.CREATED } },
     },
+  });
+}
+
+/**
+ * Ids of a user's proposals that have a downloadable source PDF stored. Uses a
+ * raw query so we test for a non-null blob WITHOUT pulling the (multi-MB) bytes.
+ */
+export async function idsWithSourceFile(
+  ownerUserId: string,
+): Promise<Set<string>> {
+  const rows = await prisma.$queryRaw<{ id: string }[]>`
+    SELECT id FROM "Proposal"
+    WHERE "ownerUserId" = ${ownerUserId} AND "sourceFile" IS NOT NULL`;
+  return new Set(rows.map((r) => r.id));
+}
+
+/** The raw uploaded PDF for the download route, or null if none was stored. */
+export function getProposalFile(id: string) {
+  return prisma.proposal.findUnique({
+    where: { id },
+    select: { sourceFile: true, sourceFileName: true },
   });
 }
 
@@ -48,12 +73,17 @@ export function listProposalsForUser(ownerUserId: string) {
   return prisma.proposal.findMany({
     where: { ownerUserId },
     orderBy: { updatedAt: "desc" },
+    // Never pull the multi-MB PDF blobs just to render the list.
+    omit: { sourceFile: true },
   });
 }
 
 /** Fetch a proposal the caller owns (returns null if not theirs). */
 export function getOwnedProposal(id: string, ownerUserId: string) {
-  return prisma.proposal.findFirst({ where: { id, ownerUserId } });
+  return prisma.proposal.findFirst({
+    where: { id, ownerUserId },
+    omit: { sourceFile: true },
+  });
 }
 
 /** Public, view-only lookup by share token (for the prospect-facing link). */

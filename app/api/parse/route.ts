@@ -1,5 +1,6 @@
 import { extractPCR } from "@/lib/pcr/extract";
 import { prisma } from "@/lib/db";
+import { concatChunks, deleteUpload, sweepStaleUploads } from "@/lib/pcrUpload";
 
 // PDF parsing + the Claude pass need the Node runtime (Buffer, unpdf, SDK).
 export const runtime = "nodejs";
@@ -56,6 +57,10 @@ async function handleChunked(request: Request): Promise<Response> {
     return Response.json({ error: "Invalid totalChunks." }, { status: 400 });
   }
 
+  // Reclaim chunks from uploads that were parsed but never saved (demo runs,
+  // abandoned reviews). Best-effort, runs before this upload is processed.
+  await sweepStaleUploads();
+
   try {
     const chunks = await prisma.pcrUploadChunk.findMany({
       where: { uploadId },
@@ -81,30 +86,15 @@ async function handleChunked(request: Request): Promise<Response> {
       "Untitled";
 
     const result = await extractPCR(bytes, { clientName });
+    // NOTE: chunks are intentionally KEPT here. The save step (/api/proposals)
+    // reassembles them into Proposal.sourceFile and deletes them; the stale
+    // sweep above reclaims any upload that never reaches save.
     return Response.json(result);
-  } finally {
-    // Always reclaim the rows — success or failure, the bytes shouldn't linger.
-    await prisma.pcrUploadChunk
-      .deleteMany({ where: { uploadId } })
-      .catch((e) => console.error("[/api/parse] chunk cleanup failed:", e));
+  } catch (err) {
+    // On failure the bytes are useless — drop them so they don't linger.
+    await deleteUpload(uploadId);
+    throw err;
   }
-}
-
-/** Concatenate ordered chunk rows (index 0..n-1) into the full PDF bytes. */
-function concatChunks(chunks: { index: number; data: Uint8Array }[]): Uint8Array {
-  for (let i = 0; i < chunks.length; i++) {
-    if (chunks[i].index !== i) {
-      throw new Error(`chunk gap at index ${i} (got ${chunks[i].index})`);
-    }
-  }
-  const total = chunks.reduce((n, c) => n + c.data.byteLength, 0);
-  const out = new Uint8Array(total);
-  let offset = 0;
-  for (const c of chunks) {
-    out.set(c.data, offset);
-    offset += c.data.byteLength;
-  }
-  return out;
 }
 
 /** Legacy/direct path: a small PDF uploaded as multipart/form-data. */

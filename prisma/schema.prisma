@@ -66,6 +66,10 @@ model Proposal {
   /// Name of the uploaded PCR file this proposal was generated from. Null for
   /// demo-data proposals and proposals created before this was tracked.
   sourceFileName String?
+  /// Raw bytes of the uploaded PCR PDF, so it can be downloaded from the
+  /// history. Null for demo/older proposals. NEVER select this in list queries
+  /// (multi-MB per row) — use `omit` and fetch it only for the download route.
+  sourceFile     Bytes?
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
 

@@ -19,6 +19,8 @@ export interface GenerateOptions {
   provenance?: Provenance;
   /** Name of the uploaded PCR file, so the history shows what generated each proposal. */
   sourceFileName?: string;
+  /** Parse-step upload id; lets the save step keep the original PDF. */
+  uploadId?: string;
 }
 
 interface State {
@@ -27,6 +29,7 @@ interface State {
   isDemo: boolean;
   provenance?: Provenance;
   sourceFileName?: string;
+  uploadId?: string;
   needsReview: string[];
   error: string | null;
 }
@@ -40,6 +43,7 @@ type Action =
       isDemo: boolean;
       provenance?: Provenance;
       sourceFileName?: string;
+      uploadId?: string;
       needsReview?: string[];
     }
   | { type: "UPDATE_DATA"; data: PCRData };
@@ -57,6 +61,7 @@ function reducer(state: State, action: Action): State {
         isDemo: action.isDemo,
         provenance: action.provenance,
         sourceFileName: action.sourceFileName,
+        uploadId: action.uploadId,
         needsReview: action.needsReview ?? [],
         error: null,
       };
@@ -114,6 +119,7 @@ export default function InputScreen({ onGenerate }: InputScreenProps) {
         isDemo: false,
         provenance: result.provenance,
         sourceFileName: file.name,
+        uploadId: result.uploadId,
         needsReview: result.needsReview as string[],
       });
     } catch (err) {
@@ -261,6 +267,7 @@ export default function InputScreen({ onGenerate }: InputScreenProps) {
               isDemo: state.isDemo,
               provenance: state.provenance,
               sourceFileName: state.sourceFileName,
+              uploadId: state.uploadId,
             })
           }
           disabled={!canGenerate}

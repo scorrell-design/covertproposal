@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { Plus, FileText } from "lucide-react";
+import { Plus, FileText, Download } from "lucide-react";
 import CovertLogo from "@/components/shared/CovertLogo";
 import SignOutButton from "@/components/shared/SignOutButton";
 import { getCurrentDbUser } from "@/lib/auth";
-import { listProposalsForUser } from "@/lib/proposals";
+import { listProposalsForUser, idsWithSourceFile } from "@/lib/proposals";
 import { ProposalStatus } from "@/lib/generated/prisma/client";
 
 // Always render fresh — proposal list changes per request.
@@ -31,6 +31,7 @@ function StatusBadge({ status }: { status: ProposalStatus }) {
 export default async function DashboardPage() {
   const user = await getCurrentDbUser();
   const proposals = await listProposalsForUser(user.id);
+  const fileIds = await idsWithSourceFile(user.id);
 
   return (
     <div className="w-full min-h-screen" style={{ backgroundColor: "var(--covert-bg)" }}>
@@ -89,40 +90,64 @@ export default async function DashboardPage() {
           </div>
         ) : (
           <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid var(--covert-border)" }}>
-            {proposals.map((p, i) => (
-              <Link
-                key={p.id}
-                href={`/proposals/${p.id}`}
-                className="flex items-center justify-between px-5 py-4 transition-colors hover:bg-[var(--covert-bg-secondary)]"
-                style={{ borderTop: i === 0 ? "none" : "1px solid var(--covert-border)" }}
-              >
-                <div style={{ minWidth: 0 }}>
-                  <div style={{ fontSize: "15px", fontWeight: 600, color: "var(--covert-black)" }}>
-                    {p.clientName}
-                  </div>
-                  <div
-                    className="flex items-center gap-1.5"
-                    style={{ fontSize: "13px", color: "var(--covert-text-secondary)", marginTop: "3px" }}
+            {proposals.map((p, i) => {
+              const hasFile = fileIds.has(p.id);
+              return (
+                <div
+                  key={p.id}
+                  className="flex items-center justify-between px-5 py-4 transition-colors hover:bg-[var(--covert-bg-secondary)]"
+                  style={{ borderTop: i === 0 ? "none" : "1px solid var(--covert-border)" }}
+                >
+                  <Link
+                    href={`/proposals/${p.id}`}
+                    className="block"
+                    style={{ minWidth: 0, flex: 1 }}
                   >
-                    <FileText size={13} style={{ flexShrink: 0 }} />
-                    <span
-                      style={{
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                        fontStyle: p.sourceFileName ? "normal" : "italic",
-                      }}
+                    <div style={{ fontSize: "15px", fontWeight: 600, color: "var(--covert-black)" }}>
+                      {p.clientName}
+                    </div>
+                    <div
+                      className="flex items-center gap-1.5"
+                      style={{ fontSize: "13px", color: "var(--covert-text-secondary)", marginTop: "3px" }}
                     >
-                      {p.sourceFileName ?? "No source file recorded"}
-                    </span>
-                  </div>
-                  <div style={{ fontSize: "12px", color: "var(--covert-text-secondary)", marginTop: "2px" }}>
-                    Generated {new Date(p.createdAt).toLocaleDateString()}
+                      <FileText size={13} style={{ flexShrink: 0 }} />
+                      <span
+                        style={{
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          fontStyle: p.sourceFileName ? "normal" : "italic",
+                        }}
+                      >
+                        {p.sourceFileName ?? "No source file recorded"}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: "12px", color: "var(--covert-text-secondary)", marginTop: "2px" }}>
+                      Generated {new Date(p.createdAt).toLocaleDateString()}
+                    </div>
+                  </Link>
+                  <div className="flex items-center gap-3" style={{ flexShrink: 0, marginLeft: "16px" }}>
+                    {hasFile && (
+                      <a
+                        href={`/api/proposals/${p.id}/file`}
+                        title="Download the source PCR PDF"
+                        className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-colors hover:bg-[var(--covert-bg)]"
+                        style={{
+                          fontSize: "13px",
+                          fontWeight: 600,
+                          color: "var(--covert-teal)",
+                          border: "1px solid var(--covert-border)",
+                        }}
+                      >
+                        <Download size={14} />
+                        PCR
+                      </a>
+                    )}
+                    <StatusBadge status={p.status} />
                   </div>
                 </div>
-                <StatusBadge status={p.status} />
-              </Link>
-            ))}
+              );
+            })}
           </div>
         )}
       </main>

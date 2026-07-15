@@ -61,6 +61,7 @@ export default function Home() {
           pcrData,
           provenance: opts.provenance,
           sourceFileName: opts.sourceFileName,
+          uploadId: opts.uploadId,
         }),
       });
       if (!res.ok) {
