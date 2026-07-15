@@ -208,13 +208,9 @@ export default function ClinicalWarningSigns({
               lineHeight: 1.7,
             }}
           >
-            The single largest driver:{" "}
-            <strong style={{ color: "#FFFFFF" }}>
-              {formatNumber(indicators[0]?.value ?? 0)}{" "}
-              {(indicators[0]?.label ?? "").toLowerCase()}
-            </strong>
-            . Together these indicators are clinical evidence of systemic
-            prescribing failures — preventable by early intervention.
+            Together, these indicators are clinical evidence of{" "}
+            <strong style={{ color: "#FFFFFF" }}>preventable</strong> systemic
+            prescribing failures.
           </p>
         </Reveal>
       </div>

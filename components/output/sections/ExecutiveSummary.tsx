@@ -130,7 +130,7 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                 <span style={{ fontSize: "var(--fs-caption)", color: "#FFFFFF", width: "150px", flexShrink: 0 }}>
-                  Chronic opioid users
+                  At-risk opioid users
                 </span>
                 <div style={{ flex: 1, display: "flex", alignItems: "center", gap: "10px" }}>
                   <div style={{ height: "12px", width: "92%", borderRadius: "6px", background: "linear-gradient(90deg, #FF8A8A, #FF6B6B)" }} />
@@ -146,7 +146,7 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
                 lineHeight: 1.5,
               }}
             >
-              Chronic opioid users incur roughly{" "}
+              At-risk opioid users incur roughly{" "}
               <strong style={{ color: "#FFFFFF" }}>6× more medical cost</strong>{" "}
               than non-users.<sup style={{ fontSize: "var(--fs-caption)" }}>*</sup>
             </p>
@@ -207,8 +207,8 @@ export default function ExecutiveSummary({ data }: ExecutiveSummaryProps) {
           }}
         >
           <p>
-            {formatNumber(data.membersWithOpioidRx)} of your members are
-            currently filling opioid prescriptions. The flagged group above
+            {formatNumber(data.membersWithOpioidRx)} of your members filled
+            opioid prescriptions. The flagged group above
             shows clinical indicators of escalation — severe withdrawal
             symptoms, use of multiple pharmacy locations, multiple prescribers,
             early refills, and high dosage prescriptions.
