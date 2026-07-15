@@ -63,6 +63,9 @@ model Proposal {
   shareToken  String         @unique
   pcrData     Json
   provenance  Json?
+  /// Name of the uploaded PCR file this proposal was generated from. Null for
+  /// demo-data proposals and proposals created before this was tracked.
+  sourceFileName String?
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
 

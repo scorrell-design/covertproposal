@@ -2,9 +2,9 @@
 
 import { useReducer, useCallback } from "react";
 import Link from "next/link";
-import { UserButton } from "@clerk/nextjs";
 import { ArrowLeft, AlertTriangle } from "lucide-react";
 import CovertLogo from "@/components/shared/CovertLogo";
+import SignOutButton from "@/components/shared/SignOutButton";
 import PCRUploader from "./PCRUploader";
 import DemoModeToggle from "./DemoModeToggle";
 import DataFormSections from "./DataFormSections";
@@ -17,6 +17,8 @@ import type { Provenance } from "@/lib/pcr/types";
 export interface GenerateOptions {
   isDemo: boolean;
   provenance?: Provenance;
+  /** Name of the uploaded PCR file, so the history shows what generated each proposal. */
+  sourceFileName?: string;
 }
 
 interface State {
@@ -24,6 +26,7 @@ interface State {
   data: PCRData | null;
   isDemo: boolean;
   provenance?: Provenance;
+  sourceFileName?: string;
   needsReview: string[];
   error: string | null;
 }
@@ -36,6 +39,7 @@ type Action =
       data: PCRData;
       isDemo: boolean;
       provenance?: Provenance;
+      sourceFileName?: string;
       needsReview?: string[];
     }
   | { type: "UPDATE_DATA"; data: PCRData };
@@ -52,6 +56,7 @@ function reducer(state: State, action: Action): State {
         data: action.data,
         isDemo: action.isDemo,
         provenance: action.provenance,
+        sourceFileName: action.sourceFileName,
         needsReview: action.needsReview ?? [],
         error: null,
       };
@@ -108,6 +113,7 @@ export default function InputScreen({ onGenerate }: InputScreenProps) {
         data: result.data,
         isDemo: false,
         provenance: result.provenance,
+        sourceFileName: file.name,
         needsReview: result.needsReview as string[],
       });
     } catch (err) {
@@ -154,7 +160,7 @@ export default function InputScreen({ onGenerate }: InputScreenProps) {
               <ArrowLeft size={15} />
               Dashboard
             </Link>
-            <UserButton />
+            <SignOutButton />
           </div>
         </div>
       </nav>
@@ -254,6 +260,7 @@ export default function InputScreen({ onGenerate }: InputScreenProps) {
             onGenerate(state.data, {
               isDemo: state.isDemo,
               provenance: state.provenance,
+              sourceFileName: state.sourceFileName,
             })
           }
           disabled={!canGenerate}

@@ -60,6 +60,7 @@ export default function Home() {
           preparedFor: pcrData.preparedFor,
           pcrData,
           provenance: opts.provenance,
+          sourceFileName: opts.sourceFileName,
         }),
       });
       if (!res.ok) {

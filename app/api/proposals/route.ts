@@ -10,6 +10,7 @@ interface SaveBody {
   preparedFor?: string;
   pcrData?: PCRData;
   provenance?: Provenance;
+  sourceFileName?: string;
 }
 
 /**
@@ -41,6 +42,7 @@ export async function POST(request: Request) {
     preparedFor: body.preparedFor ?? body.pcrData.preparedFor,
     pcrData: { ...body.pcrData, clientName },
     provenance: body.provenance,
+    sourceFileName: body.sourceFileName?.trim() || undefined,
   });
 
   return Response.json({ id: proposal.id, shareToken: proposal.shareToken });

@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { UserButton } from "@clerk/nextjs";
 import { Plus, FileText } from "lucide-react";
 import CovertLogo from "@/components/shared/CovertLogo";
+import SignOutButton from "@/components/shared/SignOutButton";
 import { getCurrentDbUser } from "@/lib/auth";
 import { listProposalsForUser } from "@/lib/proposals";
 import { ProposalStatus } from "@/lib/generated/prisma/client";
@@ -31,8 +30,6 @@ function StatusBadge({ status }: { status: ProposalStatus }) {
 
 export default async function DashboardPage() {
   const user = await getCurrentDbUser();
-  if (!user) redirect("/sign-in");
-
   const proposals = await listProposalsForUser(user.id);
 
   return (
@@ -43,7 +40,7 @@ export default async function DashboardPage() {
           style={{ height: "64px", maxWidth: "960px" }}
         >
           <CovertLogo size={28} />
-          <UserButton />
+          <SignOutButton />
         </div>
       </nav>
 
@@ -59,7 +56,7 @@ export default async function DashboardPage() {
             <p style={{ fontSize: "15px", color: "var(--covert-text-secondary)", marginTop: "4px" }}>
               {proposals.length === 0
                 ? "No proposals yet."
-                : `${proposals.length} proposal${proposals.length === 1 ? "" : "s"}`}
+                : `Every proposal generated — ${proposals.length} total, newest first`}
             </p>
           </div>
           <Link
@@ -99,12 +96,28 @@ export default async function DashboardPage() {
                 className="flex items-center justify-between px-5 py-4 transition-colors hover:bg-[var(--covert-bg-secondary)]"
                 style={{ borderTop: i === 0 ? "none" : "1px solid var(--covert-border)" }}
               >
-                <div>
+                <div style={{ minWidth: 0 }}>
                   <div style={{ fontSize: "15px", fontWeight: 600, color: "var(--covert-black)" }}>
                     {p.clientName}
                   </div>
-                  <div style={{ fontSize: "13px", color: "var(--covert-text-secondary)", marginTop: "2px" }}>
-                    Updated {new Date(p.updatedAt).toLocaleDateString()}
+                  <div
+                    className="flex items-center gap-1.5"
+                    style={{ fontSize: "13px", color: "var(--covert-text-secondary)", marginTop: "3px" }}
+                  >
+                    <FileText size={13} style={{ flexShrink: 0 }} />
+                    <span
+                      style={{
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        fontStyle: p.sourceFileName ? "normal" : "italic",
+                      }}
+                    >
+                      {p.sourceFileName ?? "No source file recorded"}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: "12px", color: "var(--covert-text-secondary)", marginTop: "2px" }}>
+                    Generated {new Date(p.createdAt).toLocaleDateString()}
                   </div>
                 </div>
                 <StatusBadge status={p.status} />

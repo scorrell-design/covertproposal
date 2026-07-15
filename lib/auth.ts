@@ -1,24 +1,20 @@
-import { currentUser } from "@clerk/nextjs/server";
 import { syncUser } from "./proposals";
 
+// The tool is gated by a single shared team password (see proxy.ts), so there
+// are no per-user accounts. Every proposal is owned by one shared "Covert Team"
+// account; the whole team sees the same history. `clerkId` is repurposed as the
+// stable key for that single row (the column name is kept to avoid a migration).
+export const SHARED_USER_KEY = "covert-shared-team";
+
 /**
- * Resolve the signed-in Clerk user and mirror them into our DB (lazy
- * sync-on-request — fine for the internal team; a webhook would be the
- * heavier-duty option later). Returns the DB User row (with our `id` and
- * `role`) that proposals are owned by, or null if not signed in.
+ * Resolve the owner every proposal is attributed to. Upserts (and returns) the
+ * single shared team user. Access itself is enforced by the password gate in
+ * proxy.ts before any request reaches here.
  */
 export async function getCurrentDbUser() {
-  const user = await currentUser();
-  if (!user) return null;
-
-  const email =
-    user.primaryEmailAddress?.emailAddress ??
-    user.emailAddresses[0]?.emailAddress ??
-    "";
-  const name =
-    [user.firstName, user.lastName].filter(Boolean).join(" ") ||
-    user.username ||
-    null;
-
-  return syncUser({ clerkId: user.id, email, name });
+  return syncUser({
+    clerkId: SHARED_USER_KEY,
+    email: "team@covertplan.com",
+    name: "Covert Team",
+  });
 }

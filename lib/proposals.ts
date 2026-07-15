@@ -27,6 +27,7 @@ export function createProposal(input: {
   preparedFor?: string;
   pcrData: PCRData;
   provenance?: Provenance;
+  sourceFileName?: string;
 }) {
   return prisma.proposal.create({
     data: {
@@ -36,6 +37,7 @@ export function createProposal(input: {
       shareToken: newShareToken(),
       pcrData: asJson(input.pcrData),
       provenance: input.provenance ? asJson(input.provenance) : Prisma.JsonNull,
+      sourceFileName: input.sourceFileName ?? null,
       events: { create: { type: ProposalEventType.CREATED } },
     },
   });

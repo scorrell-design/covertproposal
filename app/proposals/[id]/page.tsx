@@ -1,4 +1,4 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import SavedProposalView from "@/components/output/SavedProposalView";
 import { getCurrentDbUser } from "@/lib/auth";
 import { getOwnedProposal } from "@/lib/proposals";
@@ -13,8 +13,6 @@ export default async function ProposalPage({
 }) {
   const { id } = await params;
   const user = await getCurrentDbUser();
-  if (!user) redirect("/sign-in");
-
   const proposal = await getOwnedProposal(id, user.id);
   if (!proposal) notFound();
 
